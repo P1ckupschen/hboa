@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="generator.mapper.CustomMapper">
+
+    <resultMap id="BaseResultMap" type="generator.entity.Custom">
+            <id property="customId" column="custom_id" jdbcType="INTEGER"/>
+            <result property="customName" column="custom_name" jdbcType="VARCHAR"/>
+            <result property="customOrderId" column="custom_order_id" jdbcType="INTEGER"/>
+            <result property="customManger" column="custom_manger" jdbcType="VARCHAR"/>
+            <result property="customFrom" column="custom_from" jdbcType="VARCHAR"/>
+            <result property="customStatus" column="custom_status" jdbcType="VARCHAR"/>
+            <result property="customCategory" column="custom_category" jdbcType="VARCHAR"/>
+            <result property="customAttribute" column="custom_attribute" jdbcType="VARCHAR"/>
+            <result property="customIndustry" column="custom_industry" jdbcType="VARCHAR"/>
+            <result property="customLocation" column="custom_location" jdbcType="VARCHAR"/>
+            <result property="customPhone" column="custom_phone" jdbcType="VARCHAR"/>
+            <result property="customFax" column="custom_fax" jdbcType="VARCHAR"/>
+            <result property="customWeb" column="custom_web" jdbcType="VARCHAR"/>
+            <result property="customLegalPerson" column="custom_legal_person" jdbcType="VARCHAR"/>
+            <result property="customPostal" column="custom_postal" jdbcType="VARCHAR"/>
+            <result property="customEmail" column="custom_email" jdbcType="VARCHAR"/>
+            <result property="customAddr" column="custom_addr" jdbcType="VARCHAR"/>
+            <result property="customSize" column="custom_size" jdbcType="DOUBLE"/>
+            <result property="customAnnualSales" column="custom_annual_sales" jdbcType="VARCHAR"/>
+            <result property="customCreatedTime" column="custom_created_time" jdbcType="TIMESTAMP"/>
+            <result property="customContacts1" column="custom_contacts1" jdbcType="VARCHAR"/>
+            <result property="customContacts1Phone" column="custom_contacts1_phone" jdbcType="VARCHAR"/>
+            <result property="customContacts2" column="custom_contacts2" jdbcType="VARCHAR"/>
+            <result property="customContacts2Phone" column="custom_contacts2_phone" jdbcType="VARCHAR"/>
+            <result property="customDescription" column="custom_description" jdbcType="VARCHAR"/>
+            <result property="customCreatedUser" column="custom_created_user" jdbcType="VARCHAR"/>
+            <result property="customUncontacted" column="custom_uncontacted" jdbcType="INTEGER"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        custom_id,custom_name,custom_order_id,
+        custom_manger,custom_from,custom_status,
+        custom_category,custom_attribute,custom_industry,
+        custom_location,custom_phone,custom_fax,
+        custom_web,custom_legal_person,custom_postal,
+        custom_email,custom_addr,custom_size,
+        custom_annual_sales,custom_created_time,custom_contacts1,
+        custom_contacts1_phone,custom_contacts2,custom_contacts2_phone,
+        custom_description,custom_created_user,custom_uncontacted,
+        is_deleted
+    </sql>
+</mapper>

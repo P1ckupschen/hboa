@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="generator.mapper.DepartmentMapper">
+
+    <resultMap id="BaseResultMap" type="generator.entity.Department">
+            <id property="departmentId" column="department_id" jdbcType="INTEGER"/>
+            <result property="departmentName" column="department_name" jdbcType="VARCHAR"/>
+            <result property="departmentHead" column="department_head" jdbcType="INTEGER"/>
+            <result property="departmentFax" column="department_fax" jdbcType="VARCHAR"/>
+            <result property="departmentPhone" column="department_phone" jdbcType="VARCHAR"/>
+            <result property="parentId" column="parent_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        department_id,department_name,department_head,
+        department_fax,department_phone,parent_id
+    </sql>
+</mapper>
