@@ -1,7 +1,12 @@
 package com.gdproj.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Overtime;
+import com.gdproj.vo.overtimeVo;
+
+import java.util.List;
 
 /**
 * @author Administrator
@@ -10,4 +15,5 @@ import com.gdproj.entity.Overtime;
 */
 public interface OvertimeService extends IService<Overtime> {
 
+    IPage<overtimeVo> getOverTimeList(pageDto pageDto);
 }

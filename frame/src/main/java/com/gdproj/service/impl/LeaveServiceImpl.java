@@ -56,6 +56,7 @@ public class LeaveServiceImpl extends ServiceImpl<LeaveMapper, Leave>
 
         LambdaQueryWrapper<Leave> queryWrapper = new LambdaQueryWrapper<>();
 
+        queryWrapper.eq(Leave::getIsDeleted,0);
         //排序
         if(sort.equals("+id")){
             queryWrapper.orderByAsc(Leave::getLeaveId);
@@ -64,7 +65,7 @@ public class LeaveServiceImpl extends ServiceImpl<LeaveMapper, Leave>
         }
         //如果根据部门分类，有一定几率会与模糊人民冲突
         if(!Objects.isNull(type) && title.isEmpty()){
-            queryWrapper.in(Leave::getLeaveDepartment,type);
+            queryWrapper.in(Leave::getDepartmentId,type);
         }
         //设置时间 年 月 日
         //模糊查询时间
@@ -76,7 +77,7 @@ public class LeaveServiceImpl extends ServiceImpl<LeaveMapper, Leave>
         if(!title.isEmpty()){
             //如果有模糊查询的时间 先通过查title 的用户ids
             List<Integer> ids = deployeeService.getIdsByTitle(title);
-            queryWrapper.in(Leave::getLeaveUser,ids);
+            queryWrapper.in(Leave::getUserId,ids);
             //通过ids去找所有符合ids的对象 sign;
         }
 
@@ -88,13 +89,20 @@ public class LeaveServiceImpl extends ServiceImpl<LeaveMapper, Leave>
             leaveVo leavevo = BeanCopyUtils.copyBean(item, leaveVo.class);
 
             //人员
-            leavevo.setLeaveUser(deployeeService.getNameByUserId(item.getLeaveUser()));
+            leavevo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
 
             //请假类型
-            leavevo.setCategoryName(leaveCategoryService.getById(item.getCategoryId()).getCategoryName());
+            leavevo.setCategory(leaveCategoryService.getById(item.getCategoryId()).getCategoryName());
 
             //部门
-            leavevo.setLeaveDepartment(departmentService.getDepartmentNameByDepartmentId(item.getLeaveDepartment()));
+            leavevo.setDepartment(departmentService.getDepartmentNameByDepartmentId(item.getDepartmentId()));
+
+            //请假总时长
+
+            long btime = item.getEndTime().getTime() - item.getStartTime().getTime();
+            double v = btime / 1000 / 60 / 60 / 24.0;
+            int round = (int) Math.round(v);
+            leavevo.setLeaveDays(String.valueOf(round));
 
             return leavevo;
 

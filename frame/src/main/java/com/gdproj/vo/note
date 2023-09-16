@@ -1,0 +1,1 @@
+需要更新的话就需要在vo存上原来的userid 和departmentid 避免多次查询

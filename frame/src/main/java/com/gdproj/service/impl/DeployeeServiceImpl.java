@@ -4,10 +4,12 @@ import cn.hutool.core.convert.Convert;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
+import com.gdproj.entity.Department;
 import com.gdproj.entity.Deployee;
 import com.gdproj.entity.User;
 import com.gdproj.mapper.DeployeeMapper;
 import com.gdproj.result.ResponseResult;
+import com.gdproj.service.DepartmentService;
 import com.gdproj.service.DeployeeService;
 import com.gdproj.utils.RSAUtil;
 import net.sf.jsqlparser.statement.select.Select;
@@ -25,6 +27,10 @@ import java.util.stream.Collectors;
 @Service
 public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
     implements DeployeeService {
+
+
+    @Autowired
+    DepartmentService departmentService;
 
     @Override
     public List<Integer> getIdsByTime(String time) {
@@ -73,6 +79,19 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
         Deployee one = getOne(lambdaQueryWrapper);
 
         return one.getDeployeeName();
+    }
+
+    public String getDepartmentNameByUserId(Integer userId){
+
+        LambdaQueryWrapper<Deployee> queryWrapper = new LambdaQueryWrapper<>();
+
+        queryWrapper.eq(Deployee::getDeployeeId,userId);
+
+        Deployee one = getOne(queryWrapper);
+
+        Department department = departmentService.getById(one.getDepartmentId());
+
+        return  department.getDepartmentName();
     }
 
 }

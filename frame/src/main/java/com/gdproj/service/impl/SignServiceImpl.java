@@ -19,9 +19,8 @@ import com.gdproj.vo.signVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.text.DateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -93,8 +92,11 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
             signvo.setDepartmentId(departmentService.getDepartmentNameByDepartmentId(item.getDepartmentId()));
             long workTime = (signvo.getEndTime().getTime() - signvo.getInTime().getTime()) / 1000 / 60 / 60;
             signvo.setTWorkTime( (int) workTime);
-            //设置是否完成考勤
-            if( workTime >= signvo.getWorkTime() && signvo.getSignAddr() == "XXXX附近"){
+            //设置是否完成考勤 判断时长 判断是否迟到 是否早退
+            DateFormat timeInstance = DateFormat.getTimeInstance();
+
+            System.out.println(timeInstance.format(item.getEndTime()));
+            if( workTime >= signvo.getWorkTime() && signvo.getSignAddr() == "XXXX附近"  ){
                 signvo.setSignStatus("完成当日考勤");
             }else{
                 signvo.setSignStatus("未完成");

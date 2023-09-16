@@ -24,4 +24,6 @@ public interface DeployeeService extends IService<Deployee> {
 
     String getNameByUserId(Integer userId);
 
+    String getDepartmentNameByUserId(Integer userId);
+
 }
