@@ -47,7 +47,7 @@ public class Deployee implements Serializable {
     /**
      * 
      */
-    private String deployeeStatus;
+    private Integer deployeeStatus;
 
     /**
      * 
@@ -178,14 +178,14 @@ public class Deployee implements Serializable {
     /**
      * 
      */
-    public String getDeployeeStatus() {
+    public Integer getDeployeeStatus() {
         return deployeeStatus;
     }
 
     /**
      * 
      */
-    public void setDeployeeStatus(String deployeeStatus) {
+    public void setDeployeeStatus(Integer deployeeStatus) {
         this.deployeeStatus = deployeeStatus;
     }
 

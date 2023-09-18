@@ -1,7 +1,11 @@
 package com.gdproj.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.gdproj.dto.pageDto;
 import com.gdproj.entity.leaveCategory;
+import com.gdproj.entity.notifyCategory;
 import com.gdproj.service.leaveCategoryService;
 import com.gdproj.mapper.leaveCategoryMapper;
 import org.springframework.stereotype.Service;
@@ -15,6 +19,18 @@ import org.springframework.stereotype.Service;
 public class leaveCategoryServiceImpl extends ServiceImpl<leaveCategoryMapper, leaveCategory>
     implements leaveCategoryService{
 
+    @Override
+    public IPage<leaveCategory> getLeaveCategoryList(pageDto pagedto) {
+
+        Integer pageSize = pagedto.getPageSize();
+        Integer pageNum = pagedto.getPageNum();
+
+        Page<leaveCategory> page = new Page<>(pageNum, pageSize);
+
+        IPage<leaveCategory> pageList = page(page);
+
+        return pageList;
+    }
 }
 
 

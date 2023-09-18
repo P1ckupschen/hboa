@@ -4,6 +4,7 @@ package com.gdproj.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdproj.entity.Deployee;
 import com.gdproj.result.ResponseResult;
+import com.gdproj.vo.userVo;
 
 import java.util.List;
 
@@ -26,4 +27,7 @@ public interface DeployeeService extends IService<Deployee> {
 
     String getDepartmentNameByUserId(Integer userId);
 
+    Integer getDepartmentIdByUserId(Integer userId);
+
+    List<userVo> getListForSelect();
 }

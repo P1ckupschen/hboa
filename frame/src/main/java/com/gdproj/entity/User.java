@@ -47,7 +47,7 @@ public class User implements Serializable {
     /**
      * 
      */
-    private String userStatus;
+    private Integer userStatus;
 
     /**
      * 
@@ -144,14 +144,14 @@ public class User implements Serializable {
     /**
      * 
      */
-    public String getUserStatus() {
+    public Integer getUserStatus() {
         return userStatus;
     }
 
     /**
      * 
      */
-    public void setUserStatus(String userStatus) {
+    public void setUserStatus(Integer userStatus) {
         this.userStatus = userStatus;
     }
 

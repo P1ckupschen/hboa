@@ -23,4 +23,9 @@ public class pageDto {
     private String time;
 
     private String sort;
+
+    public pageDto(Integer pageNum , Integer pageSize){
+        this.pageNum = pageNum;
+        this.pageSize = pageSize;
+    }
 }

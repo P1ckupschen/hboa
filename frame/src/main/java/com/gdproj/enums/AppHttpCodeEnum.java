@@ -16,6 +16,12 @@ public enum AppHttpCodeEnum {
     DEPARTMENT_NULL(301,"无此部门"),
 
     DEPARTMENT_LIST_ERROR(302,"部门类型获取失败"),
+
+
+    UPDATE_ERROR(10001,"数据修改失败"),
+    INSERT_ERROR(10002,"数据新增失败" ),
+
+    DELETE_ERROR(10003,"数据删除失败"),
     FILE_STREAM_NULL(101,"文件流为空"),
     NO_OPERATOR_AUTH(403,"无权限操作"),
     SYSTEM_ERROR(500,"出现错误"),
@@ -23,7 +29,12 @@ public enum AppHttpCodeEnum {
     EMAIL_EXIST(503, "邮箱已存在"),
     REQUIRE_USERNAME(504, "必需填写用户名"),
 
-    DEVISION_BYZERO(301,"除零");
+    DEVISION_BYZERO(301,"除零"),
+
+    FILE_SIZE_MAX(10010,"文件过大"),
+    FILE_TYPE_ERROR(10011,"文件类型错误"),
+    FILE_CONTENT_NULL(10012,"文件为空" ),
+    FILE_STORAGE_ERROR(10013,"文件保存异常");
 
     int code;
     String msg;

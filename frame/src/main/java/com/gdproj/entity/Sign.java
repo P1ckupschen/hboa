@@ -61,7 +61,7 @@ public class Sign implements Serializable {
      * 
      */
     @TableField(value = "sign_status")
-    private String signStatus;
+    private Integer signStatus;
 
     /**
      * 
@@ -209,14 +209,14 @@ public class Sign implements Serializable {
     /**
      * 
      */
-    public String getSignStatus() {
+    public Integer getSignStatus() {
         return signStatus;
     }
 
     /**
      * 
      */
-    public void setSignStatus(String signStatus) {
+    public void setSignStatus(Integer signStatus) {
         this.signStatus = signStatus;
     }
 

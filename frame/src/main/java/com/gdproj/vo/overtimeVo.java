@@ -40,7 +40,7 @@ public class overtimeVo {
 
     private String isDeleted;
 
-    private String overtimeStatus;
+    private Integer overtimeStatus;
 
     private Integer userId;
 

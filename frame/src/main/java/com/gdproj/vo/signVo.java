@@ -53,7 +53,7 @@ public class signVo {
     /**
      *
      */
-    private String signStatus;
+    private Integer signStatus;
 
     /**
      *

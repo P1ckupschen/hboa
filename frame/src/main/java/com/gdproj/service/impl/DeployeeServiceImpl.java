@@ -11,7 +11,9 @@ import com.gdproj.mapper.DeployeeMapper;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.DepartmentService;
 import com.gdproj.service.DeployeeService;
+import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.utils.RSAUtil;
+import com.gdproj.vo.userVo;
 import net.sf.jsqlparser.statement.select.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -92,6 +94,38 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
         Department department = departmentService.getById(one.getDepartmentId());
 
         return  department.getDepartmentName();
+    }
+
+    @Override
+    public Integer getDepartmentIdByUserId(Integer userId) {
+
+
+        LambdaQueryWrapper<Deployee> queryWrapper = new LambdaQueryWrapper<>();
+
+        queryWrapper.eq(Deployee::getDeployeeId,userId);
+
+        Deployee one = getOne(queryWrapper);
+
+        Department department = departmentService.getById(one.getDepartmentId());
+
+        return  department.getDepartmentId();
+
+    }
+
+    @Override
+    public List<userVo> getListForSelect() {
+
+        List<Deployee> list = list();
+
+        List<userVo> collect = list.stream().map((item) -> {
+            userVo userVo = new userVo();
+            userVo.setUserId(item.getDeployeeId());
+            userVo.setUsername(item.getDeployeeName());
+            userVo.setDepartmentId(item.getDepartmentId());
+            return userVo;
+        }).collect(Collectors.toList());
+
+        return collect;
     }
 
 }

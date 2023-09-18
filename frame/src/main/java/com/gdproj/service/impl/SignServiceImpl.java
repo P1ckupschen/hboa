@@ -97,9 +97,9 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
 
             System.out.println(timeInstance.format(item.getEndTime()));
             if( workTime >= signvo.getWorkTime() && signvo.getSignAddr() == "XXXX附近"  ){
-                signvo.setSignStatus("完成当日考勤");
+                signvo.setSignStatus(1);
             }else{
-                signvo.setSignStatus("未完成");
+                signvo.setSignStatus(0);
             }
             return signvo;
 

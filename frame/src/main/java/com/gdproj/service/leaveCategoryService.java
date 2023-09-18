@@ -1,6 +1,8 @@
 package com.gdproj.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.gdproj.dto.pageDto;
 import com.gdproj.entity.leaveCategory;
 
 /**
@@ -10,4 +12,5 @@ import com.gdproj.entity.leaveCategory;
 */
 public interface leaveCategoryService extends IService<leaveCategory> {
 
+    IPage<leaveCategory> getLeaveCategoryList(pageDto pagedto);
 }

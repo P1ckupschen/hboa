@@ -29,7 +29,7 @@ public class leaveVo {
     private String Category;
     private String leavePic;
 
-    private String leaveStatus;
+    private Integer leaveStatus;
 
     private Integer userId;
 
