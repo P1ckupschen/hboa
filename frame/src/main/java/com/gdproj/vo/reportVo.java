@@ -14,36 +14,31 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class overtimeVo {
+public class reportVo {
 
-    private Integer overtimeId;
+
+    private Integer reportId;
+
+    private Integer userId;
 
     private String Username;
 
     private String Department;
 
-    private Integer overtimeDays;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    private Date createdTime;
 
     private Integer categoryId;
 
     private String Category;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
-    private Date startTime;
+    private String reportContent;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
-    private Date endTime;
+    private String reportNextStage;
 
-    private String overtimeDescription;
+    private List<fileVo> reportPic;
 
-    private List<fileVo> overtimePic;
-
-    private Integer overtimeStatus;
-
-    private Integer userId;
-
-    private Integer departmentId;
-
+    private List<fileVo> reportFile;
 
 
 }

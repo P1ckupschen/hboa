@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -27,7 +28,7 @@ public class leaveVo {
     private String leaveDescription;
     private Integer categoryId;
     private String Category;
-    private String leavePic;
+    private List<fileVo> leavePic;
 
     private Integer leaveStatus;
 
@@ -35,7 +36,6 @@ public class leaveVo {
 
     private Integer departmentId;
 
-    private String isDeleted;
 
 
 }

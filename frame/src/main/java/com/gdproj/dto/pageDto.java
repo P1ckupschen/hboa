@@ -16,6 +16,8 @@ public class pageDto {
 
     private Integer pageSize;
 
+    private Integer departmentId;
+
     private Integer type;
 
     private String title;

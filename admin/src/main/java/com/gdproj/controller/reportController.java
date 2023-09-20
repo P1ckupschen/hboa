@@ -1,18 +1,23 @@
 package com.gdproj.controller;
 
+
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.dto.pageDto;
-import com.gdproj.entity.*;
+import com.gdproj.entity.Notify;
+import com.gdproj.entity.Report;
+import com.gdproj.entity.notifyCategory;
+import com.gdproj.entity.reportCategory;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.result.ResponseResult;
-import com.gdproj.service.OvertimeService;
-import com.gdproj.service.overtimeCategoryService;
+import com.gdproj.service.ReportService;
+import com.gdproj.service.reportCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.categoryVo;
-import com.gdproj.vo.leaveVo;
+import com.gdproj.vo.notifyVo;
 import com.gdproj.vo.overtimeVo;
+import com.gdproj.vo.reportVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,51 +25,52 @@ import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
-@RequestMapping("/adminOvertime")
-public class overtimeController {
+@RequestMapping("/adminReport")
+public class reportController {
 
     @Autowired
-    OvertimeService overtimeService;
+    ReportService reportService;
 
     @Autowired
-    overtimeCategoryService categoryService;
+    reportCategoryService categoryService;
 
-    @GetMapping("/getOvertimeList")
-    public ResponseResult getOvertimeList(@RequestParam Integer pageNum,
-                                          @RequestParam Integer pageSize,
-                                          @RequestParam(required = false,defaultValue = "+id")String sort,
-                                          @RequestParam(required = false,defaultValue = "") String title ,
-                                          @RequestParam(required = false) Integer departmentId,
-                                          @RequestParam(required = false) Integer type,
-                                          @RequestParam(required = false) String time){
+    @GetMapping("/getReportList")
+    public ResponseResult getReportList(@RequestParam Integer pageNum,
+                                        @RequestParam Integer pageSize,
+                                        @RequestParam(required = false,defaultValue = "+id")String sort,
+                                        @RequestParam(required = false,defaultValue = "") String title ,
+                                        @RequestParam(required = false) Integer departmentId,
+                                        @RequestParam(required = false) Integer type,
+                                        @RequestParam(required = false) String time){
+
         pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
 
-        IPage<overtimeVo> overtimeList = new Page<overtimeVo>();
+        IPage<reportVo> reportList = new Page<reportVo>();
 
         try {
-            overtimeList = overtimeService.getOverTimeList(pageDto);
-            return ResponseResult.okResult(overtimeList);
+            reportList = reportService.getReportList(pageDto);
+            return ResponseResult.okResult(reportList);
         }catch (Exception e){
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
         }
 
 
-
     }
 
-    @PutMapping("updateOvertime")
-    public ResponseResult updateOvertime(@RequestBody overtimeVo overtimeVo){
+
+    @PutMapping("updateReport")
+    public ResponseResult updateReport(@RequestBody reportVo reportVo){
 
 
-        Overtime updateOvertime = BeanCopyUtils.copyBean(overtimeVo, Overtime.class);
+        Report updateReport = BeanCopyUtils.copyBean(reportVo, Report.class);
 //        vo中的 发布人  类型 部门
-        System.out.println(updateOvertime);
+        System.out.println(updateReport);
 
         boolean b = false;
 
         try {
 
-            b = overtimeService.updateById(updateOvertime);
+            b = reportService.updateById(updateReport);
 
             if(b == true){
                 return ResponseResult.okResult(b);
@@ -81,18 +87,16 @@ public class overtimeController {
 
     }
 
-    @PostMapping("insertOvertime")
-    public ResponseResult insertOvertime(@RequestBody overtimeVo overtimeVo){
+    @PostMapping("insertReport")
+    public ResponseResult insertReport(@RequestBody reportVo reportVo){
 
-        Overtime insertOvertime = BeanCopyUtils.copyBean(overtimeVo, Overtime.class);
-
-        System.out.println(insertOvertime);
+        Report updateReport = BeanCopyUtils.copyBean(reportVo, Report.class);
 
         boolean b = false;
 
         try {
 
-            b = overtimeService.save(insertOvertime);
+            b = reportService.save(updateReport);
 
             if(b == true){
                 return ResponseResult.okResult(b);
@@ -108,16 +112,16 @@ public class overtimeController {
 
     }
 
-    @DeleteMapping("deleteOvertime")
-    public ResponseResult deleteOvertime(@PathParam("overtimeId") Integer overtimeId){
+    @DeleteMapping("deleteReport")
+    public ResponseResult deleteReport(@PathParam("reportId") Integer reportId){
 
-        System.out.println(overtimeId);
+        System.out.println(reportId);
 
         boolean b = false;
 
         try {
 
-            b = overtimeService.removeById(overtimeId);
+            b = reportService.removeById(reportId);
 
             if(b == true){
                 return ResponseResult.okResult(b);
@@ -133,9 +137,9 @@ public class overtimeController {
 
     }
 
-    @DeleteMapping("deleteOvertimeList")
-    //批量删除
-    public ResponseResult deleteOvertimeList(@RequestBody Integer categoryId){
+    @DeleteMapping("deleteReportList")
+    //批量删除                                          TODO
+    public ResponseResult deleteReportList(@RequestBody Integer categoryId){
 
         notifyCategory notifycategory = new notifyCategory();
 
@@ -162,6 +166,9 @@ public class overtimeController {
 
 
 
+
+
+
     //类型的增删改查
 
     @GetMapping("/getCategoryList")
@@ -169,15 +176,18 @@ public class overtimeController {
 
         pageDto pagedto = new pageDto(pageNum, pageSize);
 
-        IPage<overtimeCategory> categoryList = new Page<>();
+        IPage<reportCategory> categoryList = new Page<>();
 
         try {
 
             if(ObjectUtil.isNull(pagedto.getPageNum())){
-                List<overtimeCategory> list = categoryService.list();
+                List<reportCategory> list = categoryService.list();
+
                 return ResponseResult.okResult(list);
             }else{
-                categoryList = categoryService.getOvertimeCategoryList(pagedto);
+
+                categoryList = categoryService.getReportCategoryList(pagedto);
+
                 return ResponseResult.okResult(categoryList);
             }
 
@@ -190,15 +200,14 @@ public class overtimeController {
     @PutMapping("updateCategory")
     public ResponseResult updateCategory(@RequestBody categoryVo category){
 
-        overtimeCategory overcategory = new overtimeCategory();
-
+        reportCategory reportcategory = new reportCategory();
 
         boolean b = false;
 
         try {
-            overcategory = BeanCopyUtils.copyBean(category, overtimeCategory.class);
+            reportcategory = BeanCopyUtils.copyBean(category, reportCategory.class);
 
-            b = categoryService.updateById(overcategory);
+            b = categoryService.updateById(reportcategory);
 
             if(b == true){
                 return ResponseResult.okResult(b);
@@ -212,20 +221,19 @@ public class overtimeController {
 
         }
 
-
     }
 
     @PostMapping("insertCategory")
     public ResponseResult insertCategory(@RequestBody categoryVo category){
 
-        overtimeCategory overcategory = new overtimeCategory();
+        reportCategory reportcategory = new reportCategory();
 
         boolean b = false;
 
         try {
-            overcategory = BeanCopyUtils.copyBean(category, overtimeCategory.class);
+            reportcategory = BeanCopyUtils.copyBean(category, reportCategory.class);
 
-            b = categoryService.save(overcategory);
+            b = categoryService.save(reportcategory);
 
             if(b == true){
                 return ResponseResult.okResult(b);
@@ -244,12 +252,14 @@ public class overtimeController {
     @DeleteMapping("deleteCategory")
     public ResponseResult deleteCategory(@PathParam("categoryId") Integer categoryId){
 
+        reportCategory reportcategory = new reportCategory();
 
         System.out.println(categoryId);
 
         boolean b = false;
 
         try {
+//            notifycategory = BeanCopyUtils.copyBean(category, notifyCategory.class);
 
             b = categoryService.removeById(categoryId);
 
@@ -266,5 +276,7 @@ public class overtimeController {
         }
 
     }
+
+
 
 }

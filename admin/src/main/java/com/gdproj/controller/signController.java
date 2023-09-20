@@ -30,10 +30,11 @@ public class signController {
                                       @RequestParam Integer pageSize,
                                       @RequestParam(required = false,defaultValue = "+id")String sort,
                                       @RequestParam(required = false,defaultValue = "") String title ,
+                                      @RequestParam(required = false) Integer departmentId,
                                       @RequestParam(required = false) Integer type,
                                       @RequestParam(required = false) String time){
 
-        pageDto pageDto = new pageDto(pageNum,pageSize,type,title,time,sort);
+        pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
 
         IPage<signVo> signList = new Page<signVo>();
 
@@ -41,6 +42,7 @@ public class signController {
 
             signList  =  signService.getSignList(pageDto);
 
+            return ResponseResult.okResult(signList);
 
         }catch (SystemException e){
 
@@ -52,6 +54,6 @@ public class signController {
 
         }
 
-        return ResponseResult.okResult(signList);
+
     }
 }

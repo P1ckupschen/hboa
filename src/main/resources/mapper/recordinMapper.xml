@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="generator.mapper.recordinMapper">
+
+    <resultMap id="BaseResultMap" type="generator.entity.recordin">
+            <id property="recordId" column="record_id" jdbcType="INTEGER"/>
+            <result property="productName" column="product_name" jdbcType="VARCHAR"/>
+            <result property="productOrderId" column="product_order_id" jdbcType="INTEGER"/>
+            <result property="categoryId" column="category_id" jdbcType="INTEGER"/>
+            <result property="count" column="count" jdbcType="INTEGER"/>
+            <result property="productBrand" column="product_brand" jdbcType="VARCHAR"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="productBatchs" column="product_batchs" jdbcType="VARCHAR"/>
+            <result property="userId" column="user_id" jdbcType="INTEGER"/>
+            <result property="inTime" column="in_time" jdbcType="TIMESTAMP"/>
+            <result property="projectId" column="project_id" jdbcType="INTEGER"/>
+            <result property="contractId" column="contract_id" jdbcType="INTEGER"/>
+            <result property="outTime" column="out_time" jdbcType="TIMESTAMP"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+            <result property="productUnit" column="product_unit" jdbcType="VARCHAR"/>
+            <result property="recordDescription" column="record_description" jdbcType="VARCHAR"/>
+            <result property="recordAttachments" column="record_attachments" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        record_id,product_name,product_order_id,
+        category_id,count,product_brand,
+        update_time,created_time,product_batchs,
+        user_id,in_time,project_id,
+        contract_id,out_time,is_deleted,
+        product_unit,record_description,record_attachments
+    </sql>
+</mapper>

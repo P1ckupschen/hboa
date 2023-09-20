@@ -28,16 +28,8 @@
             <option name="tableUIInfoList">
               <list>
                 <TableUIInfo>
-                  <option name="className" value="Overtime" />
-                  <option name="tableName" value="sys_overtime" />
-                </TableUIInfo>
-                <TableUIInfo>
-                  <option name="className" value="Notify" />
-                  <option name="tableName" value="sys_notify" />
-                </TableUIInfo>
-                <TableUIInfo>
-                  <option name="className" value="Leave" />
-                  <option name="tableName" value="sys_leave" />
+                  <option name="className" value="Record" />
+                  <option name="tableName" value="sys_record" />
                 </TableUIInfo>
               </list>
             </option>

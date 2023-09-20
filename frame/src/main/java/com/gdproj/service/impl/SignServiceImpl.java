@@ -1,6 +1,7 @@
 package com.gdproj.service.impl;
 
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.injector.methods.SelectPage;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -8,6 +9,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import com.gdproj.dto.pageDto;
+import com.gdproj.entity.Leave;
 import com.gdproj.entity.Sign;
 import com.gdproj.mapper.SignMapper;
 import com.gdproj.service.DepartmentService;
@@ -47,6 +49,7 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
         LambdaQueryWrapper<Sign> queryWrapper = new LambdaQueryWrapper<>();
 
         Page<Sign> page = new Page<>(pagedto.getPageNum(), pagedto.getPageSize());
+
         String title = pagedto.getTitle();
         String time = pagedto.getTime();
         List<Sign> signList = new ArrayList<>();
@@ -59,10 +62,10 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
 
 
         //如果根据部门分类，有一定几率会与模糊人民冲突
-        if(!Objects.isNull(pagedto.getType()) && title.isEmpty()){
+        if(!Objects.isNull(pagedto.getDepartmentId()) && title.isEmpty()){
 //            List<Integer> ids = deployeeService.getIdsByDepartmentId(pagedto.getType());
 //            queryWrapper.in(Sign::getDepartmentId,ids);
-            queryWrapper.in(Sign::getDepartmentId,pagedto.getType());
+            queryWrapper.in(Sign::getDepartmentId,pagedto.getDepartmentId());
         }
 
         //设置时间 年 月 日
@@ -79,6 +82,7 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
             queryWrapper.in(Sign::getSignUser,ids);
             //通过ids去找所有符合ids的对象 sign;
         }
+
 
         IPage<Sign> signPage = signMapper.selectPage(page, queryWrapper);
 

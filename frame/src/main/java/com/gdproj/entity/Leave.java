@@ -4,14 +4,18 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.gdproj.handler.jsonAndListTypeHandler;
+import com.gdproj.vo.fileVo;
+
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 
  * @TableName sys_leave
  */
-@TableName(value ="sys_leave")
+@TableName(value ="sys_leave",autoResultMap = true)
 public class Leave implements Serializable {
     /**
      * 
@@ -58,8 +62,8 @@ public class Leave implements Serializable {
     /**
      * 
      */
-    @TableField(value = "leave_pic")
-    private String leavePic;
+    @TableField(value = "leave_pic",typeHandler = jsonAndListTypeHandler.class)
+    private List<fileVo> leavePic;
 
     /**
      * 
@@ -183,14 +187,14 @@ public class Leave implements Serializable {
     /**
      * 
      */
-    public String getLeavePic() {
+    public List<fileVo> getLeavePic() {
         return leavePic;
     }
 
     /**
      * 
      */
-    public void setLeavePic(String leavePic) {
+    public void setLeavePic(List<fileVo> leavePic) {
         this.leavePic = leavePic;
     }
 

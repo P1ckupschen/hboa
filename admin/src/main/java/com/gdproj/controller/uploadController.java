@@ -30,6 +30,7 @@ public class uploadController {
         if (file.getSize() > 1024 * 1024 * 20) {
             return ResponseResult.errorResult(AppHttpCodeEnum.FILE_SIZE_MAX);
         }
+
         //获取文件后缀
         String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1, file.getOriginalFilename().length());
         if (!"jpg,jpeg,png,pdf,doc,docx,xlsx,xls".toUpperCase().contains(suffix.toUpperCase())) {
@@ -41,6 +42,7 @@ public class uploadController {
             //若不存在该目录，则创建目录
             savePathFile.mkdir();
         }
+
         //通过UUID生成唯一文件名
         String filename = UUID.randomUUID().toString().replaceAll("-","") + "." + suffix;
         try {
@@ -56,8 +58,8 @@ public class uploadController {
         String url = String.valueOf(request.getRequestURL());
         String[] urlsplit = url.split("/upload/commonUpload");
         String baseurl = urlsplit[0];
-        String result = baseurl +"/images/"+filename;
-//        String result ="http://localhost:8888/images/"+filename;
+        String result = "/images/"+filename;
+//                String result = baseurl +"/images/"+filename;
         return ResponseResult.okResult(result);
         //返回文件名称
     }

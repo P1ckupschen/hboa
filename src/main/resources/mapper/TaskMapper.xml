@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="generator.mapper.TaskMapper">
+
+    <resultMap id="BaseResultMap" type="generator.entity.Task">
+            <id property="taskId" column="task_id" jdbcType="INTEGER"/>
+            <result property="taskName" column="task_name" jdbcType="VARCHAR"/>
+            <result property="assignedId" column="assigned_id" jdbcType="INTEGER"/>
+            <result property="executorId" column="executor_id" jdbcType="INTEGER"/>
+            <result property="taskUrgency" column="task_urgency" jdbcType="INTEGER"/>
+            <result property="taskContent" column="task_content" jdbcType="VARCHAR"/>
+            <result property="taskFeedback" column="task_feedback" jdbcType="VARCHAR"/>
+            <result property="isFeedback" column="is_feedback" jdbcType="INTEGER"/>
+            <result property="completeTime" column="complete_time" jdbcType="TIMESTAMP"/>
+            <result property="isOverdue" column="is_overdue" jdbcType="INTEGER"/>
+            <result property="createdUser" column="created_user" jdbcType="INTEGER"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="taskAttachments" column="task_attachments" jdbcType="VARCHAR"/>
+            <result property="taskAddr" column="task_addr" jdbcType="VARCHAR"/>
+            <result property="taskContacts" column="task_contacts" jdbcType="VARCHAR"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+            <result property="taskTime" column="task_time" jdbcType="TIMESTAMP"/>
+            <result property="categoryId" column="category_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        task_id,task_name,assigned_id,
+        executor_id,task_urgency,task_content,
+        task_feedback,is_feedback,complete_time,
+        is_overdue,created_user,created_time,
+        task_attachments,task_addr,task_contacts,
+        is_deleted,task_time,category_id
+    </sql>
+</mapper>

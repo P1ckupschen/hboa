@@ -40,9 +40,10 @@ public class notifyController {
                                         @RequestParam Integer pageSize,
                                         @RequestParam(required = false,defaultValue = "+id")String sort,
                                         @RequestParam(required = false,defaultValue = "") String title ,
+                                        @RequestParam(required = false) Integer departmentId,
                                         @RequestParam(required = false) Integer type,
                                         @RequestParam(required = false) String time){
-        pageDto pageDto = new pageDto(pageNum,pageSize,type,title,time,sort);
+        pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
 
         IPage<notifyVo> notifyList = new Page<>();
 
@@ -149,13 +150,19 @@ public class notifyController {
 
             b = categoryService.removeById(categoryId);
 
+            if(b == true ){
+                return ResponseResult.okResult(b);
+            }else{
+                return ResponseResult.errorResult(AppHttpCodeEnum.DELETE_ERROR);
+            }
+
         }catch (Exception e){
 
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
 
         }
 
-        return ResponseResult.okResult(b);
+
     }
 
 

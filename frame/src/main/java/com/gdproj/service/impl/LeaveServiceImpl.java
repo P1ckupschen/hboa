@@ -1,11 +1,13 @@
 package com.gdproj.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Leave;
+import com.gdproj.entity.Notify;
 import com.gdproj.entity.Sign;
 import com.gdproj.service.DepartmentService;
 import com.gdproj.service.DeployeeService;
@@ -46,6 +48,7 @@ public class LeaveServiceImpl extends ServiceImpl<LeaveMapper, Leave>
     @Override
     public IPage<leaveVo> getLeaveList(pageDto pageDto) {
         Integer type = pageDto.getType();
+        Integer departmentId = pageDto.getDepartmentId();
         String time = pageDto.getTime();
         String sort = pageDto.getSort();
         String title = pageDto.getTitle();
@@ -64,8 +67,8 @@ public class LeaveServiceImpl extends ServiceImpl<LeaveMapper, Leave>
             queryWrapper.orderByDesc(Leave::getLeaveId);
         }
         //如果根据部门分类，有一定几率会与模糊人民冲突
-        if(!Objects.isNull(type) && title.isEmpty()){
-            queryWrapper.in(Leave::getDepartmentId,type);
+        if(!Objects.isNull(departmentId) && title.isEmpty()){
+            queryWrapper.in(Leave::getDepartmentId,departmentId);
         }
         //设置时间 年 月 日
         //模糊查询时间
@@ -79,6 +82,10 @@ public class LeaveServiceImpl extends ServiceImpl<LeaveMapper, Leave>
             List<Integer> ids = deployeeService.getIdsByTitle(title);
             queryWrapper.in(Leave::getUserId,ids);
             //通过ids去找所有符合ids的对象 sign;
+        }
+
+        if(!ObjectUtil.isEmpty(type)){
+            queryWrapper.eq(Leave::getCategoryId,type);
         }
 
         IPage<Leave> leavePage = leaveMapper.selectPage(page, queryWrapper);
@@ -95,12 +102,22 @@ public class LeaveServiceImpl extends ServiceImpl<LeaveMapper, Leave>
             leavevo.setCategory(leaveCategoryService.getById(item.getCategoryId()).getCategoryName());
 
             //部门
-            leavevo.setDepartment(departmentService.getDepartmentNameByDepartmentId(item.getDepartmentId()));
+//            leavevo.setDepartment(departmentService.getDepartmentNameByDepartmentId(item.getDepartmentId()));
 
+            leavevo.setDepartment(deployeeService.getDepartmentNameByUserId(item.getUserId()));
+
+            leavevo.setDepartmentId(deployeeService.getDepartmentIdByUserId(item.getUserId()));
+
+            long btime = 0;
+            double v = 0;
             //请假总时长
+            if(ObjectUtil.isEmpty(item.getStartTime()) || ObjectUtil.isEmpty(item.getEndTime())){
+                btime = 0;
+            }else{
+                btime = item.getEndTime().getTime() - item.getStartTime().getTime();
+                v = btime / 1000 / 60 / 60 /24.0;
+            }
 
-            long btime = item.getEndTime().getTime() - item.getStartTime().getTime();
-            double v = btime / 1000 / 60 / 60 / 24.0;
             int round = (int) Math.round(v);
             leavevo.setLeaveDays(String.valueOf(round));
 

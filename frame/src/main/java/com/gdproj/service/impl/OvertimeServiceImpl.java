@@ -1,5 +1,6 @@
 package com.gdproj.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -7,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Leave;
 import com.gdproj.entity.Overtime;
+import com.gdproj.entity.Report;
 import com.gdproj.service.DepartmentService;
 import com.gdproj.service.DeployeeService;
 import com.gdproj.service.OvertimeService;
@@ -47,6 +49,7 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
     public IPage<overtimeVo> getOverTimeList(pageDto pageDto) {
 
         Integer type = pageDto.getType();
+        Integer departmentId = pageDto.getDepartmentId();
         String time = pageDto.getTime();
         String sort = pageDto.getSort();
         String title = pageDto.getTitle();
@@ -65,8 +68,8 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
             queryWrapper.orderByDesc(Overtime::getOvertimeId);
         }
         //如果根据部门分类，有一定几率会与模糊人民冲突
-        if(!Objects.isNull(type) && title.isEmpty()){
-            queryWrapper.in(Overtime::getDepartmentId,type);
+        if(!Objects.isNull(departmentId) && title.isEmpty()){
+            queryWrapper.in(Overtime::getDepartmentId,departmentId);
         }
         //设置时间 年 月 日
         //模糊查询时间
@@ -80,6 +83,10 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
             List<Integer> ids = deployeeService.getIdsByTitle(title);
             queryWrapper.in(Overtime::getUserId,ids);
             //通过ids去找所有符合ids的对象 sign;
+        }
+
+        if(!ObjectUtil.isEmpty(type)){
+            queryWrapper.eq(Overtime::getCategoryId,type);
         }
 
         IPage<Overtime> overtimePage = overtimeMapper.selectPage(page, queryWrapper);
@@ -96,11 +103,22 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
             overtimevo.setCategory(overtimecategoryService.getById(item.getCategoryId()).getCategoryName());
 
             //部门
-            overtimevo.setDepartment(departmentService.getDepartmentNameByDepartmentId(item.getDepartmentId()));
+//            overtimevo.setDepartment(departmentService.getDepartmentNameByDepartmentId(item.getDepartmentId()));
 
+            overtimevo.setDepartment(deployeeService.getDepartmentNameByUserId(item.getUserId()));
+
+            overtimevo.setDepartmentId(deployeeService.getDepartmentIdByUserId(item.getUserId()));
+
+            long btime = 0;
+            double v = 0;
             //加班总时长
-            long btime = item.getEndTime().getTime() - item.getStartTime().getTime();
-            double v = btime / 1000 / 60 / 60 / 24.0;
+            if(ObjectUtil.isEmpty(item.getStartTime()) || ObjectUtil.isEmpty(item.getEndTime())){
+                btime = 0;
+            }else{
+                btime = item.getEndTime().getTime() - item.getStartTime().getTime();
+                v = btime / 1000 / 60 / 60 ;
+            }
+
             int round = (int) Math.round(v);
             overtimevo.setOvertimeDays(round);
             return overtimevo;

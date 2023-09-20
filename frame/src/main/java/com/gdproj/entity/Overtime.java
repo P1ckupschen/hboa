@@ -4,14 +4,18 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.gdproj.handler.jsonAndListTypeHandler;
+import com.gdproj.vo.fileVo;
+
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 
  * @TableName sys_overtime
  */
-@TableName(value ="sys_overtime")
+@TableName(value ="sys_overtime",autoResultMap = true)
 public class Overtime implements Serializable {
     /**
      * 
@@ -64,8 +68,8 @@ public class Overtime implements Serializable {
     /**
      * 
      */
-    @TableField(value = "overtime_pic")
-    private String overtimePic;
+    @TableField(value = "overtime_pic",typeHandler = jsonAndListTypeHandler.class)
+    private List<fileVo> overtimePic;
 
     /**
      * 
@@ -197,14 +201,14 @@ public class Overtime implements Serializable {
     /**
      * 
      */
-    public String getOvertimePic() {
+    public List<fileVo> getOvertimePic() {
         return overtimePic;
     }
 
     /**
      * 
      */
-    public void setOvertimePic(String overtimePic) {
+    public void setOvertimePic(List<fileVo> overtimePic) {
         this.overtimePic = overtimePic;
     }
 
