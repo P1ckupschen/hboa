@@ -20,7 +20,8 @@ public class recordVo {
     private Integer recordId;
     private Integer productId;
     private String productName;
-
+    private Integer examinerId;
+    private String examinerUsername;
     private Integer productOrderId;
     private Integer categoryId;
     private String Category;

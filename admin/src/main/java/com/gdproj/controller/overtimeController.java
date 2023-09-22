@@ -10,9 +10,7 @@ import com.gdproj.result.ResponseResult;
 import com.gdproj.service.OvertimeService;
 import com.gdproj.service.overtimeCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.categoryVo;
-import com.gdproj.vo.leaveVo;
-import com.gdproj.vo.overtimeVo;
+import com.gdproj.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,7 +41,11 @@ public class overtimeController {
 
         try {
             overtimeList = overtimeService.getOverTimeList(pageDto);
-            return ResponseResult.okResult(overtimeList);
+
+            pageVo<List<overtimeVo>> pageList = new pageVo<>();
+            pageList.setData(overtimeList.getRecords());
+            pageList.setTotal((int) overtimeList.getTotal());
+            return ResponseResult.okResult(pageList);
         }catch (Exception e){
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
         }
@@ -178,7 +180,10 @@ public class overtimeController {
                 return ResponseResult.okResult(list);
             }else{
                 categoryList = categoryService.getOvertimeCategoryList(pagedto);
-                return ResponseResult.okResult(categoryList);
+                pageVo<List<overtimeCategory>> pageList = new pageVo<>();
+                pageList.setData(categoryList.getRecords());
+                pageList.setTotal((int) categoryList.getTotal());
+                return ResponseResult.okResult(pageList);
             }
 
         }catch (Exception e){

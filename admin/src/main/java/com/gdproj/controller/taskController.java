@@ -4,6 +4,7 @@ package com.gdproj.controller;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.gdproj.annotation.autoLog;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Notify;
 import com.gdproj.entity.Task;
@@ -32,6 +33,7 @@ public class taskController {
 
     //公告的增删改查
     @GetMapping("/getTaskList")
+    @autoLog
     public ResponseResult getTaskList(@RequestParam Integer pageNum,
                                         @RequestParam Integer pageSize,
                                         @RequestParam(required = false,defaultValue = "+id")String sort,

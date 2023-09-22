@@ -57,8 +57,8 @@ public class recordController {
 
     }
 
-    @PutMapping("updateTask")
-    public ResponseResult updateTask(@RequestBody recordVo recordVo){
+    @PutMapping("updateRecord")
+    public ResponseResult updateRecord(@RequestBody recordVo recordVo){
 
         Record updateRecord = BeanCopyUtils.copyBean(recordVo, Record.class);
 
@@ -68,7 +68,7 @@ public class recordController {
 
             b = recordService.updateById(updateRecord);
 
-            if(b == true){
+            if(b){
 
                 return ResponseResult.okResult(b);
 
@@ -85,8 +85,8 @@ public class recordController {
 
     }
 
-    @PostMapping("insertTask")
-    public ResponseResult insertTask(@RequestBody recordVo recordVo){
+    @PostMapping("insertRecord")
+    public ResponseResult insertRecord(@RequestBody recordVo recordVo){
 
         Record updateRecord = BeanCopyUtils.copyBean(recordVo, Record.class);
 
@@ -96,7 +96,7 @@ public class recordController {
 
             b = recordService.save(updateRecord);
 
-            if(b == true){
+            if(b){
                 return ResponseResult.okResult(b);
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.INSERT_ERROR);
@@ -110,8 +110,8 @@ public class recordController {
 
     }
 
-    @DeleteMapping("deleteTask")
-    public ResponseResult deleteTask(@PathParam("recordId") Integer recordId){
+    @DeleteMapping("deleteRecord")
+    public ResponseResult deleteRecord(@PathParam("recordId") Integer recordId){
 
         boolean b = false;
 
@@ -119,7 +119,7 @@ public class recordController {
 
             b = recordService.removeById(recordId);
 
-            if(b == true){
+            if(b){
                 return ResponseResult.okResult(b);
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.DELETE_ERROR);

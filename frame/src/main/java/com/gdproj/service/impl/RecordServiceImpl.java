@@ -10,7 +10,9 @@ import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Record;
 import com.gdproj.mapper.RecordMapper;
 import com.gdproj.service.DeployeeService;
+import com.gdproj.service.ProductService;
 import com.gdproj.service.RecordService;
+import com.gdproj.service.productCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.recordVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,12 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
 
     @Autowired
     DeployeeService deployeeService;
+
+    @Autowired
+    ProductService productService;
+
+    @Autowired
+    productCategoryService categoryService;
 
 
     @Override
@@ -71,12 +79,9 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
             queryWrapper.like(Record::getInTime,time);
         }
 
-        //模糊查询人名
+        //查询产品名称？
         if(!title.isEmpty()){
-            //如果有模糊查询的时间 先通过查title 的用户ids
-            List<Integer> ids = deployeeService.getIdsByTitle(title);
-            queryWrapper.in(Record::getUserId,ids);
-            //通过ids去找所有符合ids的对象 sign;
+            queryWrapper.in(Record::getProductId,title);
         }
 
         //如果有类型的话
@@ -95,18 +100,23 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
             //创建人
             vo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
 
-            //categoryId 1为入库 2为出库
+            //部门
+            vo.setDepartment(deployeeService.getDepartmentNameByUserId(item.getUserId()));
+
+            //产品名称 对应的产品类型
+            vo.setProductName(productService.getById(item.getProductId()).getProductName());
+            vo.setProductBrand(productService.getById(item.getProductId()).getProductBrand());
+            vo.setProductUnit(productService.getById(item.getProductId()).getProductUnit());
+
+
+
+
+            //产品类型
             if(vo.getCategoryId() == 1){
                 vo.setCategory("入库");
             }else{
                 vo.setCategory("出库");
             }
-            //部门
-            vo.setDepartment(deployeeService.getDepartmentNameByUserId(item.getUserId()));
-
-            //产品名称
-            vo.setProductName("sdsd");
-
 
             return vo;
 

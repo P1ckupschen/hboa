@@ -5,19 +5,13 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.dto.pageDto;
-import com.gdproj.entity.Notify;
-import com.gdproj.entity.Report;
-import com.gdproj.entity.notifyCategory;
-import com.gdproj.entity.reportCategory;
+import com.gdproj.entity.*;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.ReportService;
 import com.gdproj.service.reportCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.categoryVo;
-import com.gdproj.vo.notifyVo;
-import com.gdproj.vo.overtimeVo;
-import com.gdproj.vo.reportVo;
+import com.gdproj.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,7 +43,11 @@ public class reportController {
 
         try {
             reportList = reportService.getReportList(pageDto);
-            return ResponseResult.okResult(reportList);
+
+            pageVo<List<reportVo>> pageList = new pageVo<>();
+            pageList.setData(reportList.getRecords());
+            pageList.setTotal((int) reportList.getTotal());
+            return ResponseResult.okResult(pageList);
         }catch (Exception e){
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
         }
@@ -187,8 +185,10 @@ public class reportController {
             }else{
 
                 categoryList = categoryService.getReportCategoryList(pagedto);
-
-                return ResponseResult.okResult(categoryList);
+                pageVo<List<reportCategory>> pageList = new pageVo<>();
+                pageList.setData(categoryList.getRecords());
+                pageList.setTotal((int) categoryList.getTotal());
+                return ResponseResult.okResult(pageList);
             }
 
         }catch (Exception e){

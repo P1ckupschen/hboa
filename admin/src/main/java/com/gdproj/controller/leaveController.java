@@ -13,10 +13,7 @@ import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.leaveCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.categoryVo;
-import com.gdproj.vo.leaveVo;
-import com.gdproj.vo.notifyVo;
-import com.gdproj.vo.signVo;
+import com.gdproj.vo.*;
 import org.omg.PortableInterceptor.INACTIVE;
 import com.gdproj.service.LeaveService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +46,11 @@ public class leaveController {
 
         try {
             leaveList = leaveService.getLeaveList(pageDto);
-            return ResponseResult.okResult(leaveList);
+
+            pageVo<List<leaveVo>> pageList = new pageVo<>();
+            pageList.setData(leaveList.getRecords());
+            pageList.setTotal((int) leaveList.getTotal());
+            return ResponseResult.okResult(pageList);
 
         }catch (SystemException e){
             return ResponseResult.okResult(e.getCode(),e.getMsg());
@@ -182,13 +183,17 @@ public class leaveController {
         IPage<leaveCategory> categoryList = new Page<>();
 
         try {
-
             if(ObjectUtil.isNull(pagedto.getPageNum())){
                 List<leaveCategory> list = categoryService.list();
                 return ResponseResult.okResult(list);
             }else{
                 categoryList = categoryService.getLeaveCategoryList(pagedto);
-                return ResponseResult.okResult(categoryList);
+
+                pageVo<List<leaveCategory>> pageList = new pageVo<>();
+                pageList.setData(categoryList.getRecords());
+                pageList.setTotal((int) categoryList.getTotal());
+
+                return ResponseResult.okResult(pageList);
             }
 
         }catch (Exception e){

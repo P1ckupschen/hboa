@@ -9,6 +9,8 @@ import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.SignService;
+import com.gdproj.vo.leaveVo;
+import com.gdproj.vo.pageVo;
 import com.gdproj.vo.signVo;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +44,10 @@ public class signController {
 
             signList  =  signService.getSignList(pageDto);
 
-            return ResponseResult.okResult(signList);
+            pageVo<List<signVo>> pageList = new pageVo<>();
+            pageList.setData(signList.getRecords());
+            pageList.setTotal((int) signList.getTotal());
+            return ResponseResult.okResult(pageList);
 
         }catch (SystemException e){
 

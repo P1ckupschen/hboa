@@ -12,9 +12,7 @@ import com.gdproj.result.ResponseResult;
 import com.gdproj.service.NotifyService;
 import com.gdproj.service.notifyCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.categoryVo;
-import com.gdproj.vo.notifyVo;
-import com.gdproj.vo.overtimeVo;
+import com.gdproj.vo.*;
 import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -50,7 +48,11 @@ public class notifyController {
         try {
 
             notifyList =  notifyService.getNotifyList(pageDto);
-            return ResponseResult.okResult(notifyList);
+
+            pageVo<List<notifyVo>> pageList = new pageVo<>();
+            pageList.setData(notifyList.getRecords());
+            pageList.setTotal((int) notifyList.getTotal());
+            return ResponseResult.okResult(pageList);
         }catch (Exception e){
 
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
@@ -186,7 +188,11 @@ public class notifyController {
                 return ResponseResult.okResult(list);
             }else{
                 categoryList = categoryService.getNotifyCategoryList(pagedto);
-                return ResponseResult.okResult(categoryList);
+
+                pageVo<List<notifyCategory>> pageList = new pageVo<>();
+                pageList.setData(categoryList.getRecords());
+                pageList.setTotal((int) categoryList.getTotal());
+                return ResponseResult.okResult(pageList);
             }
 
         }catch (Exception e){
