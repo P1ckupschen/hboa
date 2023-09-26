@@ -9,6 +9,8 @@ import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Leave;
 import com.gdproj.entity.Overtime;
 import com.gdproj.entity.Report;
+import com.gdproj.enums.AppHttpCodeEnum;
+import com.gdproj.exception.SystemException;
 import com.gdproj.service.DepartmentService;
 import com.gdproj.service.DeployeeService;
 import com.gdproj.service.OvertimeService;
@@ -20,6 +22,7 @@ import com.gdproj.vo.overtimeVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -93,37 +96,42 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
 
         Page<overtimeVo> resultPage = new Page<>();
         //结果里的部门 和用户都返回成string；
-        List<overtimeVo> resultList = overtimePage.getRecords().stream().map((item) -> {
-            overtimeVo overtimevo = BeanCopyUtils.copyBean(item, overtimeVo.class);
+        List<overtimeVo> resultList =  new ArrayList<>();
+        try {
+            resultList = overtimePage.getRecords().stream().map((item) -> {
+                overtimeVo overtimevo = BeanCopyUtils.copyBean(item, overtimeVo.class);
 
-            //人员
-            overtimevo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
+                //人员
+                overtimevo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
 
-            //加班类型
-            overtimevo.setCategory(overtimecategoryService.getById(item.getCategoryId()).getCategoryName());
+                //加班类型
+                overtimevo.setCategory(overtimecategoryService.getById(item.getCategoryId()).getCategoryName());
 
-            //部门
+                //部门
 //            overtimevo.setDepartment(departmentService.getDepartmentNameByDepartmentId(item.getDepartmentId()));
 
-            overtimevo.setDepartment(deployeeService.getDepartmentNameByUserId(item.getUserId()));
+                overtimevo.setDepartment(deployeeService.getDepartmentNameByUserId(item.getUserId()));
 
-            overtimevo.setDepartmentId(deployeeService.getDepartmentIdByUserId(item.getUserId()));
+                overtimevo.setDepartmentId(deployeeService.getDepartmentIdByUserId(item.getUserId()));
 
-            long btime = 0;
-            double v = 0;
-            //加班总时长
-            if(ObjectUtil.isEmpty(item.getStartTime()) || ObjectUtil.isEmpty(item.getEndTime())){
-                btime = 0;
-            }else{
-                btime = item.getEndTime().getTime() - item.getStartTime().getTime();
-                v = btime / 1000 / 60 / 60 ;
-            }
+                long btime = 0;
+                double v = 0;
+                //加班总时长
+                if(ObjectUtil.isEmpty(item.getStartTime()) || ObjectUtil.isEmpty(item.getEndTime())){
+                    btime = 0;
+                }else{
+                    btime = item.getEndTime().getTime() - item.getStartTime().getTime();
+                    v = btime / 1000 / 60 / 60 ;
+                }
 
-            int round = (int) Math.round(v);
-            overtimevo.setOvertimeDays(round);
-            return overtimevo;
+                int round = (int) Math.round(v);
+                overtimevo.setOvertimeDays(round);
+                return overtimevo;
 
-        }).collect(Collectors.toList());
+            }).collect(Collectors.toList());
+        }catch (Exception e){
+            throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
+        }
 
         resultPage.setRecords(resultList);
 

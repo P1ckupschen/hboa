@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="generator.mapper.StockMapper">
+
+    <resultMap id="BaseResultMap" type="generator.entity.Stock">
+            <id property="materialId" column="material_id" jdbcType="INTEGER"/>
+            <result property="count" column="count" jdbcType="INTEGER"/>
+            <result property="recordIn" column="record_in" jdbcType="VARCHAR"/>
+            <result property="recordOut" column="record_out" jdbcType="VARCHAR"/>
+            <result property="materialDescription" column="material_description" jdbcType="VARCHAR"/>
+            <result property="materialPic" column="material_pic" jdbcType="VARCHAR"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+            <result property="productId" column="product_id" jdbcType="INTEGER"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        material_id,count,record_in,
+        record_out,material_description,material_pic,
+        is_deleted,product_id,update_time
+    </sql>
+</mapper>

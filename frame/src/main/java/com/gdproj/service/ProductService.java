@@ -1,6 +1,8 @@
 package com.gdproj.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Product;
 import com.gdproj.vo.productVo;
 
@@ -14,4 +16,10 @@ import java.util.List;
 public interface ProductService extends IService<Product> {
 
     List<productVo> getProductForSelect();
+
+    IPage<productVo> getProductList(pageDto pageDto);
+
+    List<Integer> getIdsByCategoryId(Integer type);
+
+    String getCategoryNameById(Integer productId);
 }

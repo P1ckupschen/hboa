@@ -41,9 +41,9 @@ public class productVo {
 
     private Integer productTotal;
 
-    private String recordIn;
+    private List<String> recordIn;
 
-    private String recordOut;
+    private List<String> recordOut;
 
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")

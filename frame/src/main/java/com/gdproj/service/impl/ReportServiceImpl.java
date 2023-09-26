@@ -9,6 +9,8 @@ import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Leave;
 import com.gdproj.entity.Notify;
 import com.gdproj.entity.Report;
+import com.gdproj.enums.AppHttpCodeEnum;
+import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.ReportMapper;
 import com.gdproj.service.DeployeeService;
 import com.gdproj.service.ReportService;
@@ -19,6 +21,7 @@ import com.gdproj.vo.reportVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -92,24 +95,28 @@ public class ReportServiceImpl extends ServiceImpl<ReportMapper, Report>
         IPage<Report> reportPage = reportMapper.selectPage(page, queryWrapper);
 
         Page<reportVo> resultPage = new Page<>();
+
+        List<reportVo> resultList = new ArrayList<>();
         //结果里的部门 和用户都返回成string；
-        List<reportVo> resultList = reportPage.getRecords().stream().map((item) -> {
-            reportVo reportvo = BeanCopyUtils.copyBean(item, reportVo.class);
+        try {
+            resultList = reportPage.getRecords().stream().map((item) -> {
+                reportVo reportvo = BeanCopyUtils.copyBean(item, reportVo.class);
 
-            //人员
-            reportvo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
+                //人员
+                reportvo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
 
-            //类型
-            reportvo.setCategory(categoryService.getById(item.getCategoryId()).getCategoryName());
+                //类型
+                reportvo.setCategory(categoryService.getById(item.getCategoryId()).getCategoryName());
 
-            //部门
-            reportvo.setDepartment(deployeeService.getDepartmentNameByUserId(item.getUserId()));
+                //部门
+                reportvo.setDepartment(deployeeService.getDepartmentNameByUserId(item.getUserId()));
 
-            return reportvo;
+                return reportvo;
 
-        }).collect(Collectors.toList());
-
-        resultPage.setRecords(resultList);
+            }).collect(Collectors.toList());
+        }catch (Exception e){
+            throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
+        }
 
         resultPage.setTotal(reportPage.getTotal());
 

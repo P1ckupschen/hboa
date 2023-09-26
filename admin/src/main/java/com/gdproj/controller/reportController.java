@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.*;
 import com.gdproj.enums.AppHttpCodeEnum;
+import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.ReportService;
 import com.gdproj.service.reportCategoryService;
@@ -48,7 +49,9 @@ public class reportController {
             pageList.setData(reportList.getRecords());
             pageList.setTotal((int) reportList.getTotal());
             return ResponseResult.okResult(pageList);
-        }catch (Exception e){
+        }catch (SystemException e){
+            return ResponseResult.errorResult(e.getCode(),e.getMsg());
+        } catch (Exception e){
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
         }
 
@@ -70,7 +73,7 @@ public class reportController {
 
             b = reportService.updateById(updateReport);
 
-            if(b == true){
+            if(b){
                 return ResponseResult.okResult(b);
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.UPDATE_ERROR);
@@ -96,7 +99,7 @@ public class reportController {
 
             b = reportService.save(updateReport);
 
-            if(b == true){
+            if(b){
                 return ResponseResult.okResult(b);
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.INSERT_ERROR);
@@ -121,7 +124,7 @@ public class reportController {
 
             b = reportService.removeById(reportId);
 
-            if(b == true){
+            if(b){
                 return ResponseResult.okResult(b);
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.DELETE_ERROR);
@@ -147,7 +150,7 @@ public class reportController {
 
             b = categoryService.removeById(categoryId);
 
-            if(b == true ){
+            if(b){
                 return ResponseResult.okResult(b);
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.DELETE_ERROR);
@@ -209,7 +212,7 @@ public class reportController {
 
             b = categoryService.updateById(reportcategory);
 
-            if(b == true){
+            if(b){
                 return ResponseResult.okResult(b);
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.UPDATE_ERROR);
@@ -235,7 +238,7 @@ public class reportController {
 
             b = categoryService.save(reportcategory);
 
-            if(b == true){
+            if(b){
                 return ResponseResult.okResult(b);
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.INSERT_ERROR);
@@ -263,7 +266,7 @@ public class reportController {
 
             b = categoryService.removeById(categoryId);
 
-            if(b == true){
+            if(b){
                 return ResponseResult.okResult(b);
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.DELETE_ERROR);

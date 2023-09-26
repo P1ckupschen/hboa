@@ -4,7 +4,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Record;
+import com.gdproj.vo.productVo;
 import com.gdproj.vo.recordVo;
+
+import java.util.List;
 
 /**
 * @author Administrator
@@ -14,4 +17,11 @@ import com.gdproj.vo.recordVo;
 public interface RecordService extends IService<Record> {
 
     IPage<recordVo> getRecordList(pageDto pageDto);
+
+    Integer getCountByProductId(Integer productId);
+
+    List<String> getRecordInListByProductId(Integer productId);
+
+    List<String> getRecordOutListByProductId(Integer productId);
+    IPage<productVo> getStockList(pageDto pageDto);
 }

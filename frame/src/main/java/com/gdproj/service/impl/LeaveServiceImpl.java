@@ -9,6 +9,8 @@ import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Leave;
 import com.gdproj.entity.Notify;
 import com.gdproj.entity.Sign;
+import com.gdproj.enums.AppHttpCodeEnum;
+import com.gdproj.exception.SystemException;
 import com.gdproj.service.DepartmentService;
 import com.gdproj.service.DeployeeService;
 import com.gdproj.service.leaveCategoryService;
@@ -20,6 +22,7 @@ import com.gdproj.vo.signVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -91,39 +94,46 @@ public class LeaveServiceImpl extends ServiceImpl<LeaveMapper, Leave>
         IPage<Leave> leavePage = leaveMapper.selectPage(page, queryWrapper);
 
         Page<leaveVo> resultPage = new Page<>();
+
+        List<leaveVo> resultList = new ArrayList<>();
+
         //结果里的部门 和用户都返回成string；
-        List<leaveVo> resultList = leavePage.getRecords().stream().map((item) -> {
-            leaveVo leavevo = BeanCopyUtils.copyBean(item, leaveVo.class);
+        try {
+            resultList = leavePage.getRecords().stream().map((item) -> {
+                leaveVo leavevo = BeanCopyUtils.copyBean(item, leaveVo.class);
 
-            //人员
-            leavevo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
+                //人员
+                leavevo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
 
-            //请假类型
-            leavevo.setCategory(leaveCategoryService.getById(item.getCategoryId()).getCategoryName());
+                //请假类型
+                leavevo.setCategory(leaveCategoryService.getById(item.getCategoryId()).getCategoryName());
 
-            //部门
+                //部门
 //            leavevo.setDepartment(departmentService.getDepartmentNameByDepartmentId(item.getDepartmentId()));
 
-            leavevo.setDepartment(deployeeService.getDepartmentNameByUserId(item.getUserId()));
+                leavevo.setDepartment(deployeeService.getDepartmentNameByUserId(item.getUserId()));
 
-            leavevo.setDepartmentId(deployeeService.getDepartmentIdByUserId(item.getUserId()));
+                leavevo.setDepartmentId(deployeeService.getDepartmentIdByUserId(item.getUserId()));
 
-            long btime = 0;
-            double v = 0;
-            //请假总时长
-            if(ObjectUtil.isEmpty(item.getStartTime()) || ObjectUtil.isEmpty(item.getEndTime())){
-                btime = 0;
-            }else{
-                btime = item.getEndTime().getTime() - item.getStartTime().getTime();
-                v = btime / 1000 / 60 / 60 /24.0;
-            }
+                long btime = 0;
+                double v = 0;
+                //请假总时长
+                if(ObjectUtil.isEmpty(item.getStartTime()) || ObjectUtil.isEmpty(item.getEndTime())){
+                    btime = 0;
+                }else{
+                    btime = item.getEndTime().getTime() - item.getStartTime().getTime();
+                    v = btime / 1000 / 60 / 60 /24.0;
+                }
 
-            int round = (int) Math.round(v);
-            leavevo.setLeaveDays(String.valueOf(round));
+                int round = (int) Math.round(v);
+                leavevo.setLeaveDays(String.valueOf(round));
 
-            return leavevo;
+                return leavevo;
 
-        }).collect(Collectors.toList());
+            }).collect(Collectors.toList());
+        }catch (Exception e){
+            throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
+        }
 
         resultPage.setRecords(resultList);
 

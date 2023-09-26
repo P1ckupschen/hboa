@@ -10,6 +10,8 @@ import com.gdproj.entity.Department;
 import com.gdproj.entity.Leave;
 import com.gdproj.entity.Notify;
 import com.gdproj.entity.Overtime;
+import com.gdproj.enums.AppHttpCodeEnum;
+import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.NotifyMapper;
 import com.gdproj.service.DepartmentService;
 import com.gdproj.service.DeployeeService;
@@ -20,6 +22,7 @@ import com.gdproj.vo.notifyVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -96,26 +99,31 @@ public class NotifyServiceImpl extends ServiceImpl<NotifyMapper, Notify>
 
         Page<notifyVo> resultPage = new Page<>();
         //结果里的部门 和用户都返回成string；
-        List<notifyVo> resultList = notifyPage.getRecords().stream().map((item) -> {
+        List<notifyVo> resultList = new ArrayList<>();
+        try {
+            resultList = notifyPage.getRecords().stream().map((item) -> {
 
-            notifyVo notifyVo = BeanCopyUtils.copyBean(item, notifyVo.class);
-            //人员
-            notifyVo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
+                notifyVo notifyVo = BeanCopyUtils.copyBean(item, notifyVo.class);
+                //人员
+                notifyVo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
 
-            //公告类型
-            notifyVo.setCategory(notifyCategoryService.getById(item.getCategoryId()).getCategoryName());
+                //公告类型
+                notifyVo.setCategory(notifyCategoryService.getById(item.getCategoryId()).getCategoryName());
 
-            //如果没有对象没有部门id属性就找到对应id的部门所以的员工的userid
-            notifyVo.setDepartment(deployeeService.getDepartmentNameByUserId(item.getUserId()));
+                //如果没有对象没有部门id属性就找到对应id的部门所以的员工的userid
+                notifyVo.setDepartment(deployeeService.getDepartmentNameByUserId(item.getUserId()));
 
-            notifyVo.setDepartmentId(deployeeService.getDepartmentIdByUserId(item.getUserId()));
+                notifyVo.setDepartmentId(deployeeService.getDepartmentIdByUserId(item.getUserId()));
 
-            //公告审核人
-            notifyVo.setExaminerName(deployeeService.getNameByUserId(item.getExaminerId()));
+                //公告审核人
+                notifyVo.setExaminerName(deployeeService.getNameByUserId(item.getExaminerId()));
 
-            return notifyVo;
+                return notifyVo;
 
-        }).collect(Collectors.toList());
+            }).collect(Collectors.toList());
+        }catch (Exception e){
+            throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
+        }
 
         resultPage.setRecords(resultList);
 

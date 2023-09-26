@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Notify;
 import com.gdproj.entity.Task;
+import com.gdproj.enums.AppHttpCodeEnum;
+import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.TaskMapper;
 import com.gdproj.service.DeployeeService;
 import com.gdproj.service.TaskService;
@@ -17,6 +19,7 @@ import com.gdproj.vo.taskVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -87,22 +90,28 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
         IPage<Task> taskPage = taskMapper.selectPage(page, queryWrapper);
 
         Page<taskVo> resultPage = new Page<>();
+
+        List<taskVo> resultList = new ArrayList<>();
         //结果里的部门 和用户都返回成string；
-        List<taskVo> resultList = taskPage.getRecords().stream().map((item) -> {
+        try {
+            resultList = taskPage.getRecords().stream().map((item) -> {
 
-            taskVo taskVo = BeanCopyUtils.copyBean(item, taskVo.class);
-            //创建人
-            taskVo.setUsername(deployeeService.getNameByUserId(item.getCreatedUser()));
+                taskVo taskVo = BeanCopyUtils.copyBean(item, taskVo.class);
+                //创建人
+                taskVo.setUsername(deployeeService.getNameByUserId(item.getCreatedUser()));
 
-            //执行人
-            taskVo.setExecutorUsername(deployeeService.getNameByUserId(item.getExecutorId()));
+                //执行人
+                taskVo.setExecutorUsername(deployeeService.getNameByUserId(item.getExecutorId()));
 
-            //指派人
-            taskVo.setAssignedUsername(deployeeService.getNameByUserId(item.getAssignedId()));
+                //指派人
+                taskVo.setAssignedUsername(deployeeService.getNameByUserId(item.getAssignedId()));
 
-            return taskVo;
+                return taskVo;
 
-        }).collect(Collectors.toList());
+            }).collect(Collectors.toList());
+        }catch (Exception e){
+            throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
+        }
 
         resultPage.setRecords(resultList);
 

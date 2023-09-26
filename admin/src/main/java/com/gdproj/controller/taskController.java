@@ -10,6 +10,7 @@ import com.gdproj.entity.Notify;
 import com.gdproj.entity.Task;
 import com.gdproj.entity.notifyCategory;
 import com.gdproj.enums.AppHttpCodeEnum;
+import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.TaskService;
 import com.gdproj.utils.BeanCopyUtils;
@@ -57,7 +58,10 @@ public class taskController {
 
             return ResponseResult.okResult(pageList);
 
-        }catch (Exception e){
+        }catch (SystemException e){
+            return ResponseResult.errorResult(e.getCode(),e.getMsg());
+        }
+        catch (Exception e){
 
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
 

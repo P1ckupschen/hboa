@@ -51,7 +51,6 @@ public class leaveController {
             pageList.setData(leaveList.getRecords());
             pageList.setTotal((int) leaveList.getTotal());
             return ResponseResult.okResult(pageList);
-
         }catch (SystemException e){
             return ResponseResult.okResult(e.getCode(),e.getMsg());
         }catch (Exception e){
@@ -75,7 +74,7 @@ public class leaveController {
 
             b = leaveService.updateById(updateLeave);
 
-            if(b == true){
+            if(b){
                 return ResponseResult.okResult(b);
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.UPDATE_ERROR);
@@ -101,7 +100,7 @@ public class leaveController {
 
             b = leaveService.save(insertLeave);
 
-            if(b == true){
+            if(b){
                 return ResponseResult.okResult(b);
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.INSERT_ERROR);
@@ -126,7 +125,7 @@ public class leaveController {
 
             b = leaveService.removeById(leaveId);
 
-            if(b == true){
+            if(b){
                 return ResponseResult.okResult(b);
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.DELETE_ERROR);
@@ -152,7 +151,7 @@ public class leaveController {
 
             b = categoryService.removeById(categoryId);
 
-            if(b == true ){
+            if(b){
                 return ResponseResult.okResult(b);
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.DELETE_ERROR);
@@ -214,7 +213,7 @@ public class leaveController {
 
             b = categoryService.updateById(leavecategory);
 
-            if(b == true){
+            if(b){
                 return ResponseResult.okResult(b);
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.UPDATE_ERROR);
@@ -238,7 +237,7 @@ public class leaveController {
             leavecategory = BeanCopyUtils.copyBean(category, leaveCategory.class);
 
             b = categoryService.save(leavecategory);
-            if(b == true){
+            if(b){
                 return ResponseResult.okResult(b);
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.INSERT_ERROR);
@@ -263,7 +262,7 @@ public class leaveController {
 
             b = categoryService.removeById(categoryId);
 
-            if(b == true){
+            if(b){
                 return ResponseResult.okResult(b);
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.DELETE_ERROR);

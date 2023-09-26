@@ -99,7 +99,6 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
             //设置是否完成考勤 判断时长 判断是否迟到 是否早退
             DateFormat timeInstance = DateFormat.getTimeInstance();
 
-            System.out.println(timeInstance.format(item.getEndTime()));
             if( workTime >= signvo.getWorkTime() && signvo.getSignAddr() == "XXXX附近"  ){
                 signvo.setSignStatus(1);
             }else{

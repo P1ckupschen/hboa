@@ -84,14 +84,14 @@ public class Product implements Serializable {
     /**
      * 
      */
-    @TableField(value = "record_in")
-    private String recordIn;
+    @TableField(value = "record_in",typeHandler = jsonAndListTypeHandler.class)
+    private List<String> recordIn;
 
     /**
      * 
      */
-    @TableField(value = "record_out")
-    private String recordOut;
+    @TableField(value = "record_out",typeHandler = jsonAndListTypeHandler.class)
+    private List<String> recordOut;
 
     /**
      * 
@@ -105,6 +105,14 @@ public class Product implements Serializable {
     @TableField(value = "is_deleted")
     @TableLogic
     private Integer isDeleted;
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
 
     @TableField(value = "update_time",fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
@@ -275,28 +283,28 @@ public class Product implements Serializable {
     /**
      * 
      */
-    public String getRecordIn() {
+    public List<String> getRecordIn() {
         return recordIn;
     }
 
     /**
      * 
      */
-    public void setRecordIn(String recordIn) {
+    public void setRecordIn(List<String> recordIn) {
         this.recordIn = recordIn;
     }
 
     /**
      * 
      */
-    public String getRecordOut() {
+    public List<String> getRecordOut() {
         return recordOut;
     }
 
     /**
      * 
      */
-    public void setRecordOut(String recordOut) {
+    public void setRecordOut(List<String> recordOut) {
         this.recordOut = recordOut;
     }
 

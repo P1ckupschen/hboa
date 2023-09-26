@@ -8,6 +8,7 @@ import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Notify;
 import com.gdproj.entity.notifyCategory;
 import com.gdproj.enums.AppHttpCodeEnum;
+import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.NotifyService;
 import com.gdproj.service.notifyCategoryService;
@@ -53,10 +54,10 @@ public class notifyController {
             pageList.setData(notifyList.getRecords());
             pageList.setTotal((int) notifyList.getTotal());
             return ResponseResult.okResult(pageList);
+        }catch (SystemException e) {
+            return ResponseResult.okResult(e.getCode(), e.getMsg());
         }catch (Exception e){
-
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
-
         }
 
     }
@@ -75,7 +76,7 @@ public class notifyController {
 
             b = notifyService.updateById(updateNotify);
 
-            if(b == true){
+            if(b){
                 return ResponseResult.okResult(b);
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.UPDATE_ERROR);
@@ -101,7 +102,7 @@ public class notifyController {
 
             b = notifyService.save(updateNotify);
 
-            if(b == true){
+            if(b){
                 return ResponseResult.okResult(b);
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.INSERT_ERROR);
@@ -126,7 +127,7 @@ public class notifyController {
 
             b = notifyService.removeById(notifyId);
 
-            if(b == true){
+            if(b){
                 return ResponseResult.okResult(b);
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.DELETE_ERROR);
@@ -152,7 +153,7 @@ public class notifyController {
 
             b = categoryService.removeById(categoryId);
 
-            if(b == true ){
+            if(b){
                 return ResponseResult.okResult(b);
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.DELETE_ERROR);
@@ -195,8 +196,10 @@ public class notifyController {
                 return ResponseResult.okResult(pageList);
             }
 
+        }catch (SystemException e) {
+            return ResponseResult.okResult(e.getCode(), e.getMsg());
         }catch (Exception e){
-            return  ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
         }
 
     }
@@ -213,7 +216,7 @@ public class notifyController {
 
             b = categoryService.updateById(notifycategory);
 
-            if(b == true){
+            if(b){
                 return ResponseResult.okResult(b);
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.UPDATE_ERROR);
@@ -239,7 +242,7 @@ public class notifyController {
 
             b = categoryService.save(notifycategory);
 
-            if(b == true){
+            if(b){
                 return ResponseResult.okResult(b);
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.INSERT_ERROR);
@@ -267,7 +270,7 @@ public class notifyController {
 
             b = categoryService.removeById(categoryId);
 
-            if(b == true){
+            if(b){
                 return ResponseResult.okResult(b);
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.DELETE_ERROR);

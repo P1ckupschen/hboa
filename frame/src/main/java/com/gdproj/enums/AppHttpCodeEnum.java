@@ -22,6 +22,8 @@ public enum AppHttpCodeEnum {
     INSERT_ERROR(10002,"数据新增失败" ),
 
     DELETE_ERROR(10003,"数据删除失败"),
+
+    MYSQL_FIELD_ERROR(10004,"数据字段为空或错误"),
     FILE_STREAM_NULL(101,"文件流为空"),
     NO_OPERATOR_AUTH(403,"无权限操作"),
     SYSTEM_ERROR(500,"出现错误"),

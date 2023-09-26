@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.*;
 import com.gdproj.enums.AppHttpCodeEnum;
+import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.OvertimeService;
 import com.gdproj.service.overtimeCategoryService;
@@ -46,6 +47,9 @@ public class overtimeController {
             pageList.setData(overtimeList.getRecords());
             pageList.setTotal((int) overtimeList.getTotal());
             return ResponseResult.okResult(pageList);
+
+        }catch (SystemException e) {
+            return ResponseResult.okResult(e.getCode(), e.getMsg());
         }catch (Exception e){
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
         }
@@ -68,7 +72,7 @@ public class overtimeController {
 
             b = overtimeService.updateById(updateOvertime);
 
-            if(b == true){
+            if(b){
                 return ResponseResult.okResult(b);
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.UPDATE_ERROR);
@@ -96,7 +100,7 @@ public class overtimeController {
 
             b = overtimeService.save(insertOvertime);
 
-            if(b == true){
+            if(b){
                 return ResponseResult.okResult(b);
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.INSERT_ERROR);
@@ -121,7 +125,7 @@ public class overtimeController {
 
             b = overtimeService.removeById(overtimeId);
 
-            if(b == true){
+            if(b){
                 return ResponseResult.okResult(b);
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.DELETE_ERROR);
@@ -147,7 +151,7 @@ public class overtimeController {
 
             b = categoryService.removeById(categoryId);
 
-            if(b == true ){
+            if(b){
                 return ResponseResult.okResult(b);
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.DELETE_ERROR);
@@ -205,7 +209,7 @@ public class overtimeController {
 
             b = categoryService.updateById(overcategory);
 
-            if(b == true){
+            if(b){
                 return ResponseResult.okResult(b);
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.UPDATE_ERROR);
@@ -232,7 +236,7 @@ public class overtimeController {
 
             b = categoryService.save(overcategory);
 
-            if(b == true){
+            if(b){
                 return ResponseResult.okResult(b);
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.INSERT_ERROR);
@@ -258,7 +262,7 @@ public class overtimeController {
 
             b = categoryService.removeById(categoryId);
 
-            if(b == true){
+            if(b){
                 return ResponseResult.okResult(b);
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.DELETE_ERROR);
