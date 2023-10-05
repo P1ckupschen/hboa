@@ -20,7 +20,7 @@ public class webConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")  //设置所有的请求可以进行跨域
-                .allowedOrigins("http://localhost:7777","http://localhost:9528")  //允许跨域的ip
+                .allowedOrigins("http://localhost:9529","http://localhost:9528")  //允许跨域的ip
                 .allowedMethods("*")  //请求的方法 可以不设置 有默认的
                 .allowedHeaders("*"); //请求头 可以不设置 有默认的
     }

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="generator.mapper.ProjectMapper">
+
+    <resultMap id="BaseResultMap" type="generator.entity.Project">
+            <id property="projectId" column="project_id" jdbcType="INTEGER"/>
+            <result property="projectOrderId" column="project_order_id" jdbcType="INTEGER"/>
+            <result property="projectName" column="project_name" jdbcType="VARCHAR"/>
+            <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
+            <result property="supervisorId" column="supervisor_id" jdbcType="INTEGER"/>
+            <result property="projectUrgency" column="project_urgency" jdbcType="VARCHAR"/>
+            <result property="monitorId" column="monitor_id" jdbcType="INTEGER"/>
+            <result property="examinerId" column="examiner_id" jdbcType="INTEGER"/>
+            <result property="projectTeam" column="project_team" jdbcType="VARCHAR"/>
+            <result property="projectDescription" column="project_description" jdbcType="VARCHAR"/>
+            <result property="projectAttachments" column="project_attachments" jdbcType="VARCHAR"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="createdUser" column="created_user" jdbcType="INTEGER"/>
+            <result property="projectStatus" column="project_status" jdbcType="INTEGER"/>
+            <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
+            <result property="projectProcess" column="project_process" jdbcType="INTEGER"/>
+            <result property="contractIds" column="contract_ids" jdbcType="VARCHAR"/>
+            <result property="projectClient" column="project_client" jdbcType="INTEGER"/>
+            <result property="projectAmount" column="project_amount" jdbcType="DECIMAL"/>
+            <result property="isCompleted" column="is_completed" jdbcType="INTEGER"/>
+            <result property="warrantyYear" column="warranty_year" jdbcType="VARCHAR"/>
+            <result property="warrantyAmount" column="warranty_amount" jdbcType="DECIMAL"/>
+            <result property="projectPic" column="project_pic" jdbcType="VARCHAR"/>
+            <result property="completedTime" column="completed_time" jdbcType="TIMESTAMP"/>
+            <result property="completedVoucher" column="completed_voucher" jdbcType="VARCHAR"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+            <result property="projectArrangement" column="project_arrangement" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        project_id,project_order_id,project_name,
+        start_time,supervisor_id,project_urgency,
+        monitor_id,examiner_id,project_team,
+        project_description,project_attachments,created_time,
+        created_user,project_status,end_time,
+        project_process,contract_ids,project_client,
+        project_amount,is_completed,warranty_year,
+        warranty_amount,project_pic,completed_time,
+        completed_voucher,is_deleted,project_arrangement
+    </sql>
+</mapper>
