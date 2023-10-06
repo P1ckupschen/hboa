@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Client;
 import com.gdproj.vo.clientVo;
-import com.gdproj.vo.leaveVo;
+import com.gdproj.vo.selectVo;
+
+import java.util.List;
 
 /**
 * @author Administrator
@@ -15,4 +17,6 @@ import com.gdproj.vo.leaveVo;
 public interface ClientService extends IService<Client> {
 
     IPage<clientVo> getClientList(pageDto pageDto);
+
+    List<selectVo> getListForSelect();
 }

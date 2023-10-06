@@ -13,6 +13,7 @@ import com.gdproj.service.ClientService;
 import com.gdproj.service.DeployeeService;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.clientVo;
+import com.gdproj.vo.selectVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -102,6 +103,21 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client>
         resultPage.setTotal(recordPage.getTotal());
 
         return resultPage;
+
+    }
+
+    @Override
+    public List<selectVo> getListForSelect() {
+
+        List<Client> list = list();
+
+        List<selectVo> collect = list.stream().map((item) -> {
+            selectVo vo = new selectVo();
+            vo.setId(item.getClientId());
+            vo.setName(item.getClientName());
+            return vo;
+        }).collect(Collectors.toList());
+        return collect;
 
     }
 }

@@ -11,10 +11,12 @@ import com.gdproj.service.ClientService;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.clientVo;
 import com.gdproj.vo.pageVo;
+import com.gdproj.vo.selectVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -25,6 +27,22 @@ public class clientController {
     ClientService clientService;
 
 
+    @GetMapping("/getListForSelect")
+    public ResponseResult getListForSelect(){
+
+        List<selectVo> selectList = new ArrayList<>();
+
+        try {
+
+            selectList =clientService.getListForSelect();
+
+            return ResponseResult.okResult(selectList) ;
+
+        }catch (Exception e){
+            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+        }
+
+    }
 
     @GetMapping("/getClientList")
     public ResponseResult getClientList(@RequestParam Integer pageNum,

@@ -15,6 +15,7 @@ import com.gdproj.service.DeployeeService;
 import com.gdproj.service.contractCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.contractVo;
+import com.gdproj.vo.selectVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -108,6 +109,20 @@ public class ContractServiceImpl extends ServiceImpl<ContractMapper, Contract>
 
         return resultPage;
 
+    }
+
+    @Override
+    public List<selectVo> getListForSelect() {
+
+        List<Contract> list = list();
+
+        List<selectVo> collect = list.stream().map((item) -> {
+            selectVo vo = new selectVo();
+            vo.setId(item.getContractId());
+            vo.setName(item.getContractTitle());
+            return vo;
+        }).collect(Collectors.toList());
+        return collect;
     }
 }
 
