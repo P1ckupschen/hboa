@@ -14,11 +14,12 @@ import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.pageVo;
 import com.gdproj.vo.productVo;
 import com.gdproj.vo.recordVo;
-import com.gdproj.vo.stockVo;
+import com.gdproj.vo.stockSelectVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -164,16 +165,6 @@ public class recordController {
 
         try {
 
-//            stockList =  stockService.getStockList(pageDto);
-//
-//            pageVo<List<stockVo>> pageList = new pageVo<>();
-//
-//            pageList.setData(stockList.getRecords());
-//
-//            pageList.setTotal((int) stockList.getTotal());
-//
-//            return ResponseResult.okResult(pageList);
-
             stockList =  recordService.getStockList(pageDto);
 
             pageVo<List<productVo>> pageList = new pageVo<>();
@@ -197,81 +188,25 @@ public class recordController {
 
     }
 
-//    @PutMapping("updateStock")
-//    public ResponseResult updateStock(@RequestBody stockVo vo){
-//
-//        Stock updateStock = BeanCopyUtils.copyBean(vo, Stock.class);
-//
-//        boolean b = false;
-//
-//        try {
-//
-//            b = stockService.updateById(updateStock);
-//
-//            if(b){
-//
-//                return ResponseResult.okResult(b);
-//
-//            }else{
-//                return ResponseResult.errorResult(AppHttpCodeEnum.UPDATE_ERROR);
-//            }
-//
-//        }catch (Exception e){
-//
-//            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
-//
-//        }
-//
-//
-//    }
-//
-//    @PostMapping("insertStock")
-//    public ResponseResult insertStock(@RequestBody stockVo vo){
-//
-//        Stock updateStock = BeanCopyUtils.copyBean(vo, Stock.class);
-//
-//        boolean b = false;
-//
-//        try {
-//
-//            b = stockService.save(updateStock);
-//
-//
-//            if(b){
-//                return ResponseResult.okResult(b);
-//            }else{
-//                return ResponseResult.errorResult(AppHttpCodeEnum.INSERT_ERROR);
-//            }
-//
-//        }catch (Exception e){
-//
-//            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
-//
-//        }
-//
-//    }
-//
-//    @DeleteMapping("deleteStock")
-//    public ResponseResult deleteStock(@PathParam("stockId") Integer stockId){
-//
-//        boolean b = false;
-//
-//        try {
-//
-//            b = stockService.removeById(stockId);
-//
-//            if(b){
-//                return ResponseResult.okResult(b);
-//            }else{
-//                return ResponseResult.errorResult(AppHttpCodeEnum.DELETE_ERROR);
-//            }
-//
-//        }catch (Exception e){
-//
-//            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
-//
-//        }
-//
-//    }
+    @GetMapping("/getStockListForSelect")
+    public ResponseResult getStockListForSelect(){
+
+        List<Stock> list = new ArrayList<>();
+        try {
+            List<stockSelectVo> resultList = stockService.getStockListForSelect();
+
+            return ResponseResult.okResult(resultList);
+        }catch (SystemException e){
+
+            return ResponseResult.errorResult(e.getCode(),e.getMsg());
+        }
+
+        catch (Exception e){
+
+            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+
+        }
+
+    }
 
 }

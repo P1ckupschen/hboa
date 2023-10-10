@@ -8,7 +8,11 @@ import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.DepartmentMapper;
 import com.gdproj.service.DepartmentService;
+import com.gdproj.vo.selectVo;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
 * @author Administrator
@@ -34,6 +38,19 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
             return one.getDepartmentName();
         }
 
+    }
+
+    @Override
+    public List<selectVo> getListForSelect() {
+        List<Department> list = list();
+
+        List<selectVo> collect = list.stream().map((item) -> {
+            selectVo vo = new selectVo();
+            vo.setId(item.getDepartmentId());
+            vo.setName(item.getDepartmentName());
+            return vo;
+        }).collect(Collectors.toList());
+        return collect;
     }
 }
 

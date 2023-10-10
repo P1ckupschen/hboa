@@ -10,14 +10,13 @@ import com.gdproj.entity.Product;
 import com.gdproj.entity.Stock;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
-import com.gdproj.mapper.ProductMapper;
 import com.gdproj.mapper.StockMapper;
 import com.gdproj.service.ProductService;
 import com.gdproj.service.RecordService;
 import com.gdproj.service.StockService;
 import com.gdproj.service.productCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.productVo;
+import com.gdproj.vo.stockSelectVo;
 import com.gdproj.vo.stockVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -130,6 +129,28 @@ public class StockServiceImpl extends ServiceImpl<StockMapper, Stock>
 
     }
 
+    @Override
+    public List<stockSelectVo> getStockListForSelect() {
+
+        List<Product> list = productService.list();
+
+        List<stockSelectVo> collect = list.stream().map((item) -> {
+            stockSelectVo vo = new stockSelectVo();
+            vo.setStockId(item.getProductId());
+            vo.setStockName(item.getProductName());
+            //单位
+            vo.setUnit(productService.getById(item.getProductId()).getProductUnit());
+            //库存
+            if (recordService.getCountByProductId(item.getProductId()) == null) {
+                vo.setCount(0);
+            } else {
+                vo.setCount(recordService.getCountByProductId(item.getProductId()));
+            }
+            return vo;
+        }).collect(Collectors.toList());
+
+        return collect;
+    }
 
 
 }

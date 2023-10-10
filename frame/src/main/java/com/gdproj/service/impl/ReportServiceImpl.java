@@ -6,8 +6,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdproj.dto.pageDto;
-import com.gdproj.entity.Leave;
-import com.gdproj.entity.Notify;
 import com.gdproj.entity.Report;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
@@ -16,7 +14,6 @@ import com.gdproj.service.DeployeeService;
 import com.gdproj.service.ReportService;
 import com.gdproj.service.reportCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.leaveVo;
 import com.gdproj.vo.reportVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -114,13 +111,15 @@ public class ReportServiceImpl extends ServiceImpl<ReportMapper, Report>
                 return reportvo;
 
             }).collect(Collectors.toList());
+
+            resultPage.setRecords(resultList);
+            resultPage.setTotal(reportPage.getTotal());
+
+            return resultPage;
         }catch (Exception e){
             throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
         }
 
-        resultPage.setTotal(reportPage.getTotal());
-
-        return resultPage;
 
     }
 }

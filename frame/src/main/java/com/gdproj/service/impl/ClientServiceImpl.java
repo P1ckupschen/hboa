@@ -11,6 +11,7 @@ import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.ClientMapper;
 import com.gdproj.service.ClientService;
 import com.gdproj.service.DeployeeService;
+import com.gdproj.service.ProjectService;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.clientVo;
 import com.gdproj.vo.selectVo;
@@ -35,6 +36,9 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client>
 
     @Autowired
     DeployeeService deployeeService;
+
+    @Autowired
+    ProjectService projectService;
 
 
     @Override
@@ -91,6 +95,7 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client>
 
                 clientVo vo = BeanCopyUtils.copyBean(item, clientVo.class);
                 //类型名称?
+                vo.setProjectList(projectService.getProjectListByClientId(item.getClientId()));
 
                 return vo;
             }).collect(Collectors.toList());

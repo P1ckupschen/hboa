@@ -1,17 +1,19 @@
 package com.gdproj.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.gdproj.vo.fileVo;
+
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 
  * @TableName sys_epiboly
  */
-@TableName(value ="sys_epiboly")
+@TableName(value ="sys_epiboly",autoResultMap = true)
 public class Epiboly implements Serializable {
     /**
      * 
@@ -32,16 +34,16 @@ public class Epiboly implements Serializable {
     private String epibolyName;
 
     /**
+     * 
+     */
+    @TableField(value = "start_time")
+    private Date startTime;
+
+    /**
      * 负责人
      */
     @TableField(value = "supervisor_id")
     private Integer supervisorId;
-
-    /**
-     * 
-     */
-    @TableField(value = "epiboly_urgency")
-    private String epibolyUrgency;
 
     /**
      * 监控人
@@ -56,10 +58,10 @@ public class Epiboly implements Serializable {
     private Integer examinerId;
 
     /**
-     * 
+     * json人员
      */
-    @TableField(value = "epiboly_team")
-    private String epibolyTeam;
+    @TableField(value = "epiboly_team",typeHandler = JacksonTypeHandler.class)
+    private List epibolyTeam;
 
     /**
      * 
@@ -70,8 +72,8 @@ public class Epiboly implements Serializable {
     /**
      * 
      */
-    @TableField(value = "epiboly_attachments")
-    private String epibolyAttachments;
+    @TableField(value = "epiboly_attachments",typeHandler = JacksonTypeHandler.class)
+    private List<fileVo> epibolyAttachments;
 
     /**
      * 
@@ -94,20 +96,14 @@ public class Epiboly implements Serializable {
     /**
      * 
      */
-    @TableField(value = "epiboly_process")
-    private Integer epibolyProcess;
-
-    /**
-     * 
-     */
-    @TableField(value = "start_time")
-    private Date startTime;
-
-    /**
-     * 
-     */
     @TableField(value = "end_time")
     private Date endTime;
+
+    /**
+     * 进度
+     */
+    @TableField(value = "epiboly_process")
+    private Integer epibolyProcess;
 
     /**
      * 
@@ -116,7 +112,7 @@ public class Epiboly implements Serializable {
     private String contractIds;
 
     /**
-     * 
+     * json存客户信息
      */
     @TableField(value = "epiboly_client")
     private Integer epibolyClient;
@@ -125,7 +121,7 @@ public class Epiboly implements Serializable {
      * 
      */
     @TableField(value = "epiboly_amount")
-    private Long epibolyAmount;
+    private BigDecimal epibolyAmount;
 
     /**
      * 
@@ -136,8 +132,8 @@ public class Epiboly implements Serializable {
     /**
      * 
      */
-    @TableField(value = "epiboly_pic")
-    private String epibolyPic;
+    @TableField(value = "epiboly_pic",typeHandler = JacksonTypeHandler.class)
+    private List<fileVo> epibolyPic;
 
     /**
      * 
@@ -146,10 +142,35 @@ public class Epiboly implements Serializable {
     private Date completedTime;
 
     /**
-     * 凭证
+     * 完成的凭证
      */
     @TableField(value = "completed_voucher")
     private String completedVoucher;
+
+    /**
+     * 
+     */
+    @TableField(value = "is_deleted")
+    @TableLogic
+    private Integer isDeleted;
+
+    /**
+     * 项目安排
+     */
+    @TableField(value = "epiboly_arrangement",typeHandler = JacksonTypeHandler.class)
+    private List epibolyArrangement;
+
+    /**
+     * 
+     */
+    @TableField(value = "update_time",fill = FieldFill.INSERT_UPDATE)
+    private Date updateTime;
+
+    /**
+     * 材料清单
+     */
+    @TableField(value = "material_bill",typeHandler = JacksonTypeHandler.class)
+    private List materialBill;
 
     /**
      * 
@@ -160,20 +181,14 @@ public class Epiboly implements Serializable {
     /**
      * 
      */
-    @TableField(value = "is_deleted")
-    private Integer isDeleted;
+    @TableField(value = "epiboly_company")
+    private String epibolyCompany;
 
     /**
-     * 
+     * 联系人
      */
-    @TableField(value = "update_time")
-    private Date updateTime;
-
-    /**
-     * 安排
-     */
-    @TableField(value = "epiboly_arrangement")
-    private String epibolyArrangement;
+    @TableField(value = "epibol_contacts")
+    private String epibolContacts;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -221,6 +236,20 @@ public class Epiboly implements Serializable {
     }
 
     /**
+     * 
+     */
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    /**
+     * 
+     */
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    /**
      * 负责人
      */
     public Integer getSupervisorId() {
@@ -232,20 +261,6 @@ public class Epiboly implements Serializable {
      */
     public void setSupervisorId(Integer supervisorId) {
         this.supervisorId = supervisorId;
-    }
-
-    /**
-     * 
-     */
-    public String getEpibolyUrgency() {
-        return epibolyUrgency;
-    }
-
-    /**
-     * 
-     */
-    public void setEpibolyUrgency(String epibolyUrgency) {
-        this.epibolyUrgency = epibolyUrgency;
     }
 
     /**
@@ -277,16 +292,16 @@ public class Epiboly implements Serializable {
     }
 
     /**
-     * 
+     * json人员
      */
-    public String getEpibolyTeam() {
+    public List getEpibolyTeam() {
         return epibolyTeam;
     }
 
     /**
-     * 
+     * json人员
      */
-    public void setEpibolyTeam(String epibolyTeam) {
+    public void setEpibolyTeam(List epibolyTeam) {
         this.epibolyTeam = epibolyTeam;
     }
 
@@ -307,14 +322,14 @@ public class Epiboly implements Serializable {
     /**
      * 
      */
-    public String getEpibolyAttachments() {
+    public List<fileVo> getEpibolyAttachments() {
         return epibolyAttachments;
     }
 
     /**
      * 
      */
-    public void setEpibolyAttachments(String epibolyAttachments) {
+    public void setEpibolyAttachments(List<fileVo> epibolyAttachments) {
         this.epibolyAttachments = epibolyAttachments;
     }
 
@@ -363,34 +378,6 @@ public class Epiboly implements Serializable {
     /**
      * 
      */
-    public Integer getEpibolyProcess() {
-        return epibolyProcess;
-    }
-
-    /**
-     * 
-     */
-    public void setEpibolyProcess(Integer epibolyProcess) {
-        this.epibolyProcess = epibolyProcess;
-    }
-
-    /**
-     * 
-     */
-    public Date getStartTime() {
-        return startTime;
-    }
-
-    /**
-     * 
-     */
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
-    }
-
-    /**
-     * 
-     */
     public Date getEndTime() {
         return endTime;
     }
@@ -400,6 +387,20 @@ public class Epiboly implements Serializable {
      */
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
+    }
+
+    /**
+     * 进度
+     */
+    public Integer getEpibolyProcess() {
+        return epibolyProcess;
+    }
+
+    /**
+     * 进度
+     */
+    public void setEpibolyProcess(Integer epibolyProcess) {
+        this.epibolyProcess = epibolyProcess;
     }
 
     /**
@@ -417,14 +418,14 @@ public class Epiboly implements Serializable {
     }
 
     /**
-     * 
+     * json存客户信息
      */
     public Integer getEpibolyClient() {
         return epibolyClient;
     }
 
     /**
-     * 
+     * json存客户信息
      */
     public void setEpibolyClient(Integer epibolyClient) {
         this.epibolyClient = epibolyClient;
@@ -433,14 +434,14 @@ public class Epiboly implements Serializable {
     /**
      * 
      */
-    public Long getEpibolyAmount() {
+    public BigDecimal getEpibolyAmount() {
         return epibolyAmount;
     }
 
     /**
      * 
      */
-    public void setEpibolyAmount(Long epibolyAmount) {
+    public void setEpibolyAmount(BigDecimal epibolyAmount) {
         this.epibolyAmount = epibolyAmount;
     }
 
@@ -461,14 +462,14 @@ public class Epiboly implements Serializable {
     /**
      * 
      */
-    public String getEpibolyPic() {
+    public List<fileVo> getEpibolyPic() {
         return epibolyPic;
     }
 
     /**
      * 
      */
-    public void setEpibolyPic(String epibolyPic) {
+    public void setEpibolyPic(List<fileVo> epibolyPic) {
         this.epibolyPic = epibolyPic;
     }
 
@@ -487,17 +488,73 @@ public class Epiboly implements Serializable {
     }
 
     /**
-     * 凭证
+     * 完成的凭证
      */
     public String getCompletedVoucher() {
         return completedVoucher;
     }
 
     /**
-     * 凭证
+     * 完成的凭证
      */
     public void setCompletedVoucher(String completedVoucher) {
         this.completedVoucher = completedVoucher;
+    }
+
+    /**
+     * 
+     */
+    public Integer getIsDeleted() {
+        return isDeleted;
+    }
+
+    /**
+     * 
+     */
+    public void setIsDeleted(Integer isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
+    /**
+     * 项目安排
+     */
+    public List getEpibolyArrangement() {
+        return epibolyArrangement;
+    }
+
+    /**
+     * 项目安排
+     */
+    public void setEpibolyArrangement(List epibolyArrangement) {
+        this.epibolyArrangement = epibolyArrangement;
+    }
+
+    /**
+     * 
+     */
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    /**
+     * 
+     */
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    /**
+     * 材料清单
+     */
+    public List getMaterialBill() {
+        return materialBill;
+    }
+
+    /**
+     * 材料清单
+     */
+    public void setMaterialBill(List materialBill) {
+        this.materialBill = materialBill;
     }
 
     /**
@@ -517,43 +574,29 @@ public class Epiboly implements Serializable {
     /**
      * 
      */
-    public Integer getIsDeleted() {
-        return isDeleted;
+    public String getEpibolyCompany() {
+        return epibolyCompany;
     }
 
     /**
      * 
      */
-    public void setIsDeleted(Integer isDeleted) {
-        this.isDeleted = isDeleted;
+    public void setEpibolyCompany(String epibolyCompany) {
+        this.epibolyCompany = epibolyCompany;
     }
 
     /**
-     * 
+     * 联系人
      */
-    public Date getUpdateTime() {
-        return updateTime;
+    public String getEpibolContacts() {
+        return epibolContacts;
     }
 
     /**
-     * 
+     * 联系人
      */
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    /**
-     * 安排
-     */
-    public String getEpibolyArrangement() {
-        return epibolyArrangement;
-    }
-
-    /**
-     * 安排
-     */
-    public void setEpibolyArrangement(String epibolyArrangement) {
-        this.epibolyArrangement = epibolyArrangement;
+    public void setEpibolContacts(String epibolContacts) {
+        this.epibolContacts = epibolContacts;
     }
 
     @Override
@@ -571,8 +614,8 @@ public class Epiboly implements Serializable {
         return (this.getEpibolyId() == null ? other.getEpibolyId() == null : this.getEpibolyId().equals(other.getEpibolyId()))
             && (this.getEpibolyOrderId() == null ? other.getEpibolyOrderId() == null : this.getEpibolyOrderId().equals(other.getEpibolyOrderId()))
             && (this.getEpibolyName() == null ? other.getEpibolyName() == null : this.getEpibolyName().equals(other.getEpibolyName()))
+            && (this.getStartTime() == null ? other.getStartTime() == null : this.getStartTime().equals(other.getStartTime()))
             && (this.getSupervisorId() == null ? other.getSupervisorId() == null : this.getSupervisorId().equals(other.getSupervisorId()))
-            && (this.getEpibolyUrgency() == null ? other.getEpibolyUrgency() == null : this.getEpibolyUrgency().equals(other.getEpibolyUrgency()))
             && (this.getMonitorId() == null ? other.getMonitorId() == null : this.getMonitorId().equals(other.getMonitorId()))
             && (this.getExaminerId() == null ? other.getExaminerId() == null : this.getExaminerId().equals(other.getExaminerId()))
             && (this.getEpibolyTeam() == null ? other.getEpibolyTeam() == null : this.getEpibolyTeam().equals(other.getEpibolyTeam()))
@@ -581,9 +624,8 @@ public class Epiboly implements Serializable {
             && (this.getCreatedTime() == null ? other.getCreatedTime() == null : this.getCreatedTime().equals(other.getCreatedTime()))
             && (this.getCreatedUser() == null ? other.getCreatedUser() == null : this.getCreatedUser().equals(other.getCreatedUser()))
             && (this.getEpibolyStatus() == null ? other.getEpibolyStatus() == null : this.getEpibolyStatus().equals(other.getEpibolyStatus()))
-            && (this.getEpibolyProcess() == null ? other.getEpibolyProcess() == null : this.getEpibolyProcess().equals(other.getEpibolyProcess()))
-            && (this.getStartTime() == null ? other.getStartTime() == null : this.getStartTime().equals(other.getStartTime()))
             && (this.getEndTime() == null ? other.getEndTime() == null : this.getEndTime().equals(other.getEndTime()))
+            && (this.getEpibolyProcess() == null ? other.getEpibolyProcess() == null : this.getEpibolyProcess().equals(other.getEpibolyProcess()))
             && (this.getContractIds() == null ? other.getContractIds() == null : this.getContractIds().equals(other.getContractIds()))
             && (this.getEpibolyClient() == null ? other.getEpibolyClient() == null : this.getEpibolyClient().equals(other.getEpibolyClient()))
             && (this.getEpibolyAmount() == null ? other.getEpibolyAmount() == null : this.getEpibolyAmount().equals(other.getEpibolyAmount()))
@@ -591,10 +633,13 @@ public class Epiboly implements Serializable {
             && (this.getEpibolyPic() == null ? other.getEpibolyPic() == null : this.getEpibolyPic().equals(other.getEpibolyPic()))
             && (this.getCompletedTime() == null ? other.getCompletedTime() == null : this.getCompletedTime().equals(other.getCompletedTime()))
             && (this.getCompletedVoucher() == null ? other.getCompletedVoucher() == null : this.getCompletedVoucher().equals(other.getCompletedVoucher()))
-            && (this.getProjectId() == null ? other.getProjectId() == null : this.getProjectId().equals(other.getProjectId()))
             && (this.getIsDeleted() == null ? other.getIsDeleted() == null : this.getIsDeleted().equals(other.getIsDeleted()))
+            && (this.getEpibolyArrangement() == null ? other.getEpibolyArrangement() == null : this.getEpibolyArrangement().equals(other.getEpibolyArrangement()))
             && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()))
-            && (this.getEpibolyArrangement() == null ? other.getEpibolyArrangement() == null : this.getEpibolyArrangement().equals(other.getEpibolyArrangement()));
+            && (this.getMaterialBill() == null ? other.getMaterialBill() == null : this.getMaterialBill().equals(other.getMaterialBill()))
+            && (this.getProjectId() == null ? other.getProjectId() == null : this.getProjectId().equals(other.getProjectId()))
+            && (this.getEpibolyCompany() == null ? other.getEpibolyCompany() == null : this.getEpibolyCompany().equals(other.getEpibolyCompany()))
+            && (this.getEpibolContacts() == null ? other.getEpibolContacts() == null : this.getEpibolContacts().equals(other.getEpibolContacts()));
     }
 
     @Override
@@ -604,8 +649,8 @@ public class Epiboly implements Serializable {
         result = prime * result + ((getEpibolyId() == null) ? 0 : getEpibolyId().hashCode());
         result = prime * result + ((getEpibolyOrderId() == null) ? 0 : getEpibolyOrderId().hashCode());
         result = prime * result + ((getEpibolyName() == null) ? 0 : getEpibolyName().hashCode());
+        result = prime * result + ((getStartTime() == null) ? 0 : getStartTime().hashCode());
         result = prime * result + ((getSupervisorId() == null) ? 0 : getSupervisorId().hashCode());
-        result = prime * result + ((getEpibolyUrgency() == null) ? 0 : getEpibolyUrgency().hashCode());
         result = prime * result + ((getMonitorId() == null) ? 0 : getMonitorId().hashCode());
         result = prime * result + ((getExaminerId() == null) ? 0 : getExaminerId().hashCode());
         result = prime * result + ((getEpibolyTeam() == null) ? 0 : getEpibolyTeam().hashCode());
@@ -614,9 +659,8 @@ public class Epiboly implements Serializable {
         result = prime * result + ((getCreatedTime() == null) ? 0 : getCreatedTime().hashCode());
         result = prime * result + ((getCreatedUser() == null) ? 0 : getCreatedUser().hashCode());
         result = prime * result + ((getEpibolyStatus() == null) ? 0 : getEpibolyStatus().hashCode());
-        result = prime * result + ((getEpibolyProcess() == null) ? 0 : getEpibolyProcess().hashCode());
-        result = prime * result + ((getStartTime() == null) ? 0 : getStartTime().hashCode());
         result = prime * result + ((getEndTime() == null) ? 0 : getEndTime().hashCode());
+        result = prime * result + ((getEpibolyProcess() == null) ? 0 : getEpibolyProcess().hashCode());
         result = prime * result + ((getContractIds() == null) ? 0 : getContractIds().hashCode());
         result = prime * result + ((getEpibolyClient() == null) ? 0 : getEpibolyClient().hashCode());
         result = prime * result + ((getEpibolyAmount() == null) ? 0 : getEpibolyAmount().hashCode());
@@ -624,10 +668,13 @@ public class Epiboly implements Serializable {
         result = prime * result + ((getEpibolyPic() == null) ? 0 : getEpibolyPic().hashCode());
         result = prime * result + ((getCompletedTime() == null) ? 0 : getCompletedTime().hashCode());
         result = prime * result + ((getCompletedVoucher() == null) ? 0 : getCompletedVoucher().hashCode());
-        result = prime * result + ((getProjectId() == null) ? 0 : getProjectId().hashCode());
         result = prime * result + ((getIsDeleted() == null) ? 0 : getIsDeleted().hashCode());
-        result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
         result = prime * result + ((getEpibolyArrangement() == null) ? 0 : getEpibolyArrangement().hashCode());
+        result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
+        result = prime * result + ((getMaterialBill() == null) ? 0 : getMaterialBill().hashCode());
+        result = prime * result + ((getProjectId() == null) ? 0 : getProjectId().hashCode());
+        result = prime * result + ((getEpibolyCompany() == null) ? 0 : getEpibolyCompany().hashCode());
+        result = prime * result + ((getEpibolContacts() == null) ? 0 : getEpibolContacts().hashCode());
         return result;
     }
 
@@ -640,8 +687,8 @@ public class Epiboly implements Serializable {
         sb.append(", epibolyId=").append(epibolyId);
         sb.append(", epibolyOrderId=").append(epibolyOrderId);
         sb.append(", epibolyName=").append(epibolyName);
+        sb.append(", startTime=").append(startTime);
         sb.append(", supervisorId=").append(supervisorId);
-        sb.append(", epibolyUrgency=").append(epibolyUrgency);
         sb.append(", monitorId=").append(monitorId);
         sb.append(", examinerId=").append(examinerId);
         sb.append(", epibolyTeam=").append(epibolyTeam);
@@ -650,9 +697,8 @@ public class Epiboly implements Serializable {
         sb.append(", createdTime=").append(createdTime);
         sb.append(", createdUser=").append(createdUser);
         sb.append(", epibolyStatus=").append(epibolyStatus);
-        sb.append(", epibolyProcess=").append(epibolyProcess);
-        sb.append(", startTime=").append(startTime);
         sb.append(", endTime=").append(endTime);
+        sb.append(", epibolyProcess=").append(epibolyProcess);
         sb.append(", contractIds=").append(contractIds);
         sb.append(", epibolyClient=").append(epibolyClient);
         sb.append(", epibolyAmount=").append(epibolyAmount);
@@ -660,10 +706,13 @@ public class Epiboly implements Serializable {
         sb.append(", epibolyPic=").append(epibolyPic);
         sb.append(", completedTime=").append(completedTime);
         sb.append(", completedVoucher=").append(completedVoucher);
-        sb.append(", projectId=").append(projectId);
         sb.append(", isDeleted=").append(isDeleted);
-        sb.append(", updateTime=").append(updateTime);
         sb.append(", epibolyArrangement=").append(epibolyArrangement);
+        sb.append(", updateTime=").append(updateTime);
+        sb.append(", materialBill=").append(materialBill);
+        sb.append(", projectId=").append(projectId);
+        sb.append(", epibolyCompany=").append(epibolyCompany);
+        sb.append(", epibolContacts=").append(epibolContacts);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

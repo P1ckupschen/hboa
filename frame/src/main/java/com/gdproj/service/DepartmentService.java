@@ -1,6 +1,9 @@
 package com.gdproj.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdproj.entity.Department;
+import com.gdproj.vo.selectVo;
+
+import java.util.List;
 
 /**
 * @author Administrator
@@ -10,4 +13,6 @@ import com.gdproj.entity.Department;
 public interface DepartmentService extends IService<Department> {
 
     String getDepartmentNameByDepartmentId(Integer departmentId);
+
+    List<selectVo> getListForSelect();
 }

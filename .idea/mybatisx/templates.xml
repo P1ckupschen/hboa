@@ -69,8 +69,8 @@
             <option name="tableUIInfoList">
               <list>
                 <TableUIInfo>
-                  <option name="className" value="Template" />
-                  <option name="tableName" value="sys_template" />
+                  <option name="className" value="Epiboly" />
+                  <option name="tableName" value="sys_epiboly" />
                 </TableUIInfo>
               </list>
             </option>

@@ -1,38 +1,41 @@
 package com.gdproj.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.gdproj.vo.fileVo;
+
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
- * 
+ *
  * @TableName sys_project
  */
-@TableName(value ="sys_project")
+@TableName(value ="sys_project",autoResultMap = true)
 public class Project implements Serializable {
     /**
-     * 
+     *
      */
     @TableId(value = "project_id", type = IdType.AUTO)
     private Integer projectId;
 
     /**
-     * 
+     *
      */
     @TableField(value = "project_order_id")
     private Integer projectOrderId;
 
     /**
-     * 
+     *
      */
     @TableField(value = "project_name")
     private String projectName;
 
     /**
-     * 
+     *
      */
     @TableField(value = "start_time")
     private Date startTime;
@@ -44,7 +47,7 @@ public class Project implements Serializable {
     private Integer supervisorId;
 
     /**
-     * 
+     *
      */
     @TableField(value = "project_urgency")
     private String projectUrgency;
@@ -62,43 +65,43 @@ public class Project implements Serializable {
     private Integer examinerId;
 
     /**
-     * 
+     * json人员
      */
-    @TableField(value = "project_team")
-    private String projectTeam;
+    @TableField(value = "project_team", typeHandler = JacksonTypeHandler.class)
+    private List<Integer> projectTeam;
 
     /**
-     * 
+     *
      */
     @TableField(value = "project_description")
     private String projectDescription;
 
     /**
-     * 
+     *
      */
-    @TableField(value = "project_attachments")
-    private String projectAttachments;
+    @TableField(value = "project_attachments", typeHandler = JacksonTypeHandler.class)
+    private List<fileVo> projectAttachments;
 
     /**
-     * 
+     *
      */
     @TableField(value = "created_time")
     private Date createdTime;
 
     /**
-     * 
+     *
      */
     @TableField(value = "created_user")
     private Integer createdUser;
 
     /**
-     * 
+     *
      */
     @TableField(value = "project_status")
     private Integer projectStatus;
 
     /**
-     * 
+     *
      */
     @TableField(value = "end_time")
     private Date endTime;
@@ -110,7 +113,7 @@ public class Project implements Serializable {
     private Integer projectProcess;
 
     /**
-     * 
+     *
      */
     @TableField(value = "contract_ids")
     private String contractIds;
@@ -122,37 +125,37 @@ public class Project implements Serializable {
     private Integer projectClient;
 
     /**
-     * 
+     *
      */
     @TableField(value = "project_amount")
-    private Long projectAmount;
+    private BigDecimal projectAmount;
 
     /**
-     * 
+     *
      */
     @TableField(value = "is_completed")
     private Integer isCompleted;
 
     /**
-     * 
+     *
      */
     @TableField(value = "warranty_year")
     private String warrantyYear;
 
     /**
-     * 
+     *
      */
     @TableField(value = "warranty_amount")
-    private Long warrantyAmount;
+    private BigDecimal warrantyAmount;
 
     /**
-     * 
+     *
      */
-    @TableField(value = "project_pic")
-    private String projectPic;
+    @TableField(value = "project_pic", typeHandler = JacksonTypeHandler.class)
+    private List<fileVo> projectPic;
 
     /**
-     * 
+     *
      */
     @TableField(value = "completed_time")
     private Date completedTime;
@@ -160,75 +163,94 @@ public class Project implements Serializable {
     /**
      * 完成的凭证
      */
-    @TableField(value = "completed_voucher")
-    private String completedVoucher;
+    @TableField(value = "completed_voucher", typeHandler = JacksonTypeHandler.class)
+    private List<fileVo> completedVoucher;
 
     /**
-     * 
+     *
      */
     @TableField(value = "is_deleted")
+    @TableLogic
     private Integer isDeleted;
 
     /**
      * 项目安排
      */
-    @TableField(value = "project_arrangement")
-    private String projectArrangement;
+    @TableField(value = "project_arrangement", typeHandler = JacksonTypeHandler.class)
+    private Map<String, String> projectArrangement;
+
+    /**
+     *
+     */
+    @TableField(value = "category_id")
+    private Integer categoryId;
+
+    /**
+     *
+     */
+    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
+    private Date updateTime;
+
+    /**
+     * 物料清单
+     */
+    @TableField(value = "material_bill", typeHandler = JacksonTypeHandler.class)
+    private List materialBill;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
     /**
-     * 
+     *
      */
     public Integer getProjectId() {
         return projectId;
     }
 
     /**
-     * 
+     *
      */
     public void setProjectId(Integer projectId) {
         this.projectId = projectId;
     }
 
     /**
-     * 
+     *
      */
     public Integer getProjectOrderId() {
         return projectOrderId;
     }
 
     /**
-     * 
+     *
      */
     public void setProjectOrderId(Integer projectOrderId) {
         this.projectOrderId = projectOrderId;
     }
 
     /**
-     * 
+     *
      */
     public String getProjectName() {
         return projectName;
     }
 
     /**
-     * 
+     *
      */
     public void setProjectName(String projectName) {
         this.projectName = projectName;
     }
 
     /**
-     * 
+     *
      */
     public Date getStartTime() {
         return startTime;
     }
 
     /**
-     * 
+     *
      */
     public void setStartTime(Date startTime) {
         this.startTime = startTime;
@@ -249,14 +271,14 @@ public class Project implements Serializable {
     }
 
     /**
-     * 
+     *
      */
     public String getProjectUrgency() {
         return projectUrgency;
     }
 
     /**
-     * 
+     *
      */
     public void setProjectUrgency(String projectUrgency) {
         this.projectUrgency = projectUrgency;
@@ -291,98 +313,98 @@ public class Project implements Serializable {
     }
 
     /**
-     * 
+     * json人员
      */
-    public String getProjectTeam() {
+    public List<Integer> getProjectTeam() {
         return projectTeam;
     }
 
     /**
-     * 
+     * json人员
      */
-    public void setProjectTeam(String projectTeam) {
+    public void setProjectTeam(List<Integer> projectTeam) {
         this.projectTeam = projectTeam;
     }
 
     /**
-     * 
+     *
      */
     public String getProjectDescription() {
         return projectDescription;
     }
 
     /**
-     * 
+     *
      */
     public void setProjectDescription(String projectDescription) {
         this.projectDescription = projectDescription;
     }
 
     /**
-     * 
+     *
      */
-    public String getProjectAttachments() {
+    public List<fileVo> getProjectAttachments() {
         return projectAttachments;
     }
 
     /**
-     * 
+     *
      */
-    public void setProjectAttachments(String projectAttachments) {
+    public void setProjectAttachments(List<fileVo> projectAttachments) {
         this.projectAttachments = projectAttachments;
     }
 
     /**
-     * 
+     *
      */
     public Date getCreatedTime() {
         return createdTime;
     }
 
     /**
-     * 
+     *
      */
     public void setCreatedTime(Date createdTime) {
         this.createdTime = createdTime;
     }
 
     /**
-     * 
+     *
      */
     public Integer getCreatedUser() {
         return createdUser;
     }
 
     /**
-     * 
+     *
      */
     public void setCreatedUser(Integer createdUser) {
         this.createdUser = createdUser;
     }
 
     /**
-     * 
+     *
      */
     public Integer getProjectStatus() {
         return projectStatus;
     }
 
     /**
-     * 
+     *
      */
     public void setProjectStatus(Integer projectStatus) {
         this.projectStatus = projectStatus;
     }
 
     /**
-     * 
+     *
      */
     public Date getEndTime() {
         return endTime;
     }
 
     /**
-     * 
+     *
      */
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
@@ -403,14 +425,14 @@ public class Project implements Serializable {
     }
 
     /**
-     * 
+     *
      */
     public String getContractIds() {
         return contractIds;
     }
 
     /**
-     * 
+     *
      */
     public void setContractIds(String contractIds) {
         this.contractIds = contractIds;
@@ -431,84 +453,84 @@ public class Project implements Serializable {
     }
 
     /**
-     * 
+     *
      */
-    public Long getProjectAmount() {
+    public BigDecimal getProjectAmount() {
         return projectAmount;
     }
 
     /**
-     * 
+     *
      */
-    public void setProjectAmount(Long projectAmount) {
+    public void setProjectAmount(BigDecimal projectAmount) {
         this.projectAmount = projectAmount;
     }
 
     /**
-     * 
+     *
      */
     public Integer getIsCompleted() {
         return isCompleted;
     }
 
     /**
-     * 
+     *
      */
     public void setIsCompleted(Integer isCompleted) {
         this.isCompleted = isCompleted;
     }
 
     /**
-     * 
+     *
      */
     public String getWarrantyYear() {
         return warrantyYear;
     }
 
     /**
-     * 
+     *
      */
     public void setWarrantyYear(String warrantyYear) {
         this.warrantyYear = warrantyYear;
     }
 
     /**
-     * 
+     *
      */
-    public Long getWarrantyAmount() {
+    public BigDecimal getWarrantyAmount() {
         return warrantyAmount;
     }
 
     /**
-     * 
+     *
      */
-    public void setWarrantyAmount(Long warrantyAmount) {
+    public void setWarrantyAmount(BigDecimal warrantyAmount) {
         this.warrantyAmount = warrantyAmount;
     }
 
     /**
-     * 
+     *
      */
-    public String getProjectPic() {
+    public List<fileVo> getProjectPic() {
         return projectPic;
     }
 
     /**
-     * 
+     *
      */
-    public void setProjectPic(String projectPic) {
+    public void setProjectPic(List<fileVo> projectPic) {
         this.projectPic = projectPic;
     }
 
     /**
-     * 
+     *
      */
     public Date getCompletedTime() {
         return completedTime;
     }
 
     /**
-     * 
+     *
      */
     public void setCompletedTime(Date completedTime) {
         this.completedTime = completedTime;
@@ -517,26 +539,26 @@ public class Project implements Serializable {
     /**
      * 完成的凭证
      */
-    public String getCompletedVoucher() {
+    public List<fileVo> getCompletedVoucher() {
         return completedVoucher;
     }
 
     /**
      * 完成的凭证
      */
-    public void setCompletedVoucher(String completedVoucher) {
+    public void setCompletedVoucher(List<fileVo> completedVoucher) {
         this.completedVoucher = completedVoucher;
     }
 
     /**
-     * 
+     *
      */
     public Integer getIsDeleted() {
         return isDeleted;
     }
 
     /**
-     * 
+     *
      */
     public void setIsDeleted(Integer isDeleted) {
         this.isDeleted = isDeleted;
@@ -545,15 +567,57 @@ public class Project implements Serializable {
     /**
      * 项目安排
      */
-    public String getProjectArrangement() {
+    public Map<String, String> getProjectArrangement() {
         return projectArrangement;
     }
 
     /**
      * 项目安排
      */
-    public void setProjectArrangement(String projectArrangement) {
+    public void setProjectArrangement(Map<String, String> projectArrangement) {
         this.projectArrangement = projectArrangement;
+    }
+
+    /**
+     *
+     */
+    public Integer getCategoryId() {
+        return categoryId;
+    }
+
+    /**
+     *
+     */
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    /**
+     *
+     */
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    /**
+     *
+     */
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    /**
+     * 物料清单
+     */
+    public List getMaterialBill() {
+        return materialBill;
+    }
+
+    /**
+     * 物料清单
+     */
+    public void setMaterialBill(List materialBill) {
+        this.materialBill = materialBill;
     }
 
     @Override
@@ -569,32 +633,35 @@ public class Project implements Serializable {
         }
         Project other = (Project) that;
         return (this.getProjectId() == null ? other.getProjectId() == null : this.getProjectId().equals(other.getProjectId()))
-            && (this.getProjectOrderId() == null ? other.getProjectOrderId() == null : this.getProjectOrderId().equals(other.getProjectOrderId()))
-            && (this.getProjectName() == null ? other.getProjectName() == null : this.getProjectName().equals(other.getProjectName()))
-            && (this.getStartTime() == null ? other.getStartTime() == null : this.getStartTime().equals(other.getStartTime()))
-            && (this.getSupervisorId() == null ? other.getSupervisorId() == null : this.getSupervisorId().equals(other.getSupervisorId()))
-            && (this.getProjectUrgency() == null ? other.getProjectUrgency() == null : this.getProjectUrgency().equals(other.getProjectUrgency()))
-            && (this.getMonitorId() == null ? other.getMonitorId() == null : this.getMonitorId().equals(other.getMonitorId()))
-            && (this.getExaminerId() == null ? other.getExaminerId() == null : this.getExaminerId().equals(other.getExaminerId()))
-            && (this.getProjectTeam() == null ? other.getProjectTeam() == null : this.getProjectTeam().equals(other.getProjectTeam()))
-            && (this.getProjectDescription() == null ? other.getProjectDescription() == null : this.getProjectDescription().equals(other.getProjectDescription()))
-            && (this.getProjectAttachments() == null ? other.getProjectAttachments() == null : this.getProjectAttachments().equals(other.getProjectAttachments()))
-            && (this.getCreatedTime() == null ? other.getCreatedTime() == null : this.getCreatedTime().equals(other.getCreatedTime()))
-            && (this.getCreatedUser() == null ? other.getCreatedUser() == null : this.getCreatedUser().equals(other.getCreatedUser()))
-            && (this.getProjectStatus() == null ? other.getProjectStatus() == null : this.getProjectStatus().equals(other.getProjectStatus()))
-            && (this.getEndTime() == null ? other.getEndTime() == null : this.getEndTime().equals(other.getEndTime()))
-            && (this.getProjectProcess() == null ? other.getProjectProcess() == null : this.getProjectProcess().equals(other.getProjectProcess()))
-            && (this.getContractIds() == null ? other.getContractIds() == null : this.getContractIds().equals(other.getContractIds()))
-            && (this.getProjectClient() == null ? other.getProjectClient() == null : this.getProjectClient().equals(other.getProjectClient()))
-            && (this.getProjectAmount() == null ? other.getProjectAmount() == null : this.getProjectAmount().equals(other.getProjectAmount()))
-            && (this.getIsCompleted() == null ? other.getIsCompleted() == null : this.getIsCompleted().equals(other.getIsCompleted()))
-            && (this.getWarrantyYear() == null ? other.getWarrantyYear() == null : this.getWarrantyYear().equals(other.getWarrantyYear()))
-            && (this.getWarrantyAmount() == null ? other.getWarrantyAmount() == null : this.getWarrantyAmount().equals(other.getWarrantyAmount()))
-            && (this.getProjectPic() == null ? other.getProjectPic() == null : this.getProjectPic().equals(other.getProjectPic()))
-            && (this.getCompletedTime() == null ? other.getCompletedTime() == null : this.getCompletedTime().equals(other.getCompletedTime()))
-            && (this.getCompletedVoucher() == null ? other.getCompletedVoucher() == null : this.getCompletedVoucher().equals(other.getCompletedVoucher()))
-            && (this.getIsDeleted() == null ? other.getIsDeleted() == null : this.getIsDeleted().equals(other.getIsDeleted()))
-            && (this.getProjectArrangement() == null ? other.getProjectArrangement() == null : this.getProjectArrangement().equals(other.getProjectArrangement()));
+                && (this.getProjectOrderId() == null ? other.getProjectOrderId() == null : this.getProjectOrderId().equals(other.getProjectOrderId()))
+                && (this.getProjectName() == null ? other.getProjectName() == null : this.getProjectName().equals(other.getProjectName()))
+                && (this.getStartTime() == null ? other.getStartTime() == null : this.getStartTime().equals(other.getStartTime()))
+                && (this.getSupervisorId() == null ? other.getSupervisorId() == null : this.getSupervisorId().equals(other.getSupervisorId()))
+                && (this.getProjectUrgency() == null ? other.getProjectUrgency() == null : this.getProjectUrgency().equals(other.getProjectUrgency()))
+                && (this.getMonitorId() == null ? other.getMonitorId() == null : this.getMonitorId().equals(other.getMonitorId()))
+                && (this.getExaminerId() == null ? other.getExaminerId() == null : this.getExaminerId().equals(other.getExaminerId()))
+                && (this.getProjectTeam() == null ? other.getProjectTeam() == null : this.getProjectTeam().equals(other.getProjectTeam()))
+                && (this.getProjectDescription() == null ? other.getProjectDescription() == null : this.getProjectDescription().equals(other.getProjectDescription()))
+                && (this.getProjectAttachments() == null ? other.getProjectAttachments() == null : this.getProjectAttachments().equals(other.getProjectAttachments()))
+                && (this.getCreatedTime() == null ? other.getCreatedTime() == null : this.getCreatedTime().equals(other.getCreatedTime()))
+                && (this.getCreatedUser() == null ? other.getCreatedUser() == null : this.getCreatedUser().equals(other.getCreatedUser()))
+                && (this.getProjectStatus() == null ? other.getProjectStatus() == null : this.getProjectStatus().equals(other.getProjectStatus()))
+                && (this.getEndTime() == null ? other.getEndTime() == null : this.getEndTime().equals(other.getEndTime()))
+                && (this.getProjectProcess() == null ? other.getProjectProcess() == null : this.getProjectProcess().equals(other.getProjectProcess()))
+                && (this.getContractIds() == null ? other.getContractIds() == null : this.getContractIds().equals(other.getContractIds()))
+                && (this.getProjectClient() == null ? other.getProjectClient() == null : this.getProjectClient().equals(other.getProjectClient()))
+                && (this.getProjectAmount() == null ? other.getProjectAmount() == null : this.getProjectAmount().equals(other.getProjectAmount()))
+                && (this.getIsCompleted() == null ? other.getIsCompleted() == null : this.getIsCompleted().equals(other.getIsCompleted()))
+                && (this.getWarrantyYear() == null ? other.getWarrantyYear() == null : this.getWarrantyYear().equals(other.getWarrantyYear()))
+                && (this.getWarrantyAmount() == null ? other.getWarrantyAmount() == null : this.getWarrantyAmount().equals(other.getWarrantyAmount()))
+                && (this.getProjectPic() == null ? other.getProjectPic() == null : this.getProjectPic().equals(other.getProjectPic()))
+                && (this.getCompletedTime() == null ? other.getCompletedTime() == null : this.getCompletedTime().equals(other.getCompletedTime()))
+                && (this.getCompletedVoucher() == null ? other.getCompletedVoucher() == null : this.getCompletedVoucher().equals(other.getCompletedVoucher()))
+                && (this.getIsDeleted() == null ? other.getIsDeleted() == null : this.getIsDeleted().equals(other.getIsDeleted()))
+                && (this.getProjectArrangement() == null ? other.getProjectArrangement() == null : this.getProjectArrangement().equals(other.getProjectArrangement()))
+                && (this.getCategoryId() == null ? other.getCategoryId() == null : this.getCategoryId().equals(other.getCategoryId()))
+                && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()))
+                && (this.getMaterialBill() == null ? other.getMaterialBill() == null : this.getMaterialBill().equals(other.getMaterialBill()));
     }
 
     @Override
@@ -628,6 +695,9 @@ public class Project implements Serializable {
         result = prime * result + ((getCompletedVoucher() == null) ? 0 : getCompletedVoucher().hashCode());
         result = prime * result + ((getIsDeleted() == null) ? 0 : getIsDeleted().hashCode());
         result = prime * result + ((getProjectArrangement() == null) ? 0 : getProjectArrangement().hashCode());
+        result = prime * result + ((getCategoryId() == null) ? 0 : getCategoryId().hashCode());
+        result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
+        result = prime * result + ((getMaterialBill() == null) ? 0 : getMaterialBill().hashCode());
         return result;
     }
 
@@ -664,6 +734,9 @@ public class Project implements Serializable {
         sb.append(", completedVoucher=").append(completedVoucher);
         sb.append(", isDeleted=").append(isDeleted);
         sb.append(", projectArrangement=").append(projectArrangement);
+        sb.append(", categoryId=").append(categoryId);
+        sb.append(", updateTime=").append(updateTime);
+        sb.append(", materialBill=").append(materialBill);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

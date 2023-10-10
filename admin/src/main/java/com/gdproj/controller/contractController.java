@@ -6,11 +6,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Contract;
+import com.gdproj.entity.Template;
 import com.gdproj.entity.contractCategory;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.ContractService;
+import com.gdproj.service.TemplateService;
 import com.gdproj.service.contractCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.categoryVo;
@@ -33,6 +35,9 @@ public class contractController {
 
     @Autowired
     contractCategoryService categoryService;
+
+    @Autowired
+    TemplateService templateService;
 
     @GetMapping("/getListForSelect")
     public ResponseResult getListForSelect(){
@@ -172,9 +177,10 @@ public class contractController {
 
                 return ResponseResult.okResult(list);
             }else{
-
                 categoryList = categoryService.getContractCategoryList(pagedto);
+
                 pageVo<List<contractCategory>> pageList = new pageVo<>();
+
                 pageList.setData(categoryList.getRecords());
                 pageList.setTotal((int) categoryList.getTotal());
                 return ResponseResult.okResult(pageList);
@@ -264,6 +270,75 @@ public class contractController {
         }
 
     }
+
+    @GetMapping("getTemplateList")
+    public ResponseResult getTemplateList(@RequestParam(required = false) Integer pageNum,@RequestParam(required = false) Integer pageSize){
+        // 是否需要转化为templateVo
+        pageDto pageDto = new pageDto(pageNum, pageSize);
+        IPage<Template> templateList = new Page<>();
+        try {
+            if(ObjectUtil.isNull(pageDto.getPageNum())){
+                List<Template> list = templateService.list();
+                return ResponseResult.okResult(list);
+            }else {
+                templateList = templateService.getTemplateList(pageDto);
+                pageVo<List<Template>> pageList = new pageVo<>();
+                pageList.setTotal((int) templateList.getTotal());
+                pageList.setData(templateList.getRecords());
+                return  ResponseResult.okResult(pageList);
+            }
+
+        }catch (Exception e){
+            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+        }
+
+    }
+    @PutMapping("updateTemplate")
+    public ResponseResult updateTemplate(@RequestBody Template template){
+
+        Boolean b = false;
+        try {
+            b = templateService.updateById(template);
+            if(b){
+                return ResponseResult.okResult();
+            }else{
+                return ResponseResult.errorResult(AppHttpCodeEnum.UPDATE_ERROR);
+            }
+        }catch (Exception e){
+            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+        }
+
+    }
+    @PostMapping("insertTemplate")
+    public ResponseResult insertTemplate(@RequestBody Template template){
+        Boolean b = false;
+        try {
+            b = templateService.save(template);
+            if(b){
+                return ResponseResult.okResult();
+            }else{
+                return ResponseResult.errorResult(AppHttpCodeEnum.INSERT_ERROR);
+            }
+        }catch (Exception e){
+            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+        }
+    }
+    @DeleteMapping("deleteTemplate")
+    public ResponseResult deleteTemplate(@RequestParam("templateId") Integer templateId){
+        Boolean b = false;
+        try {
+            b = templateService.removeById(templateId);
+            if(b){
+                return ResponseResult.okResult();
+            }else{
+                return ResponseResult.errorResult(AppHttpCodeEnum.DELETE_ERROR);
+            }
+        }catch (Exception e){
+            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+        }
+    }
+
+
 
 
 }

@@ -1,7 +1,10 @@
 package com.gdproj.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Project;
+import com.gdproj.vo.projectVo;
 import com.gdproj.vo.selectVo;
 
 import java.util.List;
@@ -14,4 +17,8 @@ import java.util.List;
 public interface ProjectService extends IService<Project> {
 
     List<selectVo> getListForSelect();
+
+    IPage<projectVo> getProjectList(pageDto pageDto);
+
+    List<projectVo> getProjectListByClientId(Integer clientId);
 }
