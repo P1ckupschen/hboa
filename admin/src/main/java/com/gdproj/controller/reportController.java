@@ -4,6 +4,7 @@ package com.gdproj.controller;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.gdproj.annotation.autoLog;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.*;
 import com.gdproj.enums.AppHttpCodeEnum;
@@ -13,6 +14,8 @@ import com.gdproj.service.ReportService;
 import com.gdproj.service.reportCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +24,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/adminReport")
+@Api(tags = "汇报功能")
 public class reportController {
 
     @Autowired
@@ -30,6 +34,8 @@ public class reportController {
     reportCategoryService categoryService;
 
     @GetMapping("/getReportList")
+    @autoLog
+    @ApiOperation(value = "查询汇报列表")
     public ResponseResult getReportList(@RequestParam Integer pageNum,
                                         @RequestParam Integer pageSize,
                                         @RequestParam(required = false,defaultValue = "+id")String sort,
@@ -60,6 +66,8 @@ public class reportController {
 
 
     @PutMapping("updateReport")
+    @autoLog
+    @ApiOperation(value = "更新汇报")
     public ResponseResult updateReport(@RequestBody reportVo reportVo){
 
 
@@ -89,6 +97,8 @@ public class reportController {
     }
 
     @PostMapping("insertReport")
+    @autoLog
+    @ApiOperation(value = "新增汇报")
     public ResponseResult insertReport(@RequestBody reportVo reportVo){
 
         Report updateReport = BeanCopyUtils.copyBean(reportVo, Report.class);
@@ -114,6 +124,8 @@ public class reportController {
     }
 
     @DeleteMapping("deleteReport")
+    @autoLog
+    @ApiOperation(value = "删除汇报")
     public ResponseResult deleteReport(@PathParam("reportId") Integer reportId){
 
         System.out.println(reportId);
@@ -139,6 +151,8 @@ public class reportController {
     }
 
     @DeleteMapping("deleteReportList")
+    @autoLog
+
     //批量删除                                          TODO
     public ResponseResult deleteReportList(@RequestBody Integer categoryId){
 
@@ -173,6 +187,8 @@ public class reportController {
     //类型的增删改查
 
     @GetMapping("/getCategoryList")
+    @autoLog
+    @ApiOperation(value = "查询类型列表")
     public ResponseResult getCategoryList(@RequestParam(required = false) Integer pageNum,@RequestParam(required = false) Integer pageSize){
 
         pageDto pagedto = new pageDto(pageNum, pageSize);
@@ -201,6 +217,8 @@ public class reportController {
     }
 
     @PutMapping("updateCategory")
+    @autoLog
+    @ApiOperation(value = "更新类型")
     public ResponseResult updateCategory(@RequestBody categoryVo category){
 
         reportCategory reportcategory = new reportCategory();
@@ -227,6 +245,8 @@ public class reportController {
     }
 
     @PostMapping("insertCategory")
+    @autoLog
+    @ApiOperation(value = "新增类型")
     public ResponseResult insertCategory(@RequestBody categoryVo category){
 
         reportCategory reportcategory = new reportCategory();
@@ -253,6 +273,8 @@ public class reportController {
     }
 
     @DeleteMapping("deleteCategory")
+    @autoLog
+    @ApiOperation(value = "删除类型")
     public ResponseResult deleteCategory(@PathParam("categoryId") Integer categoryId){
 
         reportCategory reportcategory = new reportCategory();

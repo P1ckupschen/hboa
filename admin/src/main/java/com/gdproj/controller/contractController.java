@@ -4,6 +4,7 @@ package com.gdproj.controller;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.gdproj.annotation.autoLog;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Contract;
 import com.gdproj.entity.Template;
@@ -19,6 +20,8 @@ import com.gdproj.vo.categoryVo;
 import com.gdproj.vo.contractVo;
 import com.gdproj.vo.pageVo;
 import com.gdproj.vo.selectVo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +31,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/adminContract")
+@Api(tags = "合同功能")
 public class contractController {
 
     @Autowired
@@ -40,6 +44,8 @@ public class contractController {
     TemplateService templateService;
 
     @GetMapping("/getListForSelect")
+    @autoLog
+    @ApiOperation(value = "查询用于选择的合同列表")
     public ResponseResult getListForSelect(){
 
         List<selectVo> selectList = new ArrayList<>();
@@ -57,6 +63,8 @@ public class contractController {
 
     }
     @GetMapping("/getContractList")
+    @autoLog
+    @ApiOperation(value = "查询合同列表")
     public ResponseResult getContractList(@RequestParam Integer pageNum,
                                         @RequestParam Integer pageSize,
                                         @RequestParam(required = false,defaultValue = "+id")String sort,
@@ -85,6 +93,8 @@ public class contractController {
 
 
     @PutMapping("updateContract")
+    @autoLog
+    @ApiOperation(value = "更新合同")
     public ResponseResult updateContract(@RequestBody contractVo vo){
 
 
@@ -113,6 +123,8 @@ public class contractController {
     }
 
     @PostMapping("insertContract")
+    @autoLog
+    @ApiOperation(value = "新增合同")
     public ResponseResult insertContract(@RequestBody contractVo vo){
 
         Contract insertInfo = BeanCopyUtils.copyBean(vo, Contract.class);
@@ -138,6 +150,8 @@ public class contractController {
     }
 
     @DeleteMapping("deleteContract")
+    @autoLog
+    @ApiOperation(value = "删除合同")
     public ResponseResult deleteContract(@PathParam("contractId") Integer contractId){
 
         boolean b = false;
@@ -164,6 +178,8 @@ public class contractController {
     //类型的增删改查
 
     @GetMapping("/getCategoryList")
+    @autoLog
+    @ApiOperation(value = "查询类型数据")
     public ResponseResult getCategoryList(@RequestParam(required = false) Integer pageNum,@RequestParam(required = false) Integer pageSize){
 
         pageDto pagedto = new pageDto(pageNum, pageSize);
@@ -193,6 +209,8 @@ public class contractController {
     }
 
     @PutMapping("updateCategory")
+    @autoLog
+    @ApiOperation(value = "更新类型", notes = "更新")
     public ResponseResult updateCategory(@RequestBody categoryVo category){
 
         contractCategory contractcategory = new contractCategory();
@@ -219,6 +237,8 @@ public class contractController {
     }
 
     @PostMapping("insertCategory")
+    @autoLog
+    @ApiOperation(value = "新增类型", notes = "新增")
     public ResponseResult insertCategory(@RequestBody categoryVo category){
 
         contractCategory contractcategory = new contractCategory();
@@ -245,6 +265,8 @@ public class contractController {
     }
 
     @DeleteMapping("deleteCategory")
+    @autoLog
+    @ApiOperation(value = "删除类型", notes = "删除")
     public ResponseResult deleteCategory(@PathParam("categoryId") Integer categoryId){
 
         contractCategory contractcategory = new contractCategory();
@@ -272,6 +294,8 @@ public class contractController {
     }
 
     @GetMapping("getTemplateList")
+    @autoLog
+    @ApiOperation(value = "查询模板列表", notes = "可传分页")
     public ResponseResult getTemplateList(@RequestParam(required = false) Integer pageNum,@RequestParam(required = false) Integer pageSize){
         // 是否需要转化为templateVo
         pageDto pageDto = new pageDto(pageNum, pageSize);
@@ -294,6 +318,8 @@ public class contractController {
 
     }
     @PutMapping("updateTemplate")
+    @autoLog
+    @ApiOperation(value = "更新模板", notes = "更新")
     public ResponseResult updateTemplate(@RequestBody Template template){
 
         Boolean b = false;
@@ -310,6 +336,8 @@ public class contractController {
 
     }
     @PostMapping("insertTemplate")
+    @autoLog
+    @ApiOperation(value = "新增模板", notes = "新增")
     public ResponseResult insertTemplate(@RequestBody Template template){
         Boolean b = false;
         try {
@@ -324,6 +352,8 @@ public class contractController {
         }
     }
     @DeleteMapping("deleteTemplate")
+    @autoLog
+    @ApiOperation(value = "删除模板", notes = "删除")
     public ResponseResult deleteTemplate(@RequestParam("templateId") Integer templateId){
         Boolean b = false;
         try {

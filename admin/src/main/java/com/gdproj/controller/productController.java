@@ -3,10 +3,9 @@ package com.gdproj.controller;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.gdproj.annotation.autoLog;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Product;
-import com.gdproj.entity.Task;
-import com.gdproj.entity.overtimeCategory;
 import com.gdproj.entity.productCategory;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
@@ -14,7 +13,11 @@ import com.gdproj.result.ResponseResult;
 import com.gdproj.service.ProductService;
 import com.gdproj.service.productCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.*;
+import com.gdproj.vo.categoryVo;
+import com.gdproj.vo.pageVo;
+import com.gdproj.vo.productVo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +27,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/adminProduct")
+@Api(tags = "产品功能")
 public class productController {
 
     @Autowired
@@ -33,6 +37,8 @@ public class productController {
     productCategoryService categoryService;
 
     @GetMapping("/getProductForSelect")
+    @autoLog
+    @ApiOperation(value = "查询用于选择的产品列表")
     public ResponseResult getProductForSelect(){
 
         List<productVo> selectList = new ArrayList<>();
@@ -52,6 +58,8 @@ public class productController {
 
     //获取List时 通过去搜record表 实时计算count值
     @GetMapping("/getProductList")
+    @autoLog
+    @ApiOperation(value = "查询产品列表")
     public ResponseResult getProductList(@RequestParam Integer pageNum,
                                          @RequestParam Integer pageSize,
                                          @RequestParam(required = false,defaultValue = "+id")String sort,
@@ -82,6 +90,8 @@ public class productController {
 
 
     @PutMapping("updateProduct")
+    @autoLog
+    @ApiOperation(value = "更新产品")
     public ResponseResult updateProduct(@RequestBody productVo vo){
 
         Product updateInfo = BeanCopyUtils.copyBean(vo, Product.class);
@@ -110,6 +120,8 @@ public class productController {
     }
 
     @PostMapping("insertProduct")
+    @autoLog
+    @ApiOperation(value = "新增产品")
     public ResponseResult insertProduct(@RequestBody productVo vo){
 
         Product insertInfo = BeanCopyUtils.copyBean(vo, Product.class);
@@ -135,6 +147,8 @@ public class productController {
     }
 
     @DeleteMapping("deleteProduct")
+    @autoLog
+    @ApiOperation(value = "删除产品")
     public ResponseResult deleteProduct(@PathParam("productId") Integer productId){
 
         boolean b = false;
@@ -158,6 +172,8 @@ public class productController {
     }
 
     @DeleteMapping("deleteProductList")
+    @autoLog
+
     //批量删除
     public ResponseResult deleteProductList(@RequestBody Integer categoryId){
 
@@ -187,6 +203,8 @@ public class productController {
     //类型的增删改查
 
     @GetMapping("/getCategoryList")
+    @autoLog
+    @ApiOperation(value = "查询类型列表")
     public ResponseResult getCategoryList(@RequestParam(required = false) Integer pageNum,@RequestParam(required = false) Integer pageSize){
 
         pageDto pagedto = new pageDto(pageNum, pageSize);
@@ -214,6 +232,8 @@ public class productController {
     }
 
     @PutMapping("updateCategory")
+    @autoLog
+    @ApiOperation(value = "更新类型")
     public ResponseResult updateCategory(@RequestBody categoryVo category){
 
         productCategory Category = new productCategory();
@@ -242,6 +262,8 @@ public class productController {
     }
 
     @PostMapping("insertCategory")
+    @autoLog
+    @ApiOperation(value = "新增类型")
     public ResponseResult insertCategory(@RequestBody categoryVo category){
 
         productCategory Category = new productCategory();
@@ -268,6 +290,8 @@ public class productController {
     }
 
     @DeleteMapping("deleteCategory")
+    @autoLog
+    @ApiOperation(value = "删除类型")
     public ResponseResult deleteCategory(@PathParam("categoryId") Integer categoryId){
 
 

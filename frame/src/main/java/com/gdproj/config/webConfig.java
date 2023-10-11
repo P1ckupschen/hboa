@@ -33,7 +33,10 @@ public class webConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/adminLogin/userlogin")             //添加不拦截的请求路径
                 .excludePathPatterns("/api/loginBackend")
                 .excludePathPatterns("/swagger-resources")
-                .excludePathPatterns("/swagger-resources/configuration/ui")
+                .excludePathPatterns("/swagger-resources/**")
+                .excludePathPatterns("/swagger-ui.html/**")
+                .excludePathPatterns("/webjars/**")
+                .excludePathPatterns("/v2/**")
                 .excludePathPatterns("/images/")
                 .addPathPatterns("/**");                  //添加需要拦截的路径
     }
@@ -48,4 +51,5 @@ public class webConfig implements WebMvcConfigurer {
 //        registry.addResourceHandler("/images/**").addResourceLocations("file:E:\\sch-work-space\\projects\\hbkj\\hboa\\admin\\src\\main\\resources\\images\\");
         registry.addResourceHandler("/images/**").addResourceLocations("file:" + imageFilePath);
     }
+
 }

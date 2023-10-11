@@ -2,6 +2,7 @@ package com.gdproj.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.gdproj.annotation.autoLog;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Record;
 import com.gdproj.entity.Stock;
@@ -15,6 +16,8 @@ import com.gdproj.vo.pageVo;
 import com.gdproj.vo.productVo;
 import com.gdproj.vo.recordVo;
 import com.gdproj.vo.stockSelectVo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +27,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/adminRecord")
+@Api(tags = "库存记录功能")
 public class recordController {
 
     @Autowired
@@ -36,6 +40,8 @@ public class recordController {
 
     //记录的增删改查
     @GetMapping("/getRecordList")
+    @autoLog
+    @ApiOperation(value = "查询记录列表")
     public ResponseResult getRecordList(@RequestParam Integer pageNum,
                                       @RequestParam Integer pageSize,
                                       @RequestParam(required = false,defaultValue = "+id")String sort,
@@ -68,6 +74,8 @@ public class recordController {
     }
 
     @PutMapping("updateRecord")
+    @autoLog
+    @ApiOperation(value = "更新记录")
     public ResponseResult updateRecord(@RequestBody recordVo recordVo){
 
         Record updateRecord = BeanCopyUtils.copyBean(recordVo, Record.class);
@@ -96,6 +104,8 @@ public class recordController {
     }
 
     @PostMapping("insertRecord")
+    @autoLog
+    @ApiOperation(value = "新增记录")
     public ResponseResult insertRecord(@RequestBody recordVo recordVo){
 
         Record updateRecord = BeanCopyUtils.copyBean(recordVo, Record.class);
@@ -122,6 +132,8 @@ public class recordController {
     }
 
     @DeleteMapping("deleteRecord")
+    @autoLog
+    @ApiOperation(value = "删除记录")
     public ResponseResult deleteRecord(@PathParam("recordId") Integer recordId){
 
         boolean b = false;
@@ -150,6 +162,8 @@ public class recordController {
     //库存的增删改查
     //不需要单独的库存表了，由产品表形成库存表，由productVo来接收
     @GetMapping("/getStockList")
+    @autoLog
+    @ApiOperation(value = "查询库存列表")
     public ResponseResult getStockList(@RequestParam Integer pageNum,
                                         @RequestParam Integer pageSize,
                                         @RequestParam(required = false,defaultValue = "+id")String sort,
@@ -189,6 +203,8 @@ public class recordController {
     }
 
     @GetMapping("/getStockListForSelect")
+    @autoLog
+    @ApiOperation(value = "查询用于选择的库存列表")
     public ResponseResult getStockListForSelect(){
 
         List<Stock> list = new ArrayList<>();

@@ -1,9 +1,9 @@
 package com.gdproj.controller;
 
-import cn.hutool.core.bean.copier.BeanToBeanCopier;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.gdproj.annotation.autoLog;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Notify;
 import com.gdproj.entity.notifyCategory;
@@ -13,17 +13,20 @@ import com.gdproj.result.ResponseResult;
 import com.gdproj.service.NotifyService;
 import com.gdproj.service.notifyCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.*;
-import io.swagger.models.auth.In;
+import com.gdproj.vo.categoryVo;
+import com.gdproj.vo.notifyVo;
+import com.gdproj.vo.pageVo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/adminNotify")
+@Api(tags = "公告功能")
 public class notifyController {
 
     @Autowired
@@ -35,6 +38,8 @@ public class notifyController {
 
     //公告的增删改查
     @GetMapping("/getNotifyList")
+    @autoLog
+    @ApiOperation(value = "查询公告列表")
     public ResponseResult getNotifyList(@RequestParam Integer pageNum,
                                         @RequestParam Integer pageSize,
                                         @RequestParam(required = false,defaultValue = "+id")String sort,
@@ -63,6 +68,8 @@ public class notifyController {
     }
 
     @PutMapping("updateNotify")
+    @autoLog
+    @ApiOperation(value = "更新公告")
     public ResponseResult updateNotify(@RequestBody notifyVo notifyVo){
 
 
@@ -92,6 +99,8 @@ public class notifyController {
     }
 
     @PostMapping("insertNotify")
+    @autoLog
+    @ApiOperation(value = "新增公告")
     public ResponseResult insertNotify(@RequestBody notifyVo notifyVo){
 
         Notify updateNotify = BeanCopyUtils.copyBean(notifyVo, Notify.class);
@@ -117,6 +126,8 @@ public class notifyController {
     }
 
     @DeleteMapping("deleteNotify")
+    @autoLog
+    @ApiOperation(value = "删除公告")
     public ResponseResult deleteNotify(@PathParam("notifyId") Integer notifyId){
 
         System.out.println(notifyId);
@@ -142,6 +153,7 @@ public class notifyController {
     }
 
     @DeleteMapping("deleteNotifyList")
+    @autoLog
     //批量删除
     public ResponseResult deleteNotifyList(@RequestBody Integer categoryId){
 
@@ -176,6 +188,8 @@ public class notifyController {
     //类型的增删改查
 
     @GetMapping("/getCategoryList")
+    @autoLog
+    @ApiOperation(value = "查询类型列表")
     public ResponseResult getCategoryList(@RequestParam(required = false) Integer pageNum,@RequestParam(required = false) Integer pageSize){
 
         pageDto pagedto = new pageDto(pageNum, pageSize);
@@ -205,6 +219,8 @@ public class notifyController {
     }
 
     @PutMapping("updateCategory")
+    @autoLog
+    @ApiOperation(value = "更新类型")
     public ResponseResult updateCategory(@RequestBody categoryVo category){
 
         notifyCategory notifycategory = new notifyCategory();
@@ -231,6 +247,8 @@ public class notifyController {
     }
 
     @PostMapping("insertCategory")
+    @autoLog
+    @ApiOperation(value = "新增类型")
     public ResponseResult insertCategory(@RequestBody categoryVo category){
 
         notifyCategory notifycategory = new notifyCategory();
@@ -257,6 +275,8 @@ public class notifyController {
     }
 
     @DeleteMapping("deleteCategory")
+    @autoLog
+    @ApiOperation(value = "删除类型")
     public ResponseResult deleteCategory(@PathParam("categoryId") Integer categoryId){
 
         notifyCategory notifycategory = new notifyCategory();

@@ -1,23 +1,25 @@
 package com.gdproj.service.impl;
 
-import cn.hutool.core.convert.Convert;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-
+import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Department;
 import com.gdproj.entity.Deployee;
-import com.gdproj.entity.User;
+import com.gdproj.enums.AppHttpCodeEnum;
+import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.DeployeeMapper;
-import com.gdproj.result.ResponseResult;
 import com.gdproj.service.DepartmentService;
 import com.gdproj.service.DeployeeService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.utils.RSAUtil;
+import com.gdproj.vo.deployeeVo;
 import com.gdproj.vo.userVo;
-import net.sf.jsqlparser.statement.select.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -127,6 +129,69 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
 
         return collect;
     }
+
+    @Override
+    public IPage<deployeeVo> getDeployeeList(pageDto pageDto) {
+
+        //类型
+        Integer type = pageDto.getType();
+        //部门
+        Integer departmentId = pageDto.getDepartmentId();
+        //时间
+        String time = pageDto.getTime();
+        //排序
+        String sort = pageDto.getSort();
+        //搜索框如果是产品搜索产品名称或者选择产品id
+        //如果是人 搜素人名或者人id
+        //如果是物 搜索id
+        String title = pageDto.getTitle();
+        Integer pageNum = pageDto.getPageNum();
+        Integer pageSize = pageDto.getPageSize();
+
+        Page<Deployee> page = new Page<>(pageNum, pageSize);
+
+        LambdaQueryWrapper<Deployee> queryWrapper = new LambdaQueryWrapper<>();
+        //排序
+        if (sort.equals("+id")) {
+            queryWrapper.orderByAsc(Deployee::getDeployeeId);
+        } else {
+            queryWrapper.orderByDesc(Deployee::getDeployeeId);
+        }
+
+        //查询名称？
+        if (!title.isEmpty()) {
+            queryWrapper.eq(Deployee::getDeployeeId,title);
+        }
+
+        //如果有类型的话 类型
+        if (!ObjectUtil.isEmpty(type)) {
+            queryWrapper.eq(Deployee::getDeployeeRole,type);
+        }
+
+        IPage<Deployee> recordPage = page(page, queryWrapper);
+
+        Page<deployeeVo> resultPage = new Page<>();
+
+        List<deployeeVo> resultList = new ArrayList<>();
+        try {
+
+            resultList = recordPage.getRecords().stream().map((item) -> {
+
+                deployeeVo vo = BeanCopyUtils.copyBean(item, deployeeVo.class);
+                //类型名称?
+                return vo;
+            }).collect(Collectors.toList());
+        }catch (Exception e){
+            throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
+        }
+
+        resultPage.setRecords(resultList);
+
+        resultPage.setTotal(recordPage.getTotal());
+
+        return resultPage;
+    }
+
 
 }
 

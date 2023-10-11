@@ -1,8 +1,11 @@
 package com.gdproj.controller;
 
 
+import com.gdproj.annotation.autoLog;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.result.ResponseResult;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.io.FileUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,9 +19,12 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/upload")
+@Api(tags = "上传功能")
 public class uploadController {
 
     @PostMapping("/commonUpload")
+    @autoLog
+    @ApiOperation(value = "上传")
     public ResponseResult commonUpload(@RequestBody MultipartFile file, HttpServletRequest request){
 
         System.out.println(file);

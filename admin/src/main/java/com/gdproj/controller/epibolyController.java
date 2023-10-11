@@ -1,18 +1,19 @@
 package com.gdproj.controller;
 
+
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.annotation.autoLog;
 import com.gdproj.dto.pageDto;
-import com.gdproj.entity.Deployee;
+import com.gdproj.entity.Epiboly;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
-import com.gdproj.service.DeployeeService;
+import com.gdproj.service.EpibolyService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.deployeeVo;
+import com.gdproj.vo.epibolyVo;
 import com.gdproj.vo.pageVo;
-import com.gdproj.vo.userVo;
+import com.gdproj.vo.selectVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,23 +24,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/deployee")
-@Api(tags = "员工功能")
-public class deployeeController {
+@RequestMapping("/adminEpiboly")
+@Api(tags = "外包功能")
+public class epibolyController {
 
     @Autowired
-    DeployeeService deployeeService;
+    EpibolyService epibolyService;
+
 
     @GetMapping("/getListForSelect")
     @autoLog
-    @ApiOperation(value = "查询用于选择的员工列表")
+    @ApiOperation(value = "查询用于选择的外包列表")
     public ResponseResult getListForSelect(){
 
-        List<userVo> selectList = new ArrayList<>();
+        List<selectVo> selectList = new ArrayList<>();
 
         try {
 
-            selectList =deployeeService.getListForSelect();
+            selectList =epibolyService.getListForSelect();
 
             return ResponseResult.okResult(selectList) ;
 
@@ -50,10 +52,10 @@ public class deployeeController {
 
     }
 
-    @GetMapping("/getDeployeeList")
+    @GetMapping("/getEpibolyList")
     @autoLog
-    @ApiOperation(value = "查询员工列表")
-    public ResponseResult getDeployeeList(@RequestParam Integer pageNum,
+    @ApiOperation(value = "查询外包列表")
+    public ResponseResult getEpibolyList(@RequestParam Integer pageNum,
                                         @RequestParam Integer pageSize,
                                         @RequestParam(required = false,defaultValue = "+id")String sort,
                                         @RequestParam(required = false,defaultValue = "") String title ,
@@ -63,41 +65,36 @@ public class deployeeController {
 
         pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
 
-        IPage<deployeeVo> reportList = new Page<deployeeVo>();
+        IPage<epibolyVo> epibolyList = new Page<>();
 
         try {
-            reportList = deployeeService.getDeployeeList(pageDto);
-
-            pageVo<List<deployeeVo>> pageList = new pageVo<>();
-            pageList.setData(reportList.getRecords());
-            pageList.setTotal((int) reportList.getTotal());
+            epibolyList = epibolyService.getEpibolyList(pageDto);
+            pageVo<List<epibolyVo>> pageList = new pageVo<>();
+            pageList.setData(epibolyList.getRecords());
+            pageList.setTotal((int) epibolyList.getTotal());
             return ResponseResult.okResult(pageList);
         }catch (SystemException e){
-            return ResponseResult.errorResult(e.getCode(),e.getMsg());
-        } catch (Exception e){
+            return ResponseResult.okResult(e.getCode(),e.getMsg());
+        }catch (Exception e){
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
         }
 
-
     }
 
-
-    @PutMapping("updateDeployee")
+    @PutMapping("updateEpiboly")
     @autoLog
-    @ApiOperation(value = "更新员工")
-    public ResponseResult updateDeployee(@RequestBody deployeeVo vo){
+    @ApiOperation(value = "更新外包")
+    public ResponseResult updateEpiboly(@RequestBody epibolyVo vo){
 
 
-        Deployee updateInfo = BeanCopyUtils.copyBean(vo, Deployee.class);
+        Epiboly updateInfo = BeanCopyUtils.copyBean(vo, Epiboly.class);
 //        vo中的 发布人  类型 部门
-        System.out.println(updateInfo);
 
         boolean b = false;
 
         try {
 
-            b = deployeeService.updateById(updateInfo);
-
+            b = epibolyService.updateById(updateInfo);
             if(b){
                 return ResponseResult.okResult(b);
             }else{
@@ -113,18 +110,18 @@ public class deployeeController {
 
     }
 
-    @PostMapping("insertDeployee")
+    @PostMapping("insertEpiboly")
     @autoLog
-    @ApiOperation(value = "新增员工")
-    public ResponseResult insertDeployee(@RequestBody deployeeVo vo){
+    @ApiOperation(value = "新增外包")
+    public ResponseResult insertEpiboly(@RequestBody epibolyVo vo){
 
-        Deployee insertInfo = BeanCopyUtils.copyBean(vo, Deployee.class);
+        Epiboly insertInfo = BeanCopyUtils.copyBean(vo, Epiboly.class);
 
         boolean b = false;
 
         try {
 
-            b = deployeeService.save(insertInfo);
+            b = epibolyService.save(insertInfo);
 
             if(b){
                 return ResponseResult.okResult(b);
@@ -140,18 +137,16 @@ public class deployeeController {
 
     }
 
-    @DeleteMapping("deleteDeployee")
+    @DeleteMapping("deleteEpiboly")
     @autoLog
-    @ApiOperation(value = "删除员工")
-    public ResponseResult deleteDeployee(@PathParam("deployeeId") Integer id){
-
-        System.out.println(id);
+    @ApiOperation(value = "删除外包")
+    public ResponseResult deleteEpiboly(@PathParam("epibolyId") Integer Id){
 
         boolean b = false;
 
         try {
 
-            b = deployeeService.removeById(id);
+            b = epibolyService.removeById(Id);
 
             if(b){
                 return ResponseResult.okResult(b);
@@ -164,6 +159,5 @@ public class deployeeController {
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
 
         }
-
     }
 }

@@ -3,19 +3,22 @@ package com.gdproj.controller;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.gdproj.annotation.autoLog;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Leave;
-import com.gdproj.entity.Notify;
 import com.gdproj.entity.leaveCategory;
 import com.gdproj.entity.notifyCategory;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
+import com.gdproj.service.LeaveService;
 import com.gdproj.service.leaveCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.*;
-import org.omg.PortableInterceptor.INACTIVE;
-import com.gdproj.service.LeaveService;
+import com.gdproj.vo.categoryVo;
+import com.gdproj.vo.leaveVo;
+import com.gdproj.vo.pageVo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +27,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/adminLeave")
+@Api(tags = "请假功能")
 public class leaveController {
 
     @Autowired
@@ -33,6 +37,8 @@ public class leaveController {
     leaveCategoryService categoryService;
 
     @GetMapping("/getLeaveList")
+    @autoLog
+    @ApiOperation(value = "查询请假列表")
     public ResponseResult getLeaveList(@RequestParam Integer pageNum,
                                        @RequestParam Integer pageSize,
                                        @RequestParam(required = false,defaultValue = "+id")String sort,
@@ -61,6 +67,8 @@ public class leaveController {
     }
 
     @PutMapping("updateLeave")
+    @autoLog
+    @ApiOperation(value = "更新请假")
     public ResponseResult updateLeave(@RequestBody leaveVo leaveVo){
 
 
@@ -90,6 +98,8 @@ public class leaveController {
     }
 
     @PostMapping("insertLeave")
+    @autoLog
+    @ApiOperation(value = "新增请假")
     public ResponseResult insertLeave(@RequestBody leaveVo leaveVo){
 
         Leave insertLeave = BeanCopyUtils.copyBean(leaveVo, Leave.class);
@@ -115,6 +125,8 @@ public class leaveController {
     }
 
     @DeleteMapping("deleteLeave")
+    @autoLog
+    @ApiOperation(value = "删除请假")
     public ResponseResult deleteLeave(@PathParam("leaveId") Integer leaveId){
 
         System.out.println(leaveId);
@@ -140,6 +152,8 @@ public class leaveController {
     }
 
     @DeleteMapping("deleteLeaveList")
+    @autoLog
+
     //批量删除
     public ResponseResult deleteLeaveList(@RequestBody Integer categoryId){
 
@@ -171,10 +185,11 @@ public class leaveController {
 
 
 
-
     //类型的增删改查
 
     @GetMapping("/getCategoryList")
+    @autoLog
+    @ApiOperation(value = "查询类型")
     public ResponseResult getCategoryList(@RequestParam(required = false) Integer pageNum,@RequestParam(required = false) Integer pageSize){
 
         pageDto pagedto = new pageDto(pageNum, pageSize);
@@ -202,6 +217,8 @@ public class leaveController {
     }
 
     @PutMapping("updateCategory")
+    @autoLog
+    @ApiOperation(value = "更新类型")
     public ResponseResult updateCategory(@RequestBody categoryVo category){
 
         leaveCategory leavecategory = new leaveCategory();
@@ -227,6 +244,8 @@ public class leaveController {
     }
 
     @PostMapping("insertCategory")
+    @autoLog
+    @ApiOperation(value = "新增类型")
     public ResponseResult insertCategory(@RequestBody categoryVo category){
 
         leaveCategory leavecategory = new leaveCategory();
@@ -251,6 +270,8 @@ public class leaveController {
     }
 
     @DeleteMapping("deleteCategory")
+    @autoLog
+    @ApiOperation(value = "删除类型")
     public ResponseResult deleteCategory(@PathParam("categoryId") Integer categoryId){
 
 

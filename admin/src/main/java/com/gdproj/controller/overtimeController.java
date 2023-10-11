@@ -3,6 +3,7 @@ package com.gdproj.controller;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.gdproj.annotation.autoLog;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.*;
 import com.gdproj.enums.AppHttpCodeEnum;
@@ -12,6 +13,8 @@ import com.gdproj.service.OvertimeService;
 import com.gdproj.service.overtimeCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +23,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/adminOvertime")
+@Api(tags = "加班功能")
 public class overtimeController {
 
     @Autowired
@@ -29,6 +33,8 @@ public class overtimeController {
     overtimeCategoryService categoryService;
 
     @GetMapping("/getOvertimeList")
+    @autoLog
+    @ApiOperation(value = "查询加班列表")
     public ResponseResult getOvertimeList(@RequestParam Integer pageNum,
                                           @RequestParam Integer pageSize,
                                           @RequestParam(required = false,defaultValue = "+id")String sort,
@@ -59,6 +65,8 @@ public class overtimeController {
     }
 
     @PutMapping("updateOvertime")
+    @autoLog
+    @ApiOperation(value = "更新加班")
     public ResponseResult updateOvertime(@RequestBody overtimeVo overtimeVo){
 
 
@@ -88,6 +96,8 @@ public class overtimeController {
     }
 
     @PostMapping("insertOvertime")
+    @autoLog
+    @ApiOperation(value = "新增加班")
     public ResponseResult insertOvertime(@RequestBody overtimeVo overtimeVo){
 
         Overtime insertOvertime = BeanCopyUtils.copyBean(overtimeVo, Overtime.class);
@@ -115,6 +125,8 @@ public class overtimeController {
     }
 
     @DeleteMapping("deleteOvertime")
+    @autoLog
+    @ApiOperation(value = "删除加班")
     public ResponseResult deleteOvertime(@PathParam("overtimeId") Integer overtimeId){
 
         System.out.println(overtimeId);
@@ -140,6 +152,7 @@ public class overtimeController {
     }
 
     @DeleteMapping("deleteOvertimeList")
+    @autoLog
     //批量删除
     public ResponseResult deleteOvertimeList(@RequestBody Integer categoryId){
 
@@ -171,6 +184,8 @@ public class overtimeController {
     //类型的增删改查
 
     @GetMapping("/getCategoryList")
+    @autoLog
+    @ApiOperation(value = "查询类型列表")
     public ResponseResult getCategoryList(@RequestParam(required = false) Integer pageNum,@RequestParam(required = false) Integer pageSize){
 
         pageDto pagedto = new pageDto(pageNum, pageSize);
@@ -197,6 +212,8 @@ public class overtimeController {
     }
 
     @PutMapping("updateCategory")
+    @autoLog
+    @ApiOperation(value = "更新类型")
     public ResponseResult updateCategory(@RequestBody categoryVo category){
 
         overtimeCategory overcategory = new overtimeCategory();
@@ -225,6 +242,8 @@ public class overtimeController {
     }
 
     @PostMapping("insertCategory")
+    @autoLog
+    @ApiOperation(value = "新增类型")
     public ResponseResult insertCategory(@RequestBody categoryVo category){
 
         overtimeCategory overcategory = new overtimeCategory();
@@ -251,6 +270,8 @@ public class overtimeController {
     }
 
     @DeleteMapping("deleteCategory")
+    @autoLog
+    @ApiOperation(value = "删除类型")
     public ResponseResult deleteCategory(@PathParam("categoryId") Integer categoryId){
 
 

@@ -187,8 +187,8 @@ public class Epiboly implements Serializable {
     /**
      * 联系人
      */
-    @TableField(value = "epibol_contacts")
-    private String epibolContacts;
+    @TableField(value = "epiboly_contacts")
+    private String epibolyContacts;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -588,15 +588,15 @@ public class Epiboly implements Serializable {
     /**
      * 联系人
      */
-    public String getEpibolContacts() {
-        return epibolContacts;
+    public String getEpibolyContacts() {
+        return epibolyContacts;
     }
 
     /**
      * 联系人
      */
-    public void setEpibolContacts(String epibolContacts) {
-        this.epibolContacts = epibolContacts;
+    public void setEpibolyContacts(String epibolContacts) {
+        this.epibolyContacts = epibolContacts;
     }
 
     @Override
@@ -639,7 +639,7 @@ public class Epiboly implements Serializable {
             && (this.getMaterialBill() == null ? other.getMaterialBill() == null : this.getMaterialBill().equals(other.getMaterialBill()))
             && (this.getProjectId() == null ? other.getProjectId() == null : this.getProjectId().equals(other.getProjectId()))
             && (this.getEpibolyCompany() == null ? other.getEpibolyCompany() == null : this.getEpibolyCompany().equals(other.getEpibolyCompany()))
-            && (this.getEpibolContacts() == null ? other.getEpibolContacts() == null : this.getEpibolContacts().equals(other.getEpibolContacts()));
+            && (this.getEpibolyContacts() == null ? other.getEpibolyContacts() == null : this.getEpibolyContacts().equals(other.getEpibolyContacts()));
     }
 
     @Override
@@ -674,7 +674,7 @@ public class Epiboly implements Serializable {
         result = prime * result + ((getMaterialBill() == null) ? 0 : getMaterialBill().hashCode());
         result = prime * result + ((getProjectId() == null) ? 0 : getProjectId().hashCode());
         result = prime * result + ((getEpibolyCompany() == null) ? 0 : getEpibolyCompany().hashCode());
-        result = prime * result + ((getEpibolContacts() == null) ? 0 : getEpibolContacts().hashCode());
+        result = prime * result + ((getEpibolyContacts() == null) ? 0 : getEpibolyContacts().hashCode());
         return result;
     }
 
@@ -712,7 +712,7 @@ public class Epiboly implements Serializable {
         sb.append(", materialBill=").append(materialBill);
         sb.append(", projectId=").append(projectId);
         sb.append(", epibolyCompany=").append(epibolyCompany);
-        sb.append(", epibolContacts=").append(epibolContacts);
+        sb.append(", epibolContacts=").append(epibolyContacts);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

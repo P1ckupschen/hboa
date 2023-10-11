@@ -1,8 +1,14 @@
 package com.gdproj.service;
 
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Epiboly;
+import com.gdproj.vo.epibolyVo;
+import com.gdproj.vo.selectVo;
+
+import java.util.List;
 
 /**
 * @author Administrator
@@ -11,4 +17,7 @@ import com.gdproj.entity.Epiboly;
 */
 public interface EpibolyService extends IService<Epiboly> {
 
+    IPage<epibolyVo> getEpibolyList(pageDto pageDto);
+
+    List<selectVo> getListForSelect();
 }

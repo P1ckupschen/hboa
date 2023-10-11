@@ -1,9 +1,12 @@
 package com.gdproj.service;
 
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Deployee;
 import com.gdproj.result.ResponseResult;
+import com.gdproj.vo.deployeeVo;
 import com.gdproj.vo.userVo;
 
 import java.util.List;
@@ -30,4 +33,6 @@ public interface DeployeeService extends IService<Deployee> {
     Integer getDepartmentIdByUserId(Integer userId);
 
     List<userVo> getListForSelect();
+
+    IPage<deployeeVo> getDeployeeList(pageDto pageDto);
 }

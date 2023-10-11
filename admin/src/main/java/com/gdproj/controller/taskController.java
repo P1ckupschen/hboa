@@ -1,23 +1,20 @@
 package com.gdproj.controller;
 
 
-import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.annotation.autoLog;
 import com.gdproj.dto.pageDto;
-import com.gdproj.entity.Notify;
 import com.gdproj.entity.Task;
-import com.gdproj.entity.notifyCategory;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.TaskService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.categoryVo;
-import com.gdproj.vo.notifyVo;
 import com.gdproj.vo.pageVo;
 import com.gdproj.vo.taskVo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +23,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/adminTask")
+@Api(tags = "任务功能")
 public class taskController {
 
     @Autowired
@@ -35,6 +33,7 @@ public class taskController {
     //公告的增删改查
     @GetMapping("/getTaskList")
     @autoLog
+    @ApiOperation(value = "查询任务列表")
     public ResponseResult getTaskList(@RequestParam Integer pageNum,
                                         @RequestParam Integer pageSize,
                                         @RequestParam(required = false,defaultValue = "+id")String sort,
@@ -70,6 +69,8 @@ public class taskController {
     }
 
     @PutMapping("updateTask")
+    @autoLog
+    @ApiOperation(value = "更新任务")
     public ResponseResult updateTask(@RequestBody taskVo taskVo){
 
         Task updateTask = BeanCopyUtils.copyBean(taskVo, Task.class);
@@ -98,6 +99,8 @@ public class taskController {
     }
 
     @PostMapping("insertTask")
+    @autoLog
+    @ApiOperation(value = "新增任务")
     public ResponseResult insertTask(@RequestBody taskVo taskVo){
 
         Task updateTask = BeanCopyUtils.copyBean(taskVo, Task.class);
@@ -123,6 +126,8 @@ public class taskController {
     }
 
     @DeleteMapping("deleteTask")
+    @autoLog
+    @ApiOperation(value = "删除任务")
     public ResponseResult deleteTask(@PathParam("taskId") Integer taskId){
 
         boolean b = false;
@@ -146,6 +151,7 @@ public class taskController {
     }
 
     @DeleteMapping("deleteTaskList")
+    @autoLog
     //批量删除
     public ResponseResult deleteTaskList(@RequestBody Integer categoryId){
 

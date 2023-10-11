@@ -2,6 +2,7 @@ package com.gdproj.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.gdproj.annotation.autoLog;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Client;
 import com.gdproj.enums.AppHttpCodeEnum;
@@ -12,6 +13,8 @@ import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.clientVo;
 import com.gdproj.vo.pageVo;
 import com.gdproj.vo.selectVo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +24,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/adminClient")
+@Api(tags = "客户功能")
 public class clientController {
 
     @Autowired
@@ -28,6 +32,8 @@ public class clientController {
 
 
     @GetMapping("/getListForSelect")
+    @autoLog
+    @ApiOperation(value = "查询用于选择的客户列表", notes = "用于下拉选择")
     public ResponseResult getListForSelect(){
 
         List<selectVo> selectList = new ArrayList<>();
@@ -45,6 +51,8 @@ public class clientController {
     }
 
     @GetMapping("/getClientList")
+    @autoLog
+    @ApiOperation(value = "查询客户列表", notes = "可传分页等数据")
     public ResponseResult getClientList(@RequestParam Integer pageNum,
                                         @RequestParam Integer pageSize,
                                         @RequestParam(required = false,defaultValue = "+id")String sort,
@@ -73,6 +81,8 @@ public class clientController {
 
 
     @PutMapping("updateClient")
+    @autoLog
+    @ApiOperation(value = "更新客户数据", notes = "修改编辑")
     public ResponseResult updateClient(@RequestBody clientVo vo){
 
 
@@ -102,6 +112,8 @@ public class clientController {
     }
 
     @PostMapping("insertClient")
+    @autoLog
+    @ApiOperation(value = "新增客户数据", notes = "新增插入")
     public ResponseResult insertClient(@RequestBody clientVo vo){
 
         Client insertInfo = BeanCopyUtils.copyBean(vo, Client.class);
@@ -127,6 +139,8 @@ public class clientController {
     }
 
     @DeleteMapping("deleteClient")
+    @autoLog
+    @ApiOperation(value = "删除客户数据", notes = "删除")
     public ResponseResult deleteClient(@PathParam("clientId") Integer clientId){
 
         boolean b = false;
