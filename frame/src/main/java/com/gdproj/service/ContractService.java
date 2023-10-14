@@ -19,4 +19,6 @@ public interface ContractService extends IService<Contract> {
     IPage<contractVo> getContractList(pageDto pageDto);
 
     List<selectVo> getListForSelect();
+
+    List<Contract> getListByClientId(Integer clientId);
 }

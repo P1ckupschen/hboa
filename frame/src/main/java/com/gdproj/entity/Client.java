@@ -3,7 +3,6 @@ package com.gdproj.entity;
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
-import com.gdproj.handler.jsonAndListTypeHandler;
 import com.gdproj.vo.fileVo;
 
 import java.io.Serializable;
@@ -141,14 +140,14 @@ public class Client implements Serializable {
     /**
      * 
      */
-    @TableField(value = "project_id")
-    private Integer projectId;
+    @TableField(value = "project_id",typeHandler = JacksonTypeHandler.class)
+    private List projectId;
 
     /**
      * 
      */
-    @TableField(value = "contract_id")
-    private Integer contractId;
+    @TableField(value = "contract_id",typeHandler = JacksonTypeHandler.class)
+    private List contractId;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -436,28 +435,28 @@ public class Client implements Serializable {
     /**
      * 
      */
-    public Integer getProjectId() {
+    public List getProjectId() {
         return projectId;
     }
 
     /**
      * 
      */
-    public void setProjectId(Integer projectId) {
+    public void setProjectId(List projectId) {
         this.projectId = projectId;
     }
 
     /**
      * 
      */
-    public Integer getContractId() {
+    public List getContractId() {
         return contractId;
     }
 
     /**
      * 
      */
-    public void setContractId(Integer contractId) {
+    public void setContractId(List contractId) {
         this.contractId = contractId;
     }
 

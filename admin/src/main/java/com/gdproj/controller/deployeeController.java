@@ -63,14 +63,14 @@ public class deployeeController {
 
         pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
 
-        IPage<deployeeVo> reportList = new Page<deployeeVo>();
+        IPage<deployeeVo> deployeeList = new Page<deployeeVo>();
 
         try {
-            reportList = deployeeService.getDeployeeList(pageDto);
+            deployeeList = deployeeService.getDeployeeList(pageDto);
 
             pageVo<List<deployeeVo>> pageList = new pageVo<>();
-            pageList.setData(reportList.getRecords());
-            pageList.setTotal((int) reportList.getTotal());
+            pageList.setData(deployeeList.getRecords());
+            pageList.setTotal((int) deployeeList.getTotal());
             return ResponseResult.okResult(pageList);
         }catch (SystemException e){
             return ResponseResult.errorResult(e.getCode(),e.getMsg());

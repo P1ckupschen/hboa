@@ -58,7 +58,7 @@ public class clientVo {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date updateTime;
 
-    private Integer projectId;
+    private List projectId;
 
-    private Integer contractId;
+    private List contractId;
 }

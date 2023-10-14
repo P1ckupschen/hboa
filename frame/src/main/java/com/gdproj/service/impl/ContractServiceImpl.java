@@ -124,6 +124,16 @@ public class ContractServiceImpl extends ServiceImpl<ContractMapper, Contract>
         }).collect(Collectors.toList());
         return collect;
     }
+
+    @Override
+    public List<Contract> getListByClientId(Integer clientId) {
+
+        LambdaQueryWrapper<Contract> queryWrapper =new LambdaQueryWrapper<>();
+
+        queryWrapper.eq(Contract::getContractClient,clientId);
+        List<Contract> list = list(queryWrapper);
+        return list;
+    }
 }
 
 

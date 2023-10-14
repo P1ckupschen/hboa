@@ -162,6 +162,10 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
         if (!title.isEmpty()) {
             queryWrapper.eq(Deployee::getDeployeeId,title);
         }
+        //查询部门
+        if(!ObjectUtil.isNull(departmentId)){
+            queryWrapper.eq(Deployee::getDepartmentId,departmentId);
+        }
 
         //如果有类型的话 类型
         if (!ObjectUtil.isEmpty(type)) {

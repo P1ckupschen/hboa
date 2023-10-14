@@ -6,14 +6,17 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Client;
+import com.gdproj.entity.Contract;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.ClientMapper;
 import com.gdproj.service.ClientService;
+import com.gdproj.service.ContractService;
 import com.gdproj.service.DeployeeService;
 import com.gdproj.service.ProjectService;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.clientVo;
+import com.gdproj.vo.projectVo;
 import com.gdproj.vo.selectVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,6 +42,9 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client>
 
     @Autowired
     ProjectService projectService;
+
+    @Autowired
+    ContractService contractService;
 
 
     @Override
@@ -96,7 +102,14 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client>
                 clientVo vo = BeanCopyUtils.copyBean(item, clientVo.class);
                 //类型名称?
                 vo.setProjectList(projectService.getProjectListByClientId(item.getClientId()));
-
+                List<projectVo> productList = projectService.getProjectListByClientId(item.getClientId());
+                List<Integer> collect1 = productList.stream().map(projectVo::getProjectId).collect(Collectors.toList());
+                //客户合同
+                vo.setProjectId(collect1);
+                //客户项目
+                List<Contract> contractList = contractService.getListByClientId(item.getClientId());
+                List<Integer> collect = contractList.stream().map(Contract::getContractId).collect(Collectors.toList());
+                vo.setContractId(collect);
                 return vo;
             }).collect(Collectors.toList());
         }catch (Exception e){

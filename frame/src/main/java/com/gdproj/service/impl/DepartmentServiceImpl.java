@@ -8,6 +8,8 @@ import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.DepartmentMapper;
 import com.gdproj.service.DepartmentService;
+import com.gdproj.utils.BeanCopyUtils;
+import com.gdproj.vo.departmentVo;
 import com.gdproj.vo.selectVo;
 import org.springframework.stereotype.Service;
 
@@ -51,6 +53,34 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
             return vo;
         }).collect(Collectors.toList());
         return collect;
+    }
+
+    @Override
+    public List<departmentVo> getDepartmentList() {
+
+        List<Department> list = list();
+
+        List<departmentVo> departmentVos = BeanCopyUtils.copyBeanList(list, departmentVo.class);
+
+        List<departmentVo> Tree = builderTree(departmentVos, 0);
+
+        return Tree;
+    }
+
+    public static List<departmentVo> builderTree(List<departmentVo> list, Integer parentId) {
+        List<departmentVo> Tree = list.stream()
+                .filter(item -> item.getParentId().equals(parentId))
+                .map(item -> item.setChildren(getChildren(item, list)))
+                .collect(Collectors.toList());
+        return Tree;
+    }
+
+    public static List<departmentVo> getChildren(departmentVo vo, List<departmentVo> list) {
+        List<departmentVo> childrenList = list.stream()
+                .filter(m -> m.getParentId().equals(vo.getDepartmentId()))
+                .map(m->m.setChildren(getChildren(m,list)))
+                .collect(Collectors.toList());
+        return childrenList;
     }
 }
 
