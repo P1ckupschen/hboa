@@ -6,25 +6,21 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdproj.dto.pageDto;
-import com.gdproj.entity.Leave;
 import com.gdproj.entity.Overtime;
-import com.gdproj.entity.Report;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
+import com.gdproj.mapper.OvertimeMapper;
 import com.gdproj.service.DepartmentService;
 import com.gdproj.service.DeployeeService;
 import com.gdproj.service.OvertimeService;
-import com.gdproj.mapper.OvertimeMapper;
 import com.gdproj.service.overtimeCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.leaveVo;
 import com.gdproj.vo.overtimeVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -71,10 +67,14 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
             queryWrapper.orderByDesc(Overtime::getOvertimeId);
         }
         //如果根据部门分类，有一定几率会与模糊人民冲突
-        if(!Objects.isNull(departmentId) && title.isEmpty()){
-            queryWrapper.in(Overtime::getDepartmentId,departmentId);
+        if(!ObjectUtil.isEmpty(departmentId) && title.isEmpty()){
+            List<Integer> ids = deployeeService.getIdsByDepartmentId(pageDto.getDepartmentId());
+            if(ObjectUtil.isEmpty(ids)){
+                queryWrapper.in(Overtime::getUserId,0);
+            }else{
+                queryWrapper.in(Overtime::getUserId,ids);
+            }
         }
-        //设置时间 年 月 日
         //模糊查询时间
         if(time != null){
             queryWrapper.like(Overtime::getStartTime,time);

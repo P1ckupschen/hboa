@@ -142,8 +142,6 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
         //排序
         String sort = pageDto.getSort();
         //搜索框如果是产品搜索产品名称或者选择产品id
-        //如果是人 搜素人名或者人id
-        //如果是物 搜索id
         String title = pageDto.getTitle();
         Integer pageNum = pageDto.getPageNum();
         Integer pageSize = pageDto.getPageSize();
@@ -162,7 +160,7 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
         if (!title.isEmpty()) {
             queryWrapper.eq(Deployee::getDeployeeId,title);
         }
-        //查询部门
+        //查询部门 是否需要找到子部门的所有员工
         if(!ObjectUtil.isNull(departmentId)){
             queryWrapper.eq(Deployee::getDepartmentId,departmentId);
         }

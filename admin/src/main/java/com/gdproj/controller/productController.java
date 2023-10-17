@@ -149,7 +149,7 @@ public class productController {
     @DeleteMapping("deleteProduct")
     @autoLog
     @ApiOperation(value = "删除产品")
-    public ResponseResult deleteProduct(@PathParam("productId") Integer productId){
+    public ResponseResult deleteProduct(@RequestParam("productId") Integer productId){
 
         boolean b = false;
 
@@ -292,7 +292,7 @@ public class productController {
     @DeleteMapping("deleteCategory")
     @autoLog
     @ApiOperation(value = "删除类型")
-    public ResponseResult deleteCategory(@PathParam("categoryId") Integer categoryId){
+    public ResponseResult deleteCategory(@RequestParam("categoryId") Integer categoryId){
 
 
         System.out.println(categoryId);

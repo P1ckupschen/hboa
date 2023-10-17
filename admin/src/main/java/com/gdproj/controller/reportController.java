@@ -6,20 +6,23 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.annotation.autoLog;
 import com.gdproj.dto.pageDto;
-import com.gdproj.entity.*;
+import com.gdproj.entity.Report;
+import com.gdproj.entity.notifyCategory;
+import com.gdproj.entity.reportCategory;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.ReportService;
 import com.gdproj.service.reportCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.*;
+import com.gdproj.vo.categoryVo;
+import com.gdproj.vo.pageVo;
+import com.gdproj.vo.reportVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
@@ -126,7 +129,7 @@ public class reportController {
     @DeleteMapping("deleteReport")
     @autoLog
     @ApiOperation(value = "删除汇报")
-    public ResponseResult deleteReport(@PathParam("reportId") Integer reportId){
+    public ResponseResult deleteReport(@RequestParam("reportId") Integer reportId){
 
         System.out.println(reportId);
 
@@ -275,7 +278,7 @@ public class reportController {
     @DeleteMapping("deleteCategory")
     @autoLog
     @ApiOperation(value = "删除类型")
-    public ResponseResult deleteCategory(@PathParam("categoryId") Integer categoryId){
+    public ResponseResult deleteCategory(@RequestParam("categoryId") Integer categoryId){
 
         reportCategory reportcategory = new reportCategory();
 

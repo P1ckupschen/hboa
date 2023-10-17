@@ -18,7 +18,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -141,7 +140,7 @@ public class clientController {
     @DeleteMapping("deleteClient")
     @autoLog
     @ApiOperation(value = "删除客户数据", notes = "删除")
-    public ResponseResult deleteClient(@PathParam("clientId") Integer clientId){
+    public ResponseResult deleteClient(@RequestParam("clientId") Integer clientId){
 
         boolean b = false;
 

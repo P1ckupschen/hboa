@@ -1,20 +1,23 @@
 package com.gdproj.controller;
 
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.annotation.autoLog;
+import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Department;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.DepartmentService;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.departmentVo;
+import com.gdproj.vo.pageVo;
 import com.gdproj.vo.selectVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,31 +46,43 @@ public class departmentController {
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
         }
 
-
     }
-
 
     @GetMapping("/getDepartmentList")
     @autoLog
     @ApiOperation(value = "查询部门列表")
-    public ResponseResult getDepartmentList(){
-        List<departmentVo> list = new ArrayList<>();
+    public ResponseResult getDepartmentList(
+            @RequestParam Integer pageNum,
+            @RequestParam Integer pageSize,
+            @RequestParam(required = false,defaultValue = "+id")String sort,
+            @RequestParam(required = false,defaultValue = "") String title ,
+            @RequestParam(required = false) Integer departmentId,
+            @RequestParam(required = false) Integer type,
+            @RequestParam(required = false) String time){
+
+
+        pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
+
+        IPage<departmentVo> departmentList = new Page<departmentVo>();
+
         try {
-            list = departmentService.getDepartmentList();
-//            list = departmentService.list();
+            departmentList = departmentService.getDepartmentList(pageDto);
             //生成树结构
 
+            pageVo<List<departmentVo>> pageList = new pageVo<>();
+            pageList.setData(departmentList.getRecords());
+            pageList.setTotal((int) departmentList.getTotal());
+            return ResponseResult.okResult(pageList);
         }catch (Exception e){
             return ResponseResult.errorResult(AppHttpCodeEnum.DEPARTMENT_LIST_ERROR);
         }
-        return ResponseResult.okResult(list);
+
     }
 
     @PutMapping("updateDepartment")
     @autoLog
     @ApiOperation(value = "更新部门")
     public ResponseResult updateDepartment(@RequestBody departmentVo vo){
-
 
         Department updateInfo = BeanCopyUtils.copyBean(vo, Department.class);
 //        vo中的 发布人  类型 部门
@@ -124,7 +139,7 @@ public class departmentController {
     @DeleteMapping("deleteDepartment")
     @autoLog
     @ApiOperation(value = "删除部门")
-    public ResponseResult deleteDepartment(@PathParam("departmentId") Integer id){
+    public ResponseResult deleteDepartment(@RequestParam("departmentId") Integer id){
 
         System.out.println(id);
 

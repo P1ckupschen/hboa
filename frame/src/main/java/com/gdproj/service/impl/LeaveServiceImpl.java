@@ -7,24 +7,20 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Leave;
-import com.gdproj.entity.Notify;
-import com.gdproj.entity.Sign;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
+import com.gdproj.mapper.LeaveMapper;
 import com.gdproj.service.DepartmentService;
 import com.gdproj.service.DeployeeService;
-import com.gdproj.service.leaveCategoryService;
 import com.gdproj.service.LeaveService;
-import com.gdproj.mapper.LeaveMapper;
+import com.gdproj.service.leaveCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.leaveVo;
-import com.gdproj.vo.signVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -70,8 +66,13 @@ public class LeaveServiceImpl extends ServiceImpl<LeaveMapper, Leave>
             queryWrapper.orderByDesc(Leave::getLeaveId);
         }
         //如果根据部门分类，有一定几率会与模糊人民冲突
-        if(!Objects.isNull(departmentId) && title.isEmpty()){
-            queryWrapper.in(Leave::getDepartmentId,departmentId);
+        if(!ObjectUtil.isEmpty(departmentId) && title.isEmpty()){
+            List<Integer> ids = deployeeService.getIdsByDepartmentId(pageDto.getDepartmentId());
+            if(ObjectUtil.isEmpty(ids)){
+                queryWrapper.in(Leave::getUserId,0);
+            }else{
+                queryWrapper.in(Leave::getUserId,ids);
+            }
         }
         //设置时间 年 月 日
         //模糊查询时间

@@ -18,7 +18,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
@@ -128,7 +127,7 @@ public class taskController {
     @DeleteMapping("deleteTask")
     @autoLog
     @ApiOperation(value = "删除任务")
-    public ResponseResult deleteTask(@PathParam("taskId") Integer taskId){
+    public ResponseResult deleteTask(@RequestParam("taskId") Integer taskId){
 
         boolean b = false;
 

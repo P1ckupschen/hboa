@@ -21,7 +21,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
@@ -128,7 +127,7 @@ public class notifyController {
     @DeleteMapping("deleteNotify")
     @autoLog
     @ApiOperation(value = "删除公告")
-    public ResponseResult deleteNotify(@PathParam("notifyId") Integer notifyId){
+    public ResponseResult deleteNotify(@RequestParam("notifyId") Integer notifyId){
 
         System.out.println(notifyId);
 
@@ -277,7 +276,7 @@ public class notifyController {
     @DeleteMapping("deleteCategory")
     @autoLog
     @ApiOperation(value = "删除类型")
-    public ResponseResult deleteCategory(@PathParam("categoryId") Integer categoryId){
+    public ResponseResult deleteCategory(@RequestParam("categoryId") Integer categoryId){
 
         notifyCategory notifycategory = new notifyCategory();
 

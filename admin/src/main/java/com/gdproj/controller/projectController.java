@@ -23,9 +23,9 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/adminProject")
@@ -147,7 +147,7 @@ public class projectController {
     @DeleteMapping("deleteProject")
     @autoLog
     @ApiOperation(value = "删除项目")
-    public ResponseResult deleteProject(@PathParam("projectId") Integer Id){
+    public ResponseResult deleteProject(@RequestParam("projectId") Integer Id){
 
         boolean b = false;
 
@@ -206,8 +206,13 @@ public class projectController {
 
             if(ObjectUtil.isNull(pagedto.getPageNum())){
                 List<projectCategory> list = categoryService.list();
-
-                return ResponseResult.okResult(list);
+                List<selectVo> collect = list.stream().map((item) -> {
+                    selectVo vo = new selectVo();
+                    vo.setId(item.getCategoryId());
+                    vo.setName(item.getCategoryName());
+                    return vo;
+                }).collect(Collectors.toList());
+                return ResponseResult.okResult(collect);
             }else{
 
                 categoryList = categoryService.getProjectCategoryList(pagedto);
@@ -282,7 +287,7 @@ public class projectController {
     @DeleteMapping("deleteCategory")
     @autoLog
     @ApiOperation(value = "删除类型")
-    public ResponseResult deleteCategory(@PathParam("categoryId") Integer categoryId){
+    public ResponseResult deleteCategory(@RequestParam("categoryId") Integer categoryId){
 
         reportCategory reportcategory = new reportCategory();
 

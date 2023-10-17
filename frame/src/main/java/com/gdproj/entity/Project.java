@@ -177,7 +177,7 @@ public class Project implements Serializable {
      * 项目安排
      */
     @TableField(value = "project_arrangement", typeHandler = JacksonTypeHandler.class)
-    private Map<String, String> projectArrangement;
+    private List projectArrangement;
 
     /**
      *
@@ -567,14 +567,14 @@ public class Project implements Serializable {
     /**
      * 项目安排
      */
-    public Map<String, String> getProjectArrangement() {
+    public List getProjectArrangement() {
         return projectArrangement;
     }
 
     /**
      * 项目安排
      */
-    public void setProjectArrangement(Map<String, String> projectArrangement) {
+    public void setProjectArrangement(List projectArrangement) {
         this.projectArrangement = projectArrangement;
     }
 

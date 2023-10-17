@@ -19,7 +19,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,7 +102,7 @@ public class epibolyController {
 
         }catch (Exception e){
 
-            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+            return ResponseResult.errorResult(AppHttpCodeEnum.UPDATE_ERROR);
 
         }
 
@@ -131,7 +130,7 @@ public class epibolyController {
 
         }catch (Exception e){
 
-            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+            return ResponseResult.errorResult(AppHttpCodeEnum.INSERT_ERROR);
 
         }
 
@@ -140,7 +139,7 @@ public class epibolyController {
     @DeleteMapping("deleteEpiboly")
     @autoLog
     @ApiOperation(value = "删除外包")
-    public ResponseResult deleteEpiboly(@PathParam("epibolyId") Integer Id){
+    public ResponseResult deleteEpiboly(@RequestParam("epibolyId") Integer Id){
 
         boolean b = false;
 
@@ -156,7 +155,7 @@ public class epibolyController {
 
         }catch (Exception e){
 
-            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+            return ResponseResult.errorResult(AppHttpCodeEnum.DELETE_ERROR);
 
         }
     }

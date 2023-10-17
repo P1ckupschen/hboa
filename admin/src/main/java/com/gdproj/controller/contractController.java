@@ -152,7 +152,7 @@ public class contractController {
     @DeleteMapping("deleteContract")
     @autoLog
     @ApiOperation(value = "删除合同")
-    public ResponseResult deleteContract(@PathParam("contractId") Integer contractId){
+    public ResponseResult deleteContract(@RequestParam("contractId") Integer contractId){
 
         boolean b = false;
 

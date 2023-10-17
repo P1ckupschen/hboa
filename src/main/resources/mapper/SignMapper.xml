@@ -9,24 +9,23 @@
             <result property="signUser" column="sign_user" jdbcType="INTEGER"/>
             <result property="inTime" column="in_time" jdbcType="TIMESTAMP"/>
             <result property="signIp" column="sign_ip" jdbcType="VARCHAR"/>
-            <result property="departmentId" column="department_id" jdbcType="INTEGER"/>
             <result property="signAddr" column="sign_addr" jdbcType="VARCHAR"/>
             <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
-            <result property="signStatus" column="sign_status" jdbcType="VARCHAR"/>
-            <result property="workTime" column="work_time" jdbcType="TIMESTAMP"/>
-            <result property="tWorkTime" column="t_work_time" jdbcType="TIMESTAMP"/>
-            <result property="isLate" column="is_late" jdbcType="VARCHAR"/>
-            <result property="isOut" column="is_out" jdbcType="VARCHAR"/>
-            <result property="isAway" column="is_away" jdbcType="VARCHAR"/>
-            <result property="isEarly" column="is_early" jdbcType="VARCHAR"/>
+            <result property="signStatus" column="sign_status" jdbcType="INTEGER"/>
+            <result property="workTime" column="work_time" jdbcType="INTEGER"/>
+            <result property="tWorkTime" column="t_work_time" jdbcType="INTEGER"/>
+            <result property="isLate" column="is_late" jdbcType="INTEGER"/>
+            <result property="isOut" column="is_out" jdbcType="INTEGER"/>
+            <result property="isAway" column="is_away" jdbcType="INTEGER"/>
+            <result property="isEarly" column="is_early" jdbcType="INTEGER"/>
             <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         sign_id,sign_user,in_time,
-        sign_ip,department_id,sign_addr,
-        end_time,sign_status,work_time,
-        t_work_time,is_late,is_out,
-        is_away,is_early,is_deleted
+        sign_ip,sign_addr,end_time,
+        sign_status,work_time,t_work_time,
+        is_late,is_out,is_away,
+        is_early,is_deleted
     </sql>
 </mapper>

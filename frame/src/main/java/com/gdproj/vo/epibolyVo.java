@@ -50,7 +50,7 @@ public class epibolyVo {
 
     private Integer epibolyProcess;
 
-    private String contractIds;
+    private List contractIds;
 
     private Integer epibolyClient;
 
@@ -63,7 +63,7 @@ public class epibolyVo {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date completedTime;
 
-    private String completedVoucher;
+    private List<fileVo> completedVoucher;
 
 
     private List epibolyArrangement;
@@ -76,7 +76,7 @@ public class epibolyVo {
 
     private String epibolyCompany;
 
-    private String epibolyContacts;
+    private List epibolyContacts;
 
     private projectVo project;
 }

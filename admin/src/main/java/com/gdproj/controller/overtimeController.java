@@ -5,20 +5,23 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.annotation.autoLog;
 import com.gdproj.dto.pageDto;
-import com.gdproj.entity.*;
+import com.gdproj.entity.Overtime;
+import com.gdproj.entity.notifyCategory;
+import com.gdproj.entity.overtimeCategory;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.OvertimeService;
 import com.gdproj.service.overtimeCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.*;
+import com.gdproj.vo.categoryVo;
+import com.gdproj.vo.overtimeVo;
+import com.gdproj.vo.pageVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
@@ -127,7 +130,7 @@ public class overtimeController {
     @DeleteMapping("deleteOvertime")
     @autoLog
     @ApiOperation(value = "删除加班")
-    public ResponseResult deleteOvertime(@PathParam("overtimeId") Integer overtimeId){
+    public ResponseResult deleteOvertime(@RequestParam("overtimeId") Integer overtimeId){
 
         System.out.println(overtimeId);
 
@@ -272,7 +275,7 @@ public class overtimeController {
     @DeleteMapping("deleteCategory")
     @autoLog
     @ApiOperation(value = "删除类型")
-    public ResponseResult deleteCategory(@PathParam("categoryId") Integer categoryId){
+    public ResponseResult deleteCategory(@RequestParam("categoryId") Integer categoryId){
 
 
         System.out.println(categoryId);

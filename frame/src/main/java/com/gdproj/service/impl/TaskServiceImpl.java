@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdproj.dto.pageDto;
-import com.gdproj.entity.Notify;
 import com.gdproj.entity.Task;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
@@ -14,7 +13,6 @@ import com.gdproj.mapper.TaskMapper;
 import com.gdproj.service.DeployeeService;
 import com.gdproj.service.TaskService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.notifyVo;
 import com.gdproj.vo.taskVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -65,7 +63,11 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
         if(!Objects.isNull(departmentId) && title.isEmpty()){
             //如果没有对象没有部门id属性就找到对应id的部门所以的员工的userid
             List<Integer> userIds = deployeeService.getIdsByDepartmentId(departmentId);
-            queryWrapper.in(Task::getExecutorId,userIds);
+            if(ObjectUtil.isEmpty(userIds)){
+                queryWrapper.in(Task::getExecutorId,0);
+            }else{
+                queryWrapper.in(Task::getExecutorId,userIds);
+            }
         }
         //设置时间 年 月 日
         //模糊查询时间

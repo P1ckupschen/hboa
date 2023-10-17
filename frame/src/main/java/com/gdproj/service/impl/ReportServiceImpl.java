@@ -69,7 +69,11 @@ public class ReportServiceImpl extends ServiceImpl<ReportMapper, Report>
         if(!Objects.isNull(departmentId) && title.isEmpty()){
             //如果没有对象没有部门id属性就找到对应id的部门所以的员工的userid
             List<Integer> userIds = deployeeService.getIdsByDepartmentId(departmentId);
-            queryWrapper.in(Report::getUserId,userIds);
+            if(ObjectUtil.isEmpty(userIds)){
+                queryWrapper.in(Report::getUserId,0);
+            }else{
+                queryWrapper.in(Report::getUserId,userIds);
+            }
         }
         //设置时间 年 月 日
         //模糊查询时间

@@ -74,7 +74,7 @@ public class projectVo {
 
     private List<fileVo> completedVoucher;
 
-    private List<fileVo> projectArrangement;
+    private List projectArrangement;
 
     private Integer categoryId;
 

@@ -2,6 +2,8 @@ package com.gdproj.aspect;
 
 
 import cn.hutool.json.JSONUtil;
+import com.gdproj.entity.Log;
+import com.gdproj.service.LogService;
 import io.swagger.annotations.ApiOperation;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -9,7 +11,10 @@ import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
@@ -18,6 +23,10 @@ import java.lang.reflect.Method;
 @Aspect
 @Component
 public class logAspect {
+
+    @Autowired
+    LogService logService;
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     static Long starttime = 0L;
     @Pointcut("@annotation(com.gdproj.annotation.autoLog)")
@@ -56,6 +65,22 @@ public class logAspect {
         logger.info("请求类方法:" + point.getSignature().getName());
         logger.info("请求类方法参数:" + JSONUtil.toJsonStr(point.getArgs()));
         logger.info("===============请求内容===============");
+
+        Log log = new Log();
+
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        log.setLogContent(method.getAnnotation(ApiOperation.class).value());
+        log.setUserIp(getIpAddress(request));
+        String token = request.getHeader("Authorization");
+
+//        if(JwtUtils.checkToken(token)){
+//            String subToken = token.substring(7);
+//            Integer id = (Integer) JwtUtils.parseJWT(subToken).get("id");
+//            log.setUserId(id);
+//        }
+
+//        logService.insertLogByOperate();
+
         long beginTime = System.currentTimeMillis();
         //执行方法
         Object result = point.proceed();

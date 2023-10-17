@@ -108,8 +108,8 @@ public class Epiboly implements Serializable {
     /**
      * 
      */
-    @TableField(value = "contract_ids")
-    private String contractIds;
+    @TableField(value = "contract_ids",typeHandler = JacksonTypeHandler.class)
+    private List contractIds;
 
     /**
      * json存客户信息
@@ -144,8 +144,8 @@ public class Epiboly implements Serializable {
     /**
      * 完成的凭证
      */
-    @TableField(value = "completed_voucher")
-    private String completedVoucher;
+    @TableField(value = "completed_voucher",typeHandler = JacksonTypeHandler.class)
+    private List<fileVo> completedVoucher;
 
     /**
      * 
@@ -187,8 +187,8 @@ public class Epiboly implements Serializable {
     /**
      * 联系人
      */
-    @TableField(value = "epiboly_contacts")
-    private String epibolyContacts;
+    @TableField(value = "epiboly_contacts",typeHandler = JacksonTypeHandler.class)
+    private List epibolyContacts;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -406,14 +406,14 @@ public class Epiboly implements Serializable {
     /**
      * 
      */
-    public String getContractIds() {
+    public List getContractIds() {
         return contractIds;
     }
 
     /**
      * 
      */
-    public void setContractIds(String contractIds) {
+    public void setContractIds(List contractIds) {
         this.contractIds = contractIds;
     }
 
@@ -490,14 +490,14 @@ public class Epiboly implements Serializable {
     /**
      * 完成的凭证
      */
-    public String getCompletedVoucher() {
+    public List<fileVo> getCompletedVoucher() {
         return completedVoucher;
     }
 
     /**
      * 完成的凭证
      */
-    public void setCompletedVoucher(String completedVoucher) {
+    public void setCompletedVoucher(List<fileVo> completedVoucher) {
         this.completedVoucher = completedVoucher;
     }
 
@@ -588,14 +588,14 @@ public class Epiboly implements Serializable {
     /**
      * 联系人
      */
-    public String getEpibolyContacts() {
+    public List getEpibolyContacts() {
         return epibolyContacts;
     }
 
     /**
      * 联系人
      */
-    public void setEpibolyContacts(String epibolContacts) {
+    public void setEpibolyContacts(List epibolContacts) {
         this.epibolyContacts = epibolContacts;
     }
 

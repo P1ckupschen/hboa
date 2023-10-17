@@ -18,7 +18,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,7 +105,7 @@ public class deployeeController {
 
         }catch (Exception e){
 
-            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+            return ResponseResult.errorResult(AppHttpCodeEnum.UPDATE_ERROR);
 
         }
 
@@ -134,7 +133,7 @@ public class deployeeController {
 
         }catch (Exception e){
 
-            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+            return ResponseResult.errorResult(AppHttpCodeEnum.INSERT_ERROR);
 
         }
 
@@ -143,7 +142,7 @@ public class deployeeController {
     @DeleteMapping("deleteDeployee")
     @autoLog
     @ApiOperation(value = "删除员工")
-    public ResponseResult deleteDeployee(@PathParam("deployeeId") Integer id){
+    public ResponseResult deleteDeployee(@RequestParam("deployeeId") Integer id){
 
         System.out.println(id);
 
@@ -161,7 +160,7 @@ public class deployeeController {
 
         }catch (Exception e){
 
-            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+            return ResponseResult.errorResult(AppHttpCodeEnum.DELETE_ERROR);
 
         }
 

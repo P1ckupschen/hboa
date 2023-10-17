@@ -1,15 +1,11 @@
 package com.gdproj.service.impl;
 
-import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.injector.methods.SelectPage;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-
 import com.gdproj.dto.pageDto;
-import com.gdproj.entity.Leave;
 import com.gdproj.entity.Sign;
 import com.gdproj.mapper.SignMapper;
 import com.gdproj.service.DepartmentService;
@@ -17,12 +13,12 @@ import com.gdproj.service.DeployeeService;
 import com.gdproj.service.SignService;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.signVo;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.DateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -62,10 +58,14 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
 
 
         //如果根据部门分类，有一定几率会与模糊人民冲突
-        if(!Objects.isNull(pagedto.getDepartmentId()) && title.isEmpty()){
-//            List<Integer> ids = deployeeService.getIdsByDepartmentId(pagedto.getType());
-//            queryWrapper.in(Sign::getDepartmentId,ids);
-            queryWrapper.in(Sign::getDepartmentId,pagedto.getDepartmentId());
+        if(!ObjectUtil.isEmpty(pagedto.getDepartmentId()) && title.isEmpty()){
+            List<Integer> ids = deployeeService.getIdsByDepartmentId(pagedto.getDepartmentId());
+            if(ObjectUtil.isEmpty(ids)){
+                queryWrapper.in(Sign::getUserId,0);
+            }else{
+                queryWrapper.in(Sign::getUserId,ids);
+            }
+//            queryWrapper.in(Sign::getDepartmentId,pagedto.getDepartmentId());
         }
 
         //设置时间 年 月 日
@@ -79,7 +79,7 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
         if(!title.isEmpty()){
             //如果有模糊查询的时间 先通过查title 的用户ids
             List<Integer> ids = deployeeService.getIdsByTitle(title);
-            queryWrapper.in(Sign::getSignUser,ids);
+            queryWrapper.in(Sign::getUserId,ids);
             //通过ids去找所有符合ids的对象 sign;
         }
 
@@ -90,10 +90,11 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
         //结果里的部门 和用户都返回成string；
         List<signVo> resultList = signPage.getRecords().stream().map((item) -> {
             signVo signvo = BeanCopyUtils.copyBean(item, signVo.class);
-            //用户
-            signvo.setSignUser(deployeeService.getNameByUserId(item.getSignUser()));
+
+            signvo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
             //部门
-            signvo.setDepartmentId(departmentService.getDepartmentNameByDepartmentId(item.getDepartmentId()));
+            signvo.setDepartment(departmentService.getDepartmentNameByDepartmentId(deployeeService.getById(item.getUserId()).getDepartmentId()));
+            signvo.setDepartmentId(deployeeService.getDepartmentIdByUserId(item.getUserId()));
             long workTime = (signvo.getEndTime().getTime() - signvo.getInTime().getTime()) / 1000 / 60 / 60;
             signvo.setTWorkTime( (int) workTime);
             //设置是否完成考勤 判断时长 判断是否迟到 是否早退
