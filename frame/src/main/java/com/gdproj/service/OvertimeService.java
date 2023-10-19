@@ -6,8 +6,6 @@ import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Overtime;
 import com.gdproj.vo.overtimeVo;
 
-import java.util.List;
-
 /**
 * @author Administrator
 * @description 针对表【sys_overtime】的数据库操作Service
@@ -16,4 +14,6 @@ import java.util.List;
 public interface OvertimeService extends IService<Overtime> {
 
     IPage<overtimeVo> getOverTimeList(pageDto pageDto);
+
+    boolean insertOvertime(Overtime insertOvertime);
 }

@@ -10,10 +10,7 @@ import com.gdproj.entity.Leave;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.LeaveMapper;
-import com.gdproj.service.DepartmentService;
-import com.gdproj.service.DeployeeService;
-import com.gdproj.service.LeaveService;
-import com.gdproj.service.leaveCategoryService;
+import com.gdproj.service.*;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.leaveVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +39,8 @@ public class LeaveServiceImpl extends ServiceImpl<LeaveMapper, Leave>
     leaveCategoryService leaveCategoryService;
 
     @Autowired
-    LeaveMapper leaveMapper;
+    FlowService flowService;
+
 
     @Override
     public IPage<leaveVo> getLeaveList(pageDto pageDto) {
@@ -92,7 +90,7 @@ public class LeaveServiceImpl extends ServiceImpl<LeaveMapper, Leave>
             queryWrapper.eq(Leave::getCategoryId,type);
         }
 
-        IPage<Leave> leavePage = leaveMapper.selectPage(page, queryWrapper);
+        IPage<Leave> leavePage = page(page, queryWrapper);
 
         Page<leaveVo> resultPage = new Page<>();
 
@@ -142,6 +140,22 @@ public class LeaveServiceImpl extends ServiceImpl<LeaveMapper, Leave>
 
 
         return resultPage;
+    }
+
+    @Override
+    public boolean insertLeave(Leave insertLeave) {
+
+        boolean f =false;
+        boolean o =save(insertLeave);
+        if(o){
+            f = flowService.insertFlow(insertLeave);
+        }else{
+            throw new SystemException(AppHttpCodeEnum.INSERT_ERROR);
+        }
+        //同时更新flow 表 增加一条flow数据
+
+
+        return o && f;
     }
 }
 

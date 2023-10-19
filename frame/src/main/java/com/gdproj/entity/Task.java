@@ -1,9 +1,6 @@
 package com.gdproj.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.gdproj.handler.jsonAndListTypeHandler;
 import com.gdproj.vo.fileVo;
 
@@ -111,6 +108,7 @@ public class Task implements Serializable {
      * 
      */
     @TableField(value = "is_deleted")
+    @TableLogic
     private Integer isDeleted;
 
     /**

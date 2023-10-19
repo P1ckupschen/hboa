@@ -1,10 +1,6 @@
 package com.gdproj.vo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.models.auth.In;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -36,6 +32,7 @@ public class leaveVo {
 
     private Integer departmentId;
 
-
+    private Integer typeId;
+    private String leaveTitle;
 
 }

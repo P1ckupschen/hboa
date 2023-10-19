@@ -36,7 +36,6 @@ public class recordController {
     StockService stockService;
 
 
-
     //记录的增删改查
     @GetMapping("/getRecordList")
     @autoLog

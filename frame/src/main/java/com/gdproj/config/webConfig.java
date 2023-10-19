@@ -30,7 +30,8 @@ public class webConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         //注册TestInterceptor拦截器
         registry.addInterceptor(loginInterceptor())
-                .excludePathPatterns("/adminLogin/userlogin")             //添加不拦截的请求路径
+                .excludePathPatterns("/adminLogin/userlogin")             //后台
+                .excludePathPatterns("/adminLogin/frontLogin")             //前台
                 .excludePathPatterns("/api/loginBackend")
                 .excludePathPatterns("/swagger-resources")
                 .excludePathPatterns("/swagger-resources/**")

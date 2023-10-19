@@ -9,6 +9,8 @@ public enum AppHttpCodeEnum {
     LOGIN_ERROR(207,"用户名或密码错误"),
     NEED_LOGIN(208,"需要登录后操作"),
 
+    GET_ACCOUNTINFO_ERROR(209,"获取用户信息失败"),
+
 
 
 
@@ -36,7 +38,9 @@ public enum AppHttpCodeEnum {
     FILE_SIZE_MAX(10010,"文件过大"),
     FILE_TYPE_ERROR(10011,"文件类型错误"),
     FILE_CONTENT_NULL(10012,"文件为空" ),
-    FILE_STORAGE_ERROR(10013,"文件保存异常");
+    FILE_STORAGE_ERROR(10013,"文件保存异常"),
+
+    SIGN_IN_ERROR(20001,"签到打卡失败");
 
     int code;
     String msg;

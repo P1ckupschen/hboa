@@ -2,15 +2,15 @@ package com.gdproj.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-
 import com.gdproj.entity.User;
 import com.gdproj.mapper.UserMapper;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.UserService;
+import com.gdproj.utils.BeanCopyUtils;
+import com.gdproj.utils.JwtUtils;
 import com.gdproj.utils.RSAUtil;
+import com.gdproj.vo.userVo;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
 * @author Administrator
@@ -51,11 +51,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         return ResponseResult.okResult(one);
     }
 
+    @Override
+    public userVo getUserInfo(String token) throws Exception {
+        String subToken = token.substring(7);
+        String id = (String) JwtUtils.parseJWT(subToken).get("id");
+        //id是account 表的 主键id
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
 
-    public void getUserInfo() {
-
+        queryWrapper.eq(User::getId,id);
+        User one = getOne(queryWrapper);
+        userVo vo = BeanCopyUtils.copyBean(one, userVo.class);
+        return vo;
     }
-
 
 
 }

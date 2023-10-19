@@ -1,6 +1,5 @@
 package com.gdproj.vo;
 
-import io.swagger.models.auth.In;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,4 +16,6 @@ public class userVo {
     private Integer departmentId;
 
     private String department;
+
+    private String name;
 }

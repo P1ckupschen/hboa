@@ -1,8 +1,5 @@
 package com.gdproj.vo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,7 +19,7 @@ public class overtimeVo {
 
     private String Department;
 
-    private Integer overtimeDays;
+    private Integer overtimeHours;
 
     private Integer categoryId;
 
@@ -40,10 +37,15 @@ public class overtimeVo {
 
     private Integer overtimeStatus;
 
-    private Integer userId;
+    private Integer applicantId;
+
+    private Integer executorId;
 
     private Integer departmentId;
 
+    private Integer typeId;
+
+    private String overtimeTitle;
 
 
 }

@@ -1,5 +1,6 @@
 package com.gdproj.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -9,9 +10,11 @@ import com.gdproj.entity.Log;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.LogMapper;
+import com.gdproj.service.DeployeeService;
 import com.gdproj.service.LogService;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.logVo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,6 +29,9 @@ import java.util.stream.Collectors;
 @Service
 public class LogServiceImpl extends ServiceImpl<LogMapper, Log>
     implements LogService {
+
+    @Autowired
+    DeployeeService deployeeService;
 
     @Override
     public IPage<logVo> getLogList(pageDto pageDto) {
@@ -46,6 +52,7 @@ public class LogServiceImpl extends ServiceImpl<LogMapper, Log>
         Page<Log> page = new Page<>(pageNum, pageSize);
 
         LambdaQueryWrapper<Log> queryWrapper = new LambdaQueryWrapper<>();
+
         //排序
         if (sort.equals("+id")) {
             queryWrapper.orderByAsc(Log::getLogId);
@@ -64,23 +71,33 @@ public class LogServiceImpl extends ServiceImpl<LogMapper, Log>
 
         List<logVo> resultList = new ArrayList<>();
         try {
-
             resultList = recordPage.getRecords().stream().map((item) -> {
-
                 logVo vo = BeanCopyUtils.copyBean(item, logVo.class);
-                //类型名称?
+                if(ObjectUtil.isEmpty(item.getUserId())){
+                    vo.setUsername("未登录状态未知用户");
+                }else{
+                    vo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
+                }
                 return vo;
             }).collect(Collectors.toList());
         }catch (Exception e){
             throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
         }
-
         resultPage.setRecords(resultList);
-
         resultPage.setTotal(recordPage.getTotal());
-
         return resultPage;
     }
+
+    @Override
+    public void insertLogWhenOperating(Log log) {
+
+        try {
+            save(log);
+        }catch (Exception e){
+            throw new SystemException(AppHttpCodeEnum.INSERT_ERROR);
+        }
+    }
+
 
 }
 

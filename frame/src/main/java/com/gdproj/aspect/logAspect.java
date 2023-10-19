@@ -1,9 +1,11 @@
 package com.gdproj.aspect;
 
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONUtil;
 import com.gdproj.entity.Log;
 import com.gdproj.service.LogService;
+import com.gdproj.utils.JwtUtils;
 import io.swagger.annotations.ApiOperation;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -73,13 +75,13 @@ public class logAspect {
         log.setUserIp(getIpAddress(request));
         String token = request.getHeader("Authorization");
 
-//        if(JwtUtils.checkToken(token)){
-//            String subToken = token.substring(7);
-//            Integer id = (Integer) JwtUtils.parseJWT(subToken).get("id");
-//            log.setUserId(id);
-//        }
-
-//        logService.insertLogByOperate();
+        if(!ObjectUtil.isEmpty(token) &&  JwtUtils.checkToken(token)){
+            String subToken = token.substring(7);
+            String id = (String) JwtUtils.parseJWT(subToken).get("id");
+            log.setUserId(Integer.valueOf(id));
+        }
+//
+//        logService.insertLogWhenOperating(log);
 
         long beginTime = System.currentTimeMillis();
         //执行方法

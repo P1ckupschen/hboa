@@ -98,7 +98,7 @@ public class leaveController {
 
     @PostMapping("insertLeave")
     @autoLog
-    @ApiOperation(value = "新增请假")
+    @ApiOperation(value = "新增请假同时添加流程信息")
     public ResponseResult insertLeave(@RequestBody leaveVo leaveVo){
 
         Leave insertLeave = BeanCopyUtils.copyBean(leaveVo, Leave.class);
@@ -107,7 +107,8 @@ public class leaveController {
 
         try {
 
-            b = leaveService.save(insertLeave);
+//            b = leaveService.save(insertLeave);
+            b = leaveService.insertLeave(insertLeave);
 
             if(b){
                 return ResponseResult.okResult(b);

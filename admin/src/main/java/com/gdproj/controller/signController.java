@@ -5,20 +5,21 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.annotation.autoLog;
 import com.gdproj.dto.pageDto;
+import com.gdproj.entity.Sign;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.SignService;
+import com.gdproj.utils.BeanCopyUtils;
+import com.gdproj.utils.Iputil;
 import com.gdproj.vo.pageVo;
 import com.gdproj.vo.signVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -63,6 +64,24 @@ public class signController {
 
         }
 
+    }
 
+    @PostMapping("insertSign")
+    @ApiOperation(value = "签到")
+    public ResponseResult insertSign(@RequestBody signVo vo, HttpServletRequest request){
+
+        System.out.println(vo);
+        Sign sign = BeanCopyUtils.copyBean(vo, Sign.class);
+        String ip = Iputil.getIp(request);
+        sign.setSignIp(ip);
+
+        boolean b = false;
+        //怎么添加签到信息
+        try {
+            b = signService.insertSign(sign);
+            return ResponseResult.okResult(b);
+        }catch (Exception e){
+            return ResponseResult.errorResult(AppHttpCodeEnum.SIGN_IN_ERROR);
+        }
     }
 }

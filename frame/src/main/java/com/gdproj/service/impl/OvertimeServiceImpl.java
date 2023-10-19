@@ -10,10 +10,7 @@ import com.gdproj.entity.Overtime;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.OvertimeMapper;
-import com.gdproj.service.DepartmentService;
-import com.gdproj.service.DeployeeService;
-import com.gdproj.service.OvertimeService;
-import com.gdproj.service.overtimeCategoryService;
+import com.gdproj.service.*;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.overtimeVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +39,9 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
     overtimeCategoryService overtimecategoryService;
 
     @Autowired
-    OvertimeMapper overtimeMapper;
+    FlowService flowService;
+
+
 
     @Override
     public IPage<overtimeVo> getOverTimeList(pageDto pageDto) {
@@ -70,9 +69,9 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
         if(!ObjectUtil.isEmpty(departmentId) && title.isEmpty()){
             List<Integer> ids = deployeeService.getIdsByDepartmentId(pageDto.getDepartmentId());
             if(ObjectUtil.isEmpty(ids)){
-                queryWrapper.in(Overtime::getUserId,0);
+                queryWrapper.in(Overtime::getExecutorId,0);
             }else{
-                queryWrapper.in(Overtime::getUserId,ids);
+                queryWrapper.in(Overtime::getExecutorId,ids);
             }
         }
         //模糊查询时间
@@ -84,7 +83,7 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
         if(!title.isEmpty()){
             //如果有模糊查询的时间 先通过查title 的用户ids
             List<Integer> ids = deployeeService.getIdsByTitle(title);
-            queryWrapper.in(Overtime::getUserId,ids);
+            queryWrapper.in(Overtime::getExecutorId,ids);
             //通过ids去找所有符合ids的对象 sign;
         }
 
@@ -92,7 +91,7 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
             queryWrapper.eq(Overtime::getCategoryId,type);
         }
 
-        IPage<Overtime> overtimePage = overtimeMapper.selectPage(page, queryWrapper);
+        IPage<Overtime> overtimePage = page(page, queryWrapper);
 
         Page<overtimeVo> resultPage = new Page<>();
         //结果里的部门 和用户都返回成string；
@@ -102,17 +101,17 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
                 overtimeVo overtimevo = BeanCopyUtils.copyBean(item, overtimeVo.class);
 
                 //人员
-                overtimevo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
+                overtimevo.setUsername(deployeeService.getNameByUserId(item.getExecutorId()));
 
                 //加班类型
                 overtimevo.setCategory(overtimecategoryService.getById(item.getCategoryId()).getCategoryName());
 
                 //部门
-//            overtimevo.setDepartment(departmentService.getDepartmentNameByDepartmentId(item.getDepartmentId()));
 
-                overtimevo.setDepartment(deployeeService.getDepartmentNameByUserId(item.getUserId()));
 
-                overtimevo.setDepartmentId(deployeeService.getDepartmentIdByUserId(item.getUserId()));
+                overtimevo.setDepartment(deployeeService.getDepartmentNameByUserId(item.getExecutorId()));
+
+                overtimevo.setDepartmentId(deployeeService.getDepartmentIdByUserId(item.getExecutorId()));
 
                 long btime = 0;
                 double v = 0;
@@ -125,7 +124,7 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
                 }
 
                 int round = (int) Math.round(v);
-                overtimevo.setOvertimeDays(round);
+                overtimevo.setOvertimeHours(round);
                 return overtimevo;
 
             }).collect(Collectors.toList());
@@ -139,6 +138,23 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
 
 
         return resultPage;
+    }
+
+    @Override
+    public boolean insertOvertime(Overtime insertOvertime) {
+
+        //插入overtime数据
+        boolean f =false;
+        boolean o =save(insertOvertime);
+        if(o){
+            f = flowService.insertFlow(insertOvertime);
+        }else{
+            throw new SystemException(AppHttpCodeEnum.INSERT_ERROR);
+        }
+        //同时更新flow 表 增加一条flow数据
+
+        return o && f;
+
     }
 }
 

@@ -14,4 +14,6 @@ import com.gdproj.vo.logVo;
 public interface LogService extends IService<Log> {
 
     IPage<logVo> getLogList(pageDto pageDto);
+
+    void insertLogWhenOperating(Log log);
 }

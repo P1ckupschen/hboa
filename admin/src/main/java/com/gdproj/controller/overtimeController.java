@@ -64,7 +64,6 @@ public class overtimeController {
         }
 
 
-
     }
 
     @PutMapping("updateOvertime")
@@ -100,7 +99,7 @@ public class overtimeController {
 
     @PostMapping("insertOvertime")
     @autoLog
-    @ApiOperation(value = "新增加班")
+    @ApiOperation(value = "新增加班同时添加流程信息")
     public ResponseResult insertOvertime(@RequestBody overtimeVo overtimeVo){
 
         Overtime insertOvertime = BeanCopyUtils.copyBean(overtimeVo, Overtime.class);
@@ -111,7 +110,10 @@ public class overtimeController {
 
         try {
 
-            b = overtimeService.save(insertOvertime);
+//            b = overtimeService.save(insertOvertime);
+
+            b = overtimeService.insertOvertime(insertOvertime);
+            //插入一条流程信息表
 
             if(b){
                 return ResponseResult.okResult(b);

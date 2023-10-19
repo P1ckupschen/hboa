@@ -26,4 +26,6 @@ public class logVo {
 
     private String userIp;
 
+    private String Username;
+
 }

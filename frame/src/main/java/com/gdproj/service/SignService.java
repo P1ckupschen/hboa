@@ -2,13 +2,10 @@ package com.gdproj.service;
 
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Sign;
 import com.gdproj.vo.signVo;
-
-import java.util.List;
 
 /**
 * @author Administrator
@@ -19,4 +16,6 @@ import java.util.List;
 public interface SignService extends IService<Sign> {
 
     IPage<signVo> getSignList(pageDto pagedto);
+
+    boolean insertSign(Sign sign);
 }

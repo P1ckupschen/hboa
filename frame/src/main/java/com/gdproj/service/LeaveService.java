@@ -15,4 +15,6 @@ import com.gdproj.vo.leaveVo;
 public interface LeaveService extends IService<Leave> {
 
     IPage<leaveVo> getLeaveList(pageDto pageDto);
+
+    boolean insertLeave(Leave insertLeave);
 }

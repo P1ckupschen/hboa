@@ -28,8 +28,8 @@
             <option name="tableUIInfoList">
               <list>
                 <TableUIInfo>
-                  <option name="className" value="Sign" />
-                  <option name="tableName" value="sys_sign" />
+                  <option name="className" value="Flow" />
+                  <option name="tableName" value="sys_flow" />
                 </TableUIInfo>
               </list>
             </option>

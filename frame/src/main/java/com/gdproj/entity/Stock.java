@@ -54,6 +54,7 @@ public class Stock implements Serializable {
      * 
      */
     @TableField(value = "is_deleted")
+    @TableLogic
     private Integer isDeleted;
 
     /**

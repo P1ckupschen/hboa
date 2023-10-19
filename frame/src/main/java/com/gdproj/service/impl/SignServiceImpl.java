@@ -11,6 +11,7 @@ import com.gdproj.mapper.SignMapper;
 import com.gdproj.service.DepartmentService;
 import com.gdproj.service.DeployeeService;
 import com.gdproj.service.SignService;
+import com.gdproj.utils.BaiduMapUtil;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.signVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,7 +96,11 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
             //部门
             signvo.setDepartment(departmentService.getDepartmentNameByDepartmentId(deployeeService.getById(item.getUserId()).getDepartmentId()));
             signvo.setDepartmentId(deployeeService.getDepartmentIdByUserId(item.getUserId()));
-            long workTime = (signvo.getEndTime().getTime() - signvo.getInTime().getTime()) / 1000 / 60 / 60;
+            long workTime = 0L;
+            if( !ObjectUtil.isEmpty(signvo.getEndTime())){
+                workTime = (signvo.getEndTime().getTime() - signvo.getInTime().getTime()) / 1000 / 60 / 60;
+            }
+
             signvo.setTWorkTime( (int) workTime);
             //设置是否完成考勤 判断时长 判断是否迟到 是否早退
             DateFormat timeInstance = DateFormat.getTimeInstance();
@@ -116,6 +121,22 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
         return resultPage;
 
     }
+
+    @Override
+    public boolean insertSign(Sign sign) {
+
+        //只有用户和签到时间
+        sign.getUserId();
+        sign.getInTime();
+        sign.setSignAddr(BaiduMapUtil.getAddress("221.136.212.195"));
+        //判断打卡时间是否大于早上8点 是否迟到
+
+
+        //判断打卡时间是否晚于下午5点 是否早退
+
+        return save(sign);
+    }
+
 }
 
 
