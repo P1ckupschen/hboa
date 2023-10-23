@@ -15,6 +15,8 @@ import com.gdproj.vo.accountVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 
 /**
  * @author 35238
@@ -41,6 +43,10 @@ public class SystemLoginServiceImpl implements SystemLoginService {
             lambdaQueryWrapper.eq(User::getUsername,user.getUsername());
 
             one = userService.getOne(lambdaQueryWrapper);
+
+            one.setLoginTime(new Date());
+
+            userService.updateById(one);
 
         }catch (Exception e){
 
@@ -78,6 +84,10 @@ public class SystemLoginServiceImpl implements SystemLoginService {
             lambdaQueryWrapper.eq(Account::getUsername,vo.getUsername());
 
             one = accountService.getOne(lambdaQueryWrapper);
+
+            one.setLoginTime(new Date());
+
+            accountService.updateById(one);
 
         }catch (Exception e){
 

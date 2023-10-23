@@ -40,7 +40,16 @@ public enum AppHttpCodeEnum {
     FILE_CONTENT_NULL(10012,"文件为空" ),
     FILE_STORAGE_ERROR(10013,"文件保存异常"),
 
-    SIGN_IN_ERROR(20001,"签到打卡失败");
+    SIGN_IN_ERROR(20001,"签到打卡失败"),
+    FLOW_CONFIG_CONTENT_NULL(40001,"流程类配置审核级数为空"),
+
+
+    SET_PASS_ERROR(40002, "设置通过失败"),
+
+    SET_NO_PASS_ERROR(40003,"设置不通过失败")
+    ;
+
+
 
     int code;
     String msg;

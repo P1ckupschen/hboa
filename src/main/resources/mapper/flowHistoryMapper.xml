@@ -2,10 +2,11 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="generator.mapper.FlowMapper">
+<mapper namespace="generator.mapper.flowHistoryMapper">
 
-    <resultMap id="BaseResultMap" type="generator.entity.Flow">
-            <id property="flowId" column="flow_id" jdbcType="INTEGER"/>
+    <resultMap id="BaseResultMap" type="generator.entity.flowHistory">
+            <id property="flowHistoryId" column="flow_history_id" jdbcType="INTEGER"/>
+            <result property="flowId" column="flow_id" jdbcType="INTEGER"/>
             <result property="typeId" column="type_id" jdbcType="INTEGER"/>
             <result property="flowTitle" column="flow_title" jdbcType="VARCHAR"/>
             <result property="currentStepId" column="current_step_id" jdbcType="INTEGER"/>
@@ -20,9 +21,10 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        flow_id,type_id,flow_title,
-        current_step_id,run_id,current_user_id,
-        is_deleted,total_level,created_time,
-        update_time,flow_status,flow_feedback
+        flow_history_id,flow_id,type_id,
+        flow_title,current_step_id,run_id,
+        current_user_id,is_deleted,total_level,
+        created_time,update_time,flow_status,
+        flow_feedback
     </sql>
 </mapper>

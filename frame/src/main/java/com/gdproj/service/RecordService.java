@@ -24,4 +24,6 @@ public interface RecordService extends IService<Record> {
 
     List<String> getRecordOutListByProductId(Integer productId);
     IPage<productVo> getStockList(pageDto pageDto);
+
+    boolean insertRecord(Record updateRecord);
 }

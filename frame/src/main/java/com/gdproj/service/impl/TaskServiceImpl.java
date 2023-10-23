@@ -106,7 +106,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
                 taskVo.setExecutorUsername(deployeeService.getNameByUserId(item.getExecutorId()));
 
                 //指派人
-                taskVo.setAssignedUsername(deployeeService.getNameByUserId(item.getAssignedId()));
+                taskVo.setAssignedUsername(deployeeService.getNameByUserId(item.getApplicantId()));
 
                 return taskVo;
 

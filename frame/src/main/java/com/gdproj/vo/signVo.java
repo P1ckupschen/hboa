@@ -12,7 +12,6 @@ import java.util.Date;
 @NoArgsConstructor
 public class signVo {
 
-
     private Integer signId;
 
     private Integer userId;

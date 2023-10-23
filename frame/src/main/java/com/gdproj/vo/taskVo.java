@@ -1,10 +1,6 @@
 package com.gdproj.vo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.gdproj.handler.jsonAndListTypeHandler;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,7 +17,7 @@ public class taskVo {
 
     private String taskName;
 
-    private Integer assignedId;
+    private Integer applicantId;
 
     private String assignedUsername;
 
@@ -40,14 +36,17 @@ public class taskVo {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date completeTime;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    private Date updateTime;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    private Date createdTime;
+
     private Integer isOverdue;
 
     private Integer createdUser;
 
     private String Username;
-
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
-    private Date createdTime;
 
     private List<fileVo> taskAttachments;
 
@@ -63,4 +62,9 @@ public class taskVo {
     private Integer categoryId;
 
     private String Category;
+
+    private Integer isCompleted;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    private Date overdueTime;
 }

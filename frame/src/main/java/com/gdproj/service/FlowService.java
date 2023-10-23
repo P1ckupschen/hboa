@@ -3,9 +3,7 @@ package com.gdproj.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdproj.dto.pageDto;
-import com.gdproj.entity.Flow;
-import com.gdproj.entity.Leave;
-import com.gdproj.entity.Overtime;
+import com.gdproj.entity.*;
 import com.gdproj.vo.flowVo;
 
 /**
@@ -15,11 +13,17 @@ import com.gdproj.vo.flowVo;
 */
 public interface FlowService extends IService<Flow> {
 
-    boolean insertFlow(Overtime insertOvertime);
+
 
     boolean approveFlow(flowVo vo);
 
     IPage<flowVo> getFlowList(pageDto pageDto);
 
+    boolean insertFlow(Overtime insertOvertime);
     boolean insertFlow(Leave insertLeave);
+
+    boolean insertFlow(Warehouse warehouse);
+    boolean insertFlow(Payment payment);
+
+    boolean insertFlow(Reimbursement reimbursement);
 }

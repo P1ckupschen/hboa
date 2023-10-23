@@ -12,6 +12,7 @@ import com.gdproj.result.ResponseResult;
 import com.gdproj.service.SignService;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.utils.Iputil;
+import com.gdproj.vo.isSignVo;
 import com.gdproj.vo.pageVo;
 import com.gdproj.vo.signVo;
 import io.swagger.annotations.Api;
@@ -67,6 +68,7 @@ public class signController {
     }
 
     @PostMapping("insertSign")
+    @autoLog
     @ApiOperation(value = "签到")
     public ResponseResult insertSign(@RequestBody signVo vo, HttpServletRequest request){
 
@@ -80,6 +82,22 @@ public class signController {
         try {
             b = signService.insertSign(sign);
             return ResponseResult.okResult(b);
+        }catch (Exception e){
+            return ResponseResult.errorResult(AppHttpCodeEnum.SIGN_IN_ERROR);
+        }
+    }
+
+    @GetMapping("/getSingInfoByUserIdAndDate")
+    @autoLog
+    @ApiOperation(value = "通过用户Id和日期查询用户当日的考勤信息")
+    public ResponseResult getSingInfoByUserIdAndDate(@RequestParam Integer userId){
+
+
+        //怎么添加签到信息
+        try {
+             isSignVo vo = signService.getSingInfoByUserIdAndDate(userId);
+
+             return ResponseResult.okResult(vo);
         }catch (Exception e){
             return ResponseResult.errorResult(AppHttpCodeEnum.SIGN_IN_ERROR);
         }

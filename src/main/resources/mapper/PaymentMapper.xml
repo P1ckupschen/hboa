@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="generator.mapper.PaymentMapper">
+
+    <resultMap id="BaseResultMap" type="generator.entity.Payment">
+            <id property="paymentId" column="payment_id" jdbcType="INTEGER"/>
+            <result property="paymentTitle" column="payment_title" jdbcType="VARCHAR"/>
+            <result property="userId" column="user_id" jdbcType="INTEGER"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="paymentAmout" column="payment_amout" jdbcType="DECIMAL"/>
+            <result property="projectId" column="project_id" jdbcType="INTEGER"/>
+            <result property="payer" column="payer" jdbcType="VARCHAR"/>
+            <result property="payee" column="payee" jdbcType="VARCHAR"/>
+            <result property="depositBank" column="deposit_bank" jdbcType="VARCHAR"/>
+            <result property="paymengAccount" column="paymeng_account" jdbcType="VARCHAR"/>
+            <result property="paymentDescription" column="payment_description" jdbcType="VARCHAR"/>
+            <result property="paymentMethod" column="payment_method" jdbcType="VARCHAR"/>
+            <result property="paymentAttachments" column="payment_attachments" jdbcType="VARCHAR"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+            <result property="paymentStatus" column="payment_status" jdbcType="INTEGER"/>
+            <result property="typeId" column="type_id" jdbcType="INTEGER"/>
+            <result property="paymentTime" column="payment_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        payment_id,payment_title,user_id,
+        created_time,update_time,payment_amout,
+        project_id,payer,payee,
+        deposit_bank,paymeng_account,payment_description,
+        payment_method,payment_attachments,is_deleted,
+        payment_status,type_id,payment_time
+    </sql>
+</mapper>

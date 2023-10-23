@@ -1,10 +1,6 @@
 package com.gdproj.vo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.gdproj.handler.jsonAndListTypeHandler;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,9 +37,9 @@ public class productVo {
 
     private Integer productTotal;
 
-    private List<String> recordIn;
+    private List recordIn;
 
-    private List<String> recordOut;
+    private List recordOut;
 
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="generator.mapper.ReimbursementMapper">
+
+    <resultMap id="BaseResultMap" type="generator.entity.Reimbursement">
+            <id property="reimbursementId" column="reimbursement_id" jdbcType="INTEGER"/>
+            <result property="reimbursementTitle" column="reimbursement_title" jdbcType="VARCHAR"/>
+            <result property="userId" column="user_id" jdbcType="INTEGER"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="reimbursementAmout" column="reimbursement_amout" jdbcType="DECIMAL"/>
+            <result property="projectId" column="project_id" jdbcType="INTEGER"/>
+            <result property="reimbursementDescription" column="reimbursement_description" jdbcType="VARCHAR"/>
+            <result property="reimbursementAttachments" column="reimbursement_attachments" jdbcType="VARCHAR"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+            <result property="typeId" column="type_id" jdbcType="INTEGER"/>
+            <result property="reimbursementStatus" column="reimbursement_status" jdbcType="INTEGER"/>
+            <result property="reimbursementTime" column="reimbursement_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        reimbursement_id,reimbursement_title,user_id,
+        created_time,update_time,reimbursement_amout,
+        project_id,reimbursement_description,reimbursement_attachments,
+        is_deleted,type_id,reimbursement_status,
+        reimbursement_time
+    </sql>
+</mapper>

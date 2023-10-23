@@ -12,10 +12,7 @@ import com.gdproj.result.ResponseResult;
 import com.gdproj.service.RecordService;
 import com.gdproj.service.StockService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.pageVo;
-import com.gdproj.vo.productVo;
-import com.gdproj.vo.recordVo;
-import com.gdproj.vo.stockSelectVo;
+import com.gdproj.vo.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,6 +109,7 @@ public class recordController {
 
         try {
 
+//            b = recordService.insertRecord(updateRecord);
             b = recordService.save(updateRecord);
 
 
@@ -171,6 +169,7 @@ public class recordController {
                                         @RequestParam(required = false) String time){
         pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
 
+        //是通过统计出来的 不是通过增加记录的 所以不用新表stock
 //        IPage<stockVo> stockList = new Page<>();
 
         IPage<productVo> stockList = new Page<>();
@@ -178,8 +177,11 @@ public class recordController {
         try {
 
             stockList =  recordService.getStockList(pageDto);
+//            stockList =  stockService.getStockList(pageDto);
 
             pageVo<List<productVo>> pageList = new pageVo<>();
+
+//            pageVo<List<stockVo>> pageList = new pageVo<>();
 
             pageList.setData(stockList.getRecords());
 

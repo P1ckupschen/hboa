@@ -41,8 +41,6 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
     @Autowired
     FlowService flowService;
 
-
-
     @Override
     public IPage<overtimeVo> getOverTimeList(pageDto pageDto) {
 
@@ -107,13 +105,12 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
                 overtimevo.setCategory(overtimecategoryService.getById(item.getCategoryId()).getCategoryName());
 
                 //部门
-
-
                 overtimevo.setDepartment(deployeeService.getDepartmentNameByUserId(item.getExecutorId()));
 
                 overtimevo.setDepartmentId(deployeeService.getDepartmentIdByUserId(item.getExecutorId()));
 
                 long btime = 0;
+
                 double v = 0;
                 //加班总时长
                 if(ObjectUtil.isEmpty(item.getStartTime()) || ObjectUtil.isEmpty(item.getEndTime())){

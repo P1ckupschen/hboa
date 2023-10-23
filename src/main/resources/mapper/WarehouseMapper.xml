@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="generator.mapper.WarehouseMapper">
+
+    <resultMap id="BaseResultMap" type="generator.entity.Warehouse">
+            <id property="warehouseId" column="warehouse_id" jdbcType="INTEGER"/>
+            <result property="warehouseTitle" column="warehouse_title" jdbcType="VARCHAR"/>
+            <result property="warehouseContent" column="warehouse_content" jdbcType="VARCHAR"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="categoryId" column="category_id" jdbcType="INTEGER"/>
+            <result property="warehouseFeedback" column="warehouse_feedback" jdbcType="VARCHAR"/>
+            <result property="warehouseDescription" column="warehouse_description" jdbcType="VARCHAR"/>
+            <result property="warehouseStatus" column="warehouse_status" jdbcType="INTEGER"/>
+            <result property="warehouseAttachments" column="warehouse_attachments" jdbcType="VARCHAR"/>
+            <result property="typeId" column="type_id" jdbcType="INTEGER"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        warehouse_id,warehouse_title,warehouse_content,
+        created_time,update_time,category_id,
+        warehouse_feedback,warehouse_description,warehouse_status,
+        warehouse_attachments,type_id,is_deleted
+    </sql>
+</mapper>

@@ -20,12 +20,9 @@ import com.gdproj.service.productCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.productVo;
 import com.gdproj.vo.recordVo;
-import org.apache.commons.collections4.IterableMap;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +38,6 @@ import java.util.stream.Collectors;
 public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
         implements RecordService {
 
-    @Autowired
-    RecordMapper recordMapper;
 
     @Autowired
     DeployeeService deployeeService;
@@ -89,7 +84,7 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
         //设置时间 年 月 日
         //模糊查询时间
         if (time != null) {
-            queryWrapper.like(Record::getInTime, time);
+            queryWrapper.like(Record::getRecordTime, time);
         }
 
         //查询产品名称？
@@ -103,7 +98,7 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
             queryWrapper.eq(Record::getCategoryId, type);
         }
 
-        IPage<Record> recordPage = recordMapper.selectPage(page, queryWrapper);
+        IPage<Record> recordPage = page(page, queryWrapper);
 
         Page<recordVo> resultPage = new Page<>();
 
@@ -183,7 +178,7 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
         List<String> recordList = new ArrayList<>();
         for ( Record item : list) {
             if(item.getCategoryId() == 1){
-                recordList.add(simpleDateFormat.format(item.getInTime()));
+                recordList.add(simpleDateFormat.format(item.getRecordTime())+" "+"入库数量:  +"+item.getCount());
             }
         }
         return recordList;
@@ -201,7 +196,7 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
         List<String> recordList = new ArrayList<>();
         for ( Record item : list) {
             if(item.getCategoryId() == 2){
-                recordList.add(simpleDateFormat.format(item.getInTime()));
+                recordList.add(simpleDateFormat.format(item.getRecordTime())+" "+"出库数量:  -"+item.getCount());
             }
         }
         return recordList;
@@ -280,6 +275,16 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
 
         return resultPage;
 
+    }
+
+    @Override
+    public boolean insertRecord(Record updateRecord) {
+
+        //根据record里的record_content里的产品id 遍历保存
+
+
+
+        return false;
     }
 
 }

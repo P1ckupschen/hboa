@@ -2,6 +2,7 @@ package com.gdproj.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.gdproj.annotation.autoLog;
 import com.gdproj.dto.pageDto;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
@@ -30,6 +31,7 @@ public class flowController {
     flowConfigService configService;
 
     @PutMapping("/approveFlow")
+    @autoLog
     @ApiOperation(value = "审批是否通过")
     public ResponseResult approveFlow(@RequestBody flowVo vo){
         boolean b = false;
@@ -41,6 +43,7 @@ public class flowController {
 
 
     @GetMapping("/getFlowList")
+    @autoLog
     @ApiOperation(value = "获取审批流程列表")
     public ResponseResult getFlowList(@RequestParam Integer pageNum,
                                           @RequestParam Integer pageSize,
