@@ -11,6 +11,8 @@ public enum AppHttpCodeEnum {
 
     GET_ACCOUNTINFO_ERROR(209,"获取用户信息失败"),
 
+    DATE_FORMAT_ERROR(210,"时间转换失败"),
+
 
 
 

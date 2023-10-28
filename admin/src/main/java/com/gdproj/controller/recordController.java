@@ -104,7 +104,6 @@ public class recordController {
     public ResponseResult insertRecord(@RequestBody recordVo recordVo){
 
         Record updateRecord = BeanCopyUtils.copyBean(recordVo, Record.class);
-
         boolean b = false;
 
         try {

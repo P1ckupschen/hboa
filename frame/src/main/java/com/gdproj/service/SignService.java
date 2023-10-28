@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Sign;
 import com.gdproj.vo.isSignVo;
+import com.gdproj.vo.monthSignVo;
 import com.gdproj.vo.signVo;
 
 /**
@@ -20,5 +21,7 @@ public interface SignService extends IService<Sign> {
 
     boolean insertSign(Sign sign);
 
-    isSignVo getSingInfoByUserIdAndDate(Integer userId);
+    isSignVo getSignInfoByUserIdAndDate(Integer userId);
+
+    IPage<monthSignVo> getMonthSignList(pageDto pageDto);
 }

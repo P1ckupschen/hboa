@@ -111,6 +111,18 @@ public class Record implements Serializable {
     @TableField(value = "product_unit")
     private String productUnit;
 
+    /**
+     *
+     */
+    @TableField(value = "record_title")
+    private String recordTitle;
+
+    /**
+     *
+     */
+    @TableField(value = "warehouse_id")
+    private Integer warehouseId;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
@@ -338,6 +350,34 @@ public class Record implements Serializable {
         this.productUnit = productUnit;
     }
 
+    /**
+     *
+     */
+    public String getRecordTitle() {
+        return recordTitle;
+    }
+
+    /**
+     *
+     */
+    public void setRecordTitle(String recordTitle) {
+        this.recordTitle = recordTitle;
+    }
+
+    /**
+     *
+     */
+    public Integer getWarehouseId() {
+        return warehouseId;
+    }
+
+    /**
+     *
+     */
+    public void setWarehouseId(Integer warehouseId) {
+        this.warehouseId = warehouseId;
+    }
+
     @Override
     public boolean equals(Object that) {
         if (this == that) {
@@ -365,7 +405,9 @@ public class Record implements Serializable {
                 && (this.getExaminerId() == null ? other.getExaminerId() == null : this.getExaminerId().equals(other.getExaminerId()))
                 && (this.getRecordStatus() == null ? other.getRecordStatus() == null : this.getRecordStatus().equals(other.getRecordStatus()))
                 && (this.getProductId() == null ? other.getProductId() == null : this.getProductId().equals(other.getProductId()))
-                && (this.getProductUnit() == null ? other.getProductUnit() == null : this.getProductUnit().equals(other.getProductUnit()));
+                && (this.getProductUnit() == null ? other.getProductUnit() == null : this.getProductUnit().equals(other.getProductUnit()))
+                && (this.getRecordTitle() == null ? other.getRecordTitle() == null : this.getRecordTitle().equals(other.getRecordTitle()))
+                && (this.getWarehouseId() == null ? other.getWarehouseId() == null : this.getWarehouseId().equals(other.getWarehouseId()));
     }
 
     @Override
@@ -388,6 +430,8 @@ public class Record implements Serializable {
         result = prime * result + ((getRecordStatus() == null) ? 0 : getRecordStatus().hashCode());
         result = prime * result + ((getProductId() == null) ? 0 : getProductId().hashCode());
         result = prime * result + ((getProductUnit() == null) ? 0 : getProductUnit().hashCode());
+        result = prime * result + ((getRecordTitle() == null) ? 0 : getRecordTitle().hashCode());
+        result = prime * result + ((getWarehouseId() == null) ? 0 : getWarehouseId().hashCode());
         return result;
     }
 
@@ -413,6 +457,8 @@ public class Record implements Serializable {
         sb.append(", recordStatus=").append(recordStatus);
         sb.append(", productId=").append(productId);
         sb.append(", productUnit=").append(productUnit);
+        sb.append(", recordTitle=").append(recordTitle);
+        sb.append(", warehouseId=").append(warehouseId);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

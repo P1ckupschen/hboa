@@ -77,7 +77,7 @@ public class warehouseController {
             return ResponseResult.okResult(b);
         }catch (Exception e){
             //审批输入失败
-            return ResponseResult.errorResult(AppHttpCodeEnum.EMAIL_EXIST);
+            return ResponseResult.errorResult(AppHttpCodeEnum.INSERT_ERROR);
         }
 
     }

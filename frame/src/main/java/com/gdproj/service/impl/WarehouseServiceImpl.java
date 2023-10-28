@@ -6,12 +6,14 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdproj.dto.pageDto;
+import com.gdproj.entity.Record;
 import com.gdproj.entity.Warehouse;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.WarehouseMapper;
 import com.gdproj.service.DeployeeService;
 import com.gdproj.service.FlowService;
+import com.gdproj.service.RecordService;
 import com.gdproj.service.WarehouseService;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.warehouseVo;
@@ -37,17 +39,30 @@ public class WarehouseServiceImpl extends ServiceImpl<WarehouseMapper, Warehouse
     @Autowired
     DeployeeService deployeeService;
 
+    @Autowired
+    RecordService recordService;
+
     @Override
     public boolean insertWarehouse(Warehouse warehouse) {
         Integer categoryId = warehouse.getCategoryId();
         boolean f = false;
         boolean o = save(warehouse);
-        if (o) {
-            f = flowService.insertFlow(warehouse);
+
+        //如果为入库申请则无需审批
+        if(warehouse.getCategoryId() == 1){
+            //并且遍历warehouse 的一个json属性 将所有入库产品都加入record
+            //拿到所有的入库材料清单       TODO
+            List<Record> recordList = recordService.transferWarehouseContentToRecord(warehouse);
+            return recordService.saveBatch(recordList);
         }else{
-            throw new SystemException(AppHttpCodeEnum.INSERT_ERROR);
+            if (o) {
+                f = flowService.insertFlow(warehouse);
+            }else{
+                throw new SystemException(AppHttpCodeEnum.INSERT_ERROR);
+            }
+            return o && f;
         }
-        return o && f;
+
     }
 
     @Override

@@ -18,7 +18,7 @@ public class warehouseVo {
 
     private String warehouseTitle;
 
-    private List warehouseContent;
+    private List<warehouseSelectVo> warehouseContent;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date createdTime;
@@ -41,4 +41,8 @@ public class warehouseVo {
     private Integer userId;
 
     private String Category;
+
+    private Integer contractId;
+
+    private Integer projectId;
 }

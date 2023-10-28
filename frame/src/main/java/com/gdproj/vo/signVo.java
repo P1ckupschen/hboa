@@ -34,11 +34,19 @@ public class signVo {
 
     private Integer isLate;
 
+    private String Late;
+
     private Integer isOut;
+
+    private String Out;
 
     private Integer isAway;
 
+    private String Away;
+
     private Integer isEarly;
+
+    private String Early;
 
     private deployeeVo deployee;
 

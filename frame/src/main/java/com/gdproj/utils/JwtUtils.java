@@ -1,15 +1,12 @@
 package com.gdproj.utils;
 
-import com.gdproj.exception.TokenExpiredException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.apache.el.stream.Stream;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.FileInputStream;
 import java.util.Date;
 
 public class JwtUtils {
@@ -52,7 +49,7 @@ public class JwtUtils {
         } catch (Exception e) {
             //如果过期
             e.getClass();
-//            e.printStackTrace();
+            e.printStackTrace();
             return false;
         }
         return true;

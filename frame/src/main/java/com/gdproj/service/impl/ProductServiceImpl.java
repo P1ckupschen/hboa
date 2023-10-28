@@ -83,7 +83,11 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product>
         if(!title.isEmpty()){
             //如果有模糊查询的时间 先通过查title 的用户ids
             List<Integer> ids = getIdsByTitle(title);
-            queryWrapper.in(Product::getProductId,ids);
+            if(!ObjectUtil.isEmpty(ids)){
+                queryWrapper.in(Product::getProductId, ids);
+            }else{
+                queryWrapper.in(Product::getProductId,0);
+            }
             //通过ids去找所有符合ids的对象 sign;
         }
 

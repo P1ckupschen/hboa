@@ -81,7 +81,11 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
         if(!title.isEmpty()){
             //如果有模糊查询的时间 先通过查title 的用户ids
             List<Integer> ids = deployeeService.getIdsByTitle(title);
-            queryWrapper.in(Overtime::getExecutorId,ids);
+            if(!ObjectUtil.isEmpty(ids)){
+                queryWrapper.in(Overtime::getExecutorId,ids);
+            }else{
+                queryWrapper.in(Overtime::getExecutorId,0);
+            }
             //通过ids去找所有符合ids的对象 sign;
         }
 

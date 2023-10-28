@@ -79,7 +79,11 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
         if(!title.isEmpty()){
             //如果有模糊查询的时间 先通过查title 的用户ids
             List<Integer> ids = deployeeService.getIdsByTitle(title);
-            queryWrapper.in(Task::getCreatedUser,ids);
+            if(!ObjectUtil.isEmpty(ids)){
+                queryWrapper.in(Task::getCreatedUser, ids);
+            }else{
+                queryWrapper.in(Task::getCreatedUser,0);
+            }
             //通过ids去找所有符合ids的对象 sign;
         }
 

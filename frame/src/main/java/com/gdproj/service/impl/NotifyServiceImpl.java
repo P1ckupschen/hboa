@@ -88,7 +88,11 @@ public class NotifyServiceImpl extends ServiceImpl<NotifyMapper, Notify>
         if(!title.isEmpty()){
             //如果有模糊查询的时间 先通过查title 的用户ids
             List<Integer> ids = deployeeService.getIdsByTitle(title);
-            queryWrapper.in(Notify::getUserId,ids);
+            if(!ObjectUtil.isEmpty(ids)){
+                queryWrapper.in(Notify::getUserId, ids);
+            }else{
+                queryWrapper.in(Notify::getUserId,0);
+            }
             //通过ids去找所有符合ids的对象 sign;
         }
 

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Record;
+import com.gdproj.entity.Warehouse;
 import com.gdproj.vo.productVo;
 import com.gdproj.vo.recordVo;
 
@@ -26,4 +27,8 @@ public interface RecordService extends IService<Record> {
     IPage<productVo> getStockList(pageDto pageDto);
 
     boolean insertRecord(Record updateRecord);
+
+    boolean insertRecordByWarehouseId(Integer runId);
+
+    List<Record> transferWarehouseContentToRecord(Warehouse warehouse);
 }

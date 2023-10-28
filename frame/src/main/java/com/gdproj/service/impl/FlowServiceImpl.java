@@ -46,6 +46,9 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
     WarehouseService warehouseService;
 
     @Autowired
+    RecordService recordService;
+
+    @Autowired
     PaymentService paymentService;
 
     @Autowired
@@ -53,6 +56,9 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
 
     @Autowired
     DeployeeService deployeeService;
+
+    @Autowired
+    ProductService productService;
 
 
 
@@ -127,6 +133,11 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
                     flow.setFlowStatus(1);
                     //并且把所有
                     boolean isPass = setPassStatus(flow.getTypeId(),flow.getRunId());
+                    if(flow.getTypeId() == 3){
+                        //如果typeId == 3 那么为出库申请，在最后一级都通过的情况下，出库申请为所有的材料生成record 插入record表
+                        //warehouseId 就是 runId  遍历这条warehouse记录的warehouseContent，product_id 和 count
+                        boolean w = recordService.insertRecordByWarehouseId(flow.getRunId());
+                    }
                     if(!isPass){
                         throw new SystemException(AppHttpCodeEnum.SET_PASS_ERROR);
                     }
@@ -212,7 +223,10 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
             return leaveService.update(updateWrapper);
         } else if (typeId == 3) {
             //出库申请
-            return false;
+            LambdaUpdateWrapper<Warehouse> updateWrapper =new LambdaUpdateWrapper<>();
+            updateWrapper.eq(Warehouse::getWarehouseId,runId);
+            updateWrapper.set(Warehouse::getWarehouseStatus,2);
+            return warehouseService.update(updateWrapper);
         } else if (typeId == 4) {
             //日常领用申请
             return false;
@@ -275,8 +289,6 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
             queryWrapper.eq(Flow::getTypeId, type);
         }
 
-
-
         IPage<Flow> recordPage = page(page, queryWrapper);
         //相同的typeId 和runId的只显示最早的createdTime的数据
 
@@ -290,14 +302,10 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
                 flowVo vo = BeanCopyUtils.copyBean(item, flowVo.class);
                 //类型名称?
                 setFlowVoProperty(vo, item);
-
                 return vo;
             }).collect(Collectors.toList());
-
             resultPage.setRecords(resultList);
-
             resultPage.setTotal(recordPage.getTotal());
-
             return resultPage;
         } catch (Exception e) {
             throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
@@ -349,6 +357,23 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
             vo.setFlowTitle(leave.getLeaveTitle());
         } else if (typeId == 3) {
             //出库申请
+            Warehouse warehouse = warehouseService.getById(item.getRunId());
+            vo.setApplicantName(deployeeService.getNameByUserId(warehouse.getUserId()));
+            //判断当前的状态是什么
+            if (vo.getTotalLevel() >= vo.getCurrentStepId()) {
+                if(vo.getFlowStatus() ==1){
+                    vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批通过");
+                }else if(vo.getFlowStatus() == 2){
+                    vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批不通过");
+                }else{
+                    vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批中");
+                }
+            } else {
+                vo.setCurrentStep("已完成");
+            }
+            vo.setTypeName(configService.getById(vo.getTypeId()).getTypeName());
+            vo.setRunStatus(warehouse.getWarehouseStatus() + "");
+            vo.setFlowTitle(warehouse.getWarehouseTitle());
         } else if (typeId == 4) {
             //日常领用申请
         } else if (typeId == 5) {
@@ -444,9 +469,9 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
 
         List<Flow> list = list();
 
-        boolean f = save(flow);
+        return save(flow);
 
-        return f;
+
 
     }
 
@@ -457,12 +482,7 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
     @Override
     public boolean insertFlow(Warehouse warehouse) {
 
-        //如果为入库申请则无需审批
-        if(warehouse.getCategoryId() == 1){
-            //并且遍历warehouse 的一个json属性 将所有入库产品都加入record
-            List warehouseContent = warehouse.getWarehouseContent();
-            return true;
-        } else if (warehouse.getCategoryId() == 2) {
+        if (warehouse.getCategoryId() == 2) {
             //如果为出库申请则需审批
             flowConfig config = configService.getById(warehouse.getTypeId());
             List<Integer> approvalFlow = config.getApprovalFlow();
@@ -481,6 +501,8 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
         }
 
     }
+
+
 
     /**
      *

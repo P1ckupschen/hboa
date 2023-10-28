@@ -1,272 +1,323 @@
 package com.gdproj.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.gdproj.vo.fileVo;
+import com.gdproj.vo.warehouseSelectVo;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 /**
- * 
+ *
  * @TableName sys_warehouse
  */
 @TableName(value ="sys_warehouse",autoResultMap = true)
 public class Warehouse implements Serializable {
     /**
-     * 
+     *
      */
     @TableId(value = "warehouse_id", type = IdType.AUTO)
     private Integer warehouseId;
 
     /**
-     * 
+     *
      */
     @TableField(value = "warehouse_title")
     private String warehouseTitle;
 
     /**
-     * 
+     *
      */
     @TableField(value = "warehouse_content",typeHandler = JacksonTypeHandler.class)
-    private List warehouseContent;
+    private List<warehouseSelectVo> warehouseContent;
 
     /**
-     * 
+     *
      */
     @TableField(value = "created_time",fill = FieldFill.INSERT)
     private Date createdTime;
 
     /**
-     * 
+     *
      */
-    @TableField(value = "update_time",fill =FieldFill.INSERT_UPDATE)
+    @TableField(value = "update_time",fill=FieldFill.INSERT_UPDATE)
     private Date updateTime;
 
     /**
-     * 
+     *
      */
     @TableField(value = "category_id")
     private Integer categoryId;
 
     /**
-     * 
+     *
      */
     @TableField(value = "warehouse_feedback")
     private String warehouseFeedback;
 
     /**
-     * 
+     *
      */
     @TableField(value = "warehouse_description")
     private String warehouseDescription;
 
     /**
-     * 
+     *
      */
     @TableField(value = "warehouse_status")
     private Integer warehouseStatus;
 
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    @TableField(value = "user_id")
-    private Integer userId;
-
     /**
-     * 
+     *
      */
     @TableField(value = "warehouse_attachments",typeHandler = JacksonTypeHandler.class)
     private List<fileVo> warehouseAttachments;
 
     /**
-     * 
+     *
      */
     @TableField(value = "type_id")
     private Integer typeId;
 
     /**
-     * 
+     *
      */
     @TableField(value = "is_deleted")
     @TableLogic
     private Integer isDeleted;
 
+    /**
+     *
+     */
+    @TableField(value = "user_id")
+    private Integer userId;
+
+    /**
+     *
+     */
+    @TableField(value = "contract_id")
+    private Integer contractId;
+
+    /**
+     *
+     */
+    @TableField(value = "project_id")
+    private Integer projectId;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
     /**
-     * 
+     *
      */
     public Integer getWarehouseId() {
         return warehouseId;
     }
 
     /**
-     * 
+     *
      */
     public void setWarehouseId(Integer warehouseId) {
         this.warehouseId = warehouseId;
     }
 
     /**
-     * 
+     *
      */
     public String getWarehouseTitle() {
         return warehouseTitle;
     }
 
     /**
-     * 
+     *
      */
     public void setWarehouseTitle(String warehouseTitle) {
         this.warehouseTitle = warehouseTitle;
     }
 
     /**
-     * 
+     *
      */
-    public List getWarehouseContent() {
+    public List<warehouseSelectVo> getWarehouseContent() {
         return warehouseContent;
     }
 
     /**
-     * 
+     *
      */
-    public void setWarehouseContent(List warehouseContent) {
+    public void setWarehouseContent(List<warehouseSelectVo> warehouseContent) {
         this.warehouseContent = warehouseContent;
     }
 
     /**
-     * 
+     *
      */
     public Date getCreatedTime() {
         return createdTime;
     }
 
     /**
-     * 
+     *
      */
     public void setCreatedTime(Date createdTime) {
         this.createdTime = createdTime;
     }
 
     /**
-     * 
+     *
      */
     public Date getUpdateTime() {
         return updateTime;
     }
 
     /**
-     * 
+     *
      */
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
 
     /**
-     * 
+     *
      */
     public Integer getCategoryId() {
         return categoryId;
     }
 
     /**
-     * 
+     *
      */
     public void setCategoryId(Integer categoryId) {
         this.categoryId = categoryId;
     }
 
     /**
-     * 
+     *
      */
     public String getWarehouseFeedback() {
         return warehouseFeedback;
     }
 
     /**
-     * 
+     *
      */
     public void setWarehouseFeedback(String warehouseFeedback) {
         this.warehouseFeedback = warehouseFeedback;
     }
 
     /**
-     * 
+     *
      */
     public String getWarehouseDescription() {
         return warehouseDescription;
     }
 
     /**
-     * 
+     *
      */
     public void setWarehouseDescription(String warehouseDescription) {
         this.warehouseDescription = warehouseDescription;
     }
 
     /**
-     * 
+     *
      */
     public Integer getWarehouseStatus() {
         return warehouseStatus;
     }
 
     /**
-     * 
+     *
      */
     public void setWarehouseStatus(Integer warehouseStatus) {
         this.warehouseStatus = warehouseStatus;
     }
 
     /**
-     * 
+     *
      */
     public List<fileVo> getWarehouseAttachments() {
         return warehouseAttachments;
     }
 
     /**
-     * 
+     *
      */
     public void setWarehouseAttachments(List<fileVo> warehouseAttachments) {
         this.warehouseAttachments = warehouseAttachments;
     }
 
     /**
-     * 
+     *
      */
     public Integer getTypeId() {
         return typeId;
     }
 
     /**
-     * 
+     *
      */
     public void setTypeId(Integer typeId) {
         this.typeId = typeId;
     }
 
     /**
-     * 
+     *
      */
     public Integer getIsDeleted() {
         return isDeleted;
     }
 
     /**
-     * 
+     *
      */
     public void setIsDeleted(Integer isDeleted) {
         this.isDeleted = isDeleted;
+    }
+
+    /**
+     *
+     */
+    public Integer getUserId() {
+        return userId;
+    }
+
+    /**
+     *
+     */
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    /**
+     *
+     */
+    public Integer getContractId() {
+        return contractId;
+    }
+
+    /**
+     *
+     */
+    public void setContractId(Integer contractId) {
+        this.contractId = contractId;
+    }
+
+    /**
+     *
+     */
+    public Integer getProjectId() {
+        return projectId;
+    }
+
+    /**
+     *
+     */
+    public void setProjectId(Integer projectId) {
+        this.projectId = projectId;
     }
 
     @Override
@@ -282,17 +333,20 @@ public class Warehouse implements Serializable {
         }
         Warehouse other = (Warehouse) that;
         return (this.getWarehouseId() == null ? other.getWarehouseId() == null : this.getWarehouseId().equals(other.getWarehouseId()))
-            && (this.getWarehouseTitle() == null ? other.getWarehouseTitle() == null : this.getWarehouseTitle().equals(other.getWarehouseTitle()))
-            && (this.getWarehouseContent() == null ? other.getWarehouseContent() == null : this.getWarehouseContent().equals(other.getWarehouseContent()))
-            && (this.getCreatedTime() == null ? other.getCreatedTime() == null : this.getCreatedTime().equals(other.getCreatedTime()))
-            && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()))
-            && (this.getCategoryId() == null ? other.getCategoryId() == null : this.getCategoryId().equals(other.getCategoryId()))
-            && (this.getWarehouseFeedback() == null ? other.getWarehouseFeedback() == null : this.getWarehouseFeedback().equals(other.getWarehouseFeedback()))
-            && (this.getWarehouseDescription() == null ? other.getWarehouseDescription() == null : this.getWarehouseDescription().equals(other.getWarehouseDescription()))
-            && (this.getWarehouseStatus() == null ? other.getWarehouseStatus() == null : this.getWarehouseStatus().equals(other.getWarehouseStatus()))
-            && (this.getWarehouseAttachments() == null ? other.getWarehouseAttachments() == null : this.getWarehouseAttachments().equals(other.getWarehouseAttachments()))
-            && (this.getTypeId() == null ? other.getTypeId() == null : this.getTypeId().equals(other.getTypeId()))
-            && (this.getIsDeleted() == null ? other.getIsDeleted() == null : this.getIsDeleted().equals(other.getIsDeleted()));
+                && (this.getWarehouseTitle() == null ? other.getWarehouseTitle() == null : this.getWarehouseTitle().equals(other.getWarehouseTitle()))
+                && (this.getWarehouseContent() == null ? other.getWarehouseContent() == null : this.getWarehouseContent().equals(other.getWarehouseContent()))
+                && (this.getCreatedTime() == null ? other.getCreatedTime() == null : this.getCreatedTime().equals(other.getCreatedTime()))
+                && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()))
+                && (this.getCategoryId() == null ? other.getCategoryId() == null : this.getCategoryId().equals(other.getCategoryId()))
+                && (this.getWarehouseFeedback() == null ? other.getWarehouseFeedback() == null : this.getWarehouseFeedback().equals(other.getWarehouseFeedback()))
+                && (this.getWarehouseDescription() == null ? other.getWarehouseDescription() == null : this.getWarehouseDescription().equals(other.getWarehouseDescription()))
+                && (this.getWarehouseStatus() == null ? other.getWarehouseStatus() == null : this.getWarehouseStatus().equals(other.getWarehouseStatus()))
+                && (this.getWarehouseAttachments() == null ? other.getWarehouseAttachments() == null : this.getWarehouseAttachments().equals(other.getWarehouseAttachments()))
+                && (this.getTypeId() == null ? other.getTypeId() == null : this.getTypeId().equals(other.getTypeId()))
+                && (this.getIsDeleted() == null ? other.getIsDeleted() == null : this.getIsDeleted().equals(other.getIsDeleted()))
+                && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()))
+                && (this.getContractId() == null ? other.getContractId() == null : this.getContractId().equals(other.getContractId()))
+                && (this.getProjectId() == null ? other.getProjectId() == null : this.getProjectId().equals(other.getProjectId()));
     }
 
     @Override
@@ -311,6 +365,9 @@ public class Warehouse implements Serializable {
         result = prime * result + ((getWarehouseAttachments() == null) ? 0 : getWarehouseAttachments().hashCode());
         result = prime * result + ((getTypeId() == null) ? 0 : getTypeId().hashCode());
         result = prime * result + ((getIsDeleted() == null) ? 0 : getIsDeleted().hashCode());
+        result = prime * result + ((getUserId() == null) ? 0 : getUserId().hashCode());
+        result = prime * result + ((getContractId() == null) ? 0 : getContractId().hashCode());
+        result = prime * result + ((getProjectId() == null) ? 0 : getProjectId().hashCode());
         return result;
     }
 
@@ -332,6 +389,9 @@ public class Warehouse implements Serializable {
         sb.append(", warehouseAttachments=").append(warehouseAttachments);
         sb.append(", typeId=").append(typeId);
         sb.append(", isDeleted=").append(isDeleted);
+        sb.append(", userId=").append(userId);
+        sb.append(", contractId=").append(contractId);
+        sb.append(", projectId=").append(projectId);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

@@ -13,6 +13,7 @@ import com.gdproj.service.SignService;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.utils.Iputil;
 import com.gdproj.vo.isSignVo;
+import com.gdproj.vo.monthSignVo;
 import com.gdproj.vo.pageVo;
 import com.gdproj.vo.signVo;
 import io.swagger.annotations.Api;
@@ -67,6 +68,44 @@ public class signController {
 
     }
 
+    @GetMapping("/getMonthSignList")
+    @autoLog
+    @ApiOperation(value = "查询月度考勤统计列表")
+    public ResponseResult getMonthSignList(@RequestParam Integer pageNum,
+                                      @RequestParam Integer pageSize,
+                                      @RequestParam(required = false,defaultValue = "+id")String sort,
+                                      @RequestParam(required = false,defaultValue = "") String title ,
+                                      @RequestParam(required = false) Integer departmentId,
+                                      @RequestParam(required = false) Integer type,
+                                      @RequestParam(required = false) String time){
+
+        pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
+
+        IPage<monthSignVo> signList = new Page<monthSignVo>();
+
+        try {
+
+            signList  =  signService.getMonthSignList(pageDto);
+
+            pageVo<List<monthSignVo>> pageList = new pageVo<>();
+            pageList.setData(signList.getRecords());
+            pageList.setTotal((int) signList.getTotal());
+            return ResponseResult.okResult(pageList);
+
+        }catch (SystemException e){
+
+            return ResponseResult.errorResult(e.getCode(),e.getMsg());
+
+        } catch (Exception e){
+
+            return ResponseResult.errorResult(AppHttpCodeEnum.LIST_ERROR);
+
+        }
+
+    }
+
+
+
     @PostMapping("insertSign")
     @autoLog
     @ApiOperation(value = "签到")
@@ -87,15 +126,15 @@ public class signController {
         }
     }
 
-    @GetMapping("/getSingInfoByUserIdAndDate")
+    @GetMapping("/getSignInfoByUserIdAndDate")
     @autoLog
     @ApiOperation(value = "通过用户Id和日期查询用户当日的考勤信息")
-    public ResponseResult getSingInfoByUserIdAndDate(@RequestParam Integer userId){
+    public ResponseResult getSignInfoByUserIdAndDate(@RequestParam Integer userId){
 
 
         //怎么添加签到信息
         try {
-             isSignVo vo = signService.getSingInfoByUserIdAndDate(userId);
+             isSignVo vo = signService.getSignInfoByUserIdAndDate(userId);
 
              return ResponseResult.okResult(vo);
         }catch (Exception e){

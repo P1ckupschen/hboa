@@ -2,6 +2,7 @@ package com.gdproj.service.impl;
 
 
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -9,17 +10,16 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Product;
 import com.gdproj.entity.Record;
+import com.gdproj.entity.Warehouse;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.ProductMapper;
 import com.gdproj.mapper.RecordMapper;
-import com.gdproj.service.DeployeeService;
-import com.gdproj.service.ProductService;
-import com.gdproj.service.RecordService;
-import com.gdproj.service.productCategoryService;
+import com.gdproj.service.*;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.productVo;
 import com.gdproj.vo.recordVo;
+import com.gdproj.vo.warehouseSelectVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -52,6 +52,12 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
     @Autowired
     productCategoryService categoryService;
 
+    @Autowired
+    WarehouseService warehouseService;
+
+    @Autowired
+    FlowService flowService;
+
     @Override
     public IPage<recordVo> getRecordList(pageDto pageDto) {
 
@@ -79,7 +85,11 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
         if (!Objects.isNull(departmentId) && title.isEmpty()) {
             //如果没有对象没有部门id属性就找到对应id的部门所以的员工的userid
             List<Integer> userIds = deployeeService.getIdsByDepartmentId(departmentId);
-            queryWrapper.in(Record::getUserId, userIds);
+            if(!ObjectUtil.isEmpty(userIds)){
+                queryWrapper.in(Record::getProductId, userIds);
+            }else{
+                queryWrapper.in(Record::getProductId,0);
+            }
         }
         //设置时间 年 月 日
         //模糊查询时间
@@ -149,7 +159,7 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
         LambdaQueryWrapper<Record> queryWrapper = new LambdaQueryWrapper<>();
 
         queryWrapper.eq(Record::getProductId, productId);
-
+        
         List<Record> list = list(queryWrapper);
         int count = 0;
         for ( Record item : list) {
@@ -285,6 +295,46 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
 
 
         return false;
+    }
+
+    @Override
+    public boolean insertRecordByWarehouseId(Integer runId) {
+
+        Warehouse warehouse = warehouseService.getById(runId);
+        List<Record> records = transferWarehouseContentToRecord(warehouse);
+
+        return saveBatch(records);
+    }
+
+    @Override
+    public List<Record> transferWarehouseContentToRecord(Warehouse warehouse) {
+        List<warehouseSelectVo> warehouseContent = warehouse.getWarehouseContent();
+        // map 转json  再转object TODO 赋值
+        String s = JSONUtil.toJsonStr(warehouse.getWarehouseContent());
+        List<warehouseSelectVo> warehouseSelectVos = JSONUtil.toList(s, warehouseSelectVo.class);
+        List<Record> collect = warehouseSelectVos.stream().map((item) -> {
+            // 所以List 需要一个实体类声明 不能用泛型
+            Integer productId = item.getId();
+            Integer count = item.getCount();
+            Record record = new Record();
+            record.setCategoryId(1);
+            //需要有projectId contractId;
+            record.setIsDeleted(0);
+            record.setContractId(warehouse.getContractId());
+            record.setProjectId(warehouse.getProjectId());
+            record.setProductId(productId);
+            record.setCount(count);
+            record.setProductUnit(productService.getById(productId).getProductUnit());
+            record.setRecordAttachments(warehouse.getWarehouseAttachments());
+            record.setRecordDescription(warehouse.getWarehouseDescription());
+            record.setRecordTime(warehouse.getCreatedTime());
+            record.setRecordStatus(1);
+            record.setUserId(warehouse.getUserId());
+            //一条warehouse如何对应 其下的record 所以 record 需要一个字段 存放所属的warehouse
+            record.setWarehouseId(warehouse.getWarehouseId());
+            return record;
+        }).collect(Collectors.toList());
+        return collect;
     }
 
 }

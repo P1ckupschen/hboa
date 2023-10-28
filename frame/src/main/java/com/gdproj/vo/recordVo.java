@@ -13,29 +13,17 @@ import java.util.List;
 @NoArgsConstructor
 public class recordVo {
     private Integer recordId;
-    private Integer productId;
-    private String productName;
-    private Integer examinerId;
-    private String examinerUsername;
-    private Integer productOrderId;
+
     private Integer categoryId;
-    private String Category;
+
     private Integer count;
-    private String productBrand;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date updateTime;
-
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date createdTime;
 
-    private String productBatchs;
-
     private Integer userId;
-
-    private String Username;
-
-    private String Department;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date recordTime;
@@ -43,14 +31,29 @@ public class recordVo {
     private Integer projectId;
 
     private Integer contractId;
-
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
-    private Date outTime;
-
-
-    private String productUnit;
-
     private String recordDescription;
 
     private List<fileVo> recordAttachments;
+
+    private Integer examinerId;
+
+    private Integer recordStatus;
+
+    private Integer productId;
+
+    private String productUnit;
+
+    private String recordTitle;
+
+    private Integer warehouseId;
+
+    private String Username;
+
+    private String Category;
+
+    private String Department;
+
+    private String productBrand;
+    private String productName;
+
 }
