@@ -12,8 +12,8 @@ import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.DepartmentMapper;
 import com.gdproj.service.DepartmentService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.departmentVo;
-import com.gdproj.vo.selectVo;
+import com.gdproj.vo.DepartmentVo;
+import com.gdproj.vo.SelectVo;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -51,22 +51,22 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
      *
      * */
     @Override
-    public List<selectVo> getListForSelect() {
+    public List<SelectVo> getListForSelect() {
         List<Department> list = list();
 
-        List<selectVo> collect = list.stream().map((item) -> {
-            selectVo vo = new selectVo();
+        List<SelectVo> collect = list.stream().map((item) -> {
+            SelectVo vo = new SelectVo();
             vo.setId(item.getDepartmentId());
             vo.setName(item.getDepartmentName());
             vo.setParentId(item.getParentId());
             return vo;
         }).collect(Collectors.toList());
-        List<selectVo> selectVos = builderTreeForSelect(collect, 0);
+        List<SelectVo> selectVos = builderTreeForSelect(collect, 0);
         return selectVos;
     }
 
     @Override
-    public IPage<departmentVo> getDepartmentList(pageDto pageDto) {
+    public IPage<DepartmentVo> getDepartmentList(pageDto pageDto) {
         //类型
         Integer type = pageDto.getType();
         //部门
@@ -104,19 +104,19 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
 //        }
         IPage<Department> recordPage = page(page, queryWrapper);
 
-        Page<departmentVo> resultPage = new Page<>();
+        Page<DepartmentVo> resultPage = new Page<>();
 
-        List<departmentVo> resultList = new ArrayList<>();
+        List<DepartmentVo> resultList = new ArrayList<>();
         try {
 
             resultList = recordPage.getRecords().stream().map((item) -> {
 
-                departmentVo vo = BeanCopyUtils.copyBean(item, departmentVo.class);
+                DepartmentVo vo = BeanCopyUtils.copyBean(item, DepartmentVo.class);
 
                 return vo;
             }).collect(Collectors.toList());
 
-            List<departmentVo> result = builderTree(resultList, 0);
+            List<DepartmentVo> result = builderTree(resultList, 0);
 
             resultPage.setRecords(result);
 
@@ -136,16 +136,16 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
      * 树形结构
      *    //方法重写有问题？
      * */
-    public static List<departmentVo> builderTree(List<departmentVo> list, Integer parentId) {
-        List<departmentVo> Tree = list.stream()
+    public static List<DepartmentVo> builderTree(List<DepartmentVo> list, Integer parentId) {
+        List<DepartmentVo> Tree = list.stream()
                 .filter(item -> item.getParentId().equals(parentId))
                 .map(item -> item.setChildren(getChildren(item, list)))
                 .collect(Collectors.toList());
         return Tree;
     }
 
-    public static List<departmentVo> getChildren(departmentVo vo, List<departmentVo> list) {
-        List<departmentVo> childrenList = list.stream()
+    public static List<DepartmentVo> getChildren(DepartmentVo vo, List<DepartmentVo> list) {
+        List<DepartmentVo> childrenList = list.stream()
                 .filter(m -> m.getParentId().equals(vo.getDepartmentId()))
                 .map(m->m.setChildren(getChildren(m,list)))
                 .collect(Collectors.toList());
@@ -153,16 +153,16 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
     }
 
 
-    public static List<selectVo> builderTreeForSelect(List<selectVo> list, Integer parentId) {
-        List<selectVo> Tree = list.stream()
+    public static List<SelectVo> builderTreeForSelect(List<SelectVo> list, Integer parentId) {
+        List<SelectVo> Tree = list.stream()
                 .filter(item -> item.getParentId().equals(parentId))
                 .map(item -> item.setChildren(getChildren(item, list)))
                 .collect(Collectors.toList());
         return Tree;
     }
 
-    public static List<selectVo> getChildren(selectVo vo, List<selectVo> list) {
-        List<selectVo> childrenList = list.stream()
+    public static List<SelectVo> getChildren(SelectVo vo, List<SelectVo> list) {
+        List<SelectVo> childrenList = list.stream()
                 .filter(m -> m.getParentId().equals(vo.getId()))
                 .map(m->m.setChildren(getChildren(m,list)))
                 .collect(Collectors.toList());

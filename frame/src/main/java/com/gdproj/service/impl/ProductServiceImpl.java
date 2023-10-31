@@ -14,7 +14,7 @@ import com.gdproj.service.ProductService;
 import com.gdproj.service.RecordService;
 import com.gdproj.service.productCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.productVo;
+import com.gdproj.vo.ProductVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,11 +41,11 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product>
     productCategoryService categoryService;
 
     @Override
-    public List<productVo> getProductForSelect() {
+    public List<ProductVo> getProductForSelect() {
         List<Product> list = list();
 
-        List<productVo> collect = list.stream().map((item) -> {
-            productVo vo = new productVo();
+        List<ProductVo> collect = list.stream().map((item) -> {
+            ProductVo vo = new ProductVo();
             vo.setProductId(item.getProductId());
             vo.setProductName(item.getProductName());
             vo.setProductTotal(recordService.getCountByProductId(vo.getProductId()));
@@ -57,7 +57,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product>
     }
 
     @Override
-    public IPage<productVo> getProductList(pageDto pageDto) {
+    public IPage<ProductVo> getProductList(pageDto pageDto) {
         Integer type = pageDto.getType();
         Integer departmentId = pageDto.getDepartmentId();
         String time = pageDto.getTime();
@@ -98,14 +98,14 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product>
 
         IPage<Product> productPage = productMapper.selectPage(page, queryWrapper);
 
-        Page<productVo> resultPage = new Page<>();
+        Page<ProductVo> resultPage = new Page<>();
 
-        List<productVo> resultList = new ArrayList<>();
+        List<ProductVo> resultList = new ArrayList<>();
         //结果里的部门 和用户都返回成string；
         try {
             resultList = productPage.getRecords().stream().map((item) -> {
 
-                productVo vo = BeanCopyUtils.copyBean(item, productVo.class);
+                ProductVo vo = BeanCopyUtils.copyBean(item, ProductVo.class);
 
                 //类型名称
                 vo.setCategory(categoryService.getById(item.getCategoryId()).getCategoryName());
@@ -148,7 +148,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product>
 
         Product oneById = getById(productId);
 
-        productCategory categoryServiceById = categoryService.getById(oneById.getCategoryId());
+        ProductCategory categoryServiceById = categoryService.getById(oneById.getCategoryId());
 
         return categoryServiceById.getCategoryName();
     }

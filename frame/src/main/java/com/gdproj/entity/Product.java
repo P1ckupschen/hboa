@@ -2,7 +2,7 @@ package com.gdproj.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.gdproj.handler.jsonAndListTypeHandler;
-import com.gdproj.vo.fileVo;
+import com.gdproj.vo.FileVo;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -73,7 +73,7 @@ public class Product implements Serializable {
      * 
      */
     @TableField(value = "product_pic",typeHandler = jsonAndListTypeHandler.class)
-    private List<fileVo> productPic;
+    private List<FileVo> productPic;
 
     /**
      * 
@@ -255,14 +255,14 @@ public class Product implements Serializable {
     /**
      * 
      */
-    public List<fileVo> getProductPic() {
+    public List<FileVo> getProductPic() {
         return productPic;
     }
 
     /**
      * 
      */
-    public void setProductPic(List<fileVo> productPic) {
+    public void setProductPic(List<FileVo> productPic) {
         this.productPic = productPic;
     }
 

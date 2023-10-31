@@ -7,17 +7,17 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.annotation.autoLog;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Report;
-import com.gdproj.entity.notifyCategory;
-import com.gdproj.entity.reportCategory;
+import com.gdproj.entity.NotifyCategory;
+import com.gdproj.entity.ReportCategory;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.ReportService;
 import com.gdproj.service.reportCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.categoryVo;
-import com.gdproj.vo.pageVo;
-import com.gdproj.vo.reportVo;
+import com.gdproj.vo.CategoryVo;
+import com.gdproj.vo.PageVo;
+import com.gdproj.vo.ReportVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,12 +49,12 @@ public class reportController {
 
         pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
 
-        IPage<reportVo> reportList = new Page<reportVo>();
+        IPage<ReportVo> reportList = new Page<ReportVo>();
 
         try {
             reportList = reportService.getReportList(pageDto);
 
-            pageVo<List<reportVo>> pageList = new pageVo<>();
+            PageVo<List<ReportVo>> pageList = new PageVo<>();
             pageList.setData(reportList.getRecords());
             pageList.setTotal((int) reportList.getTotal());
             return ResponseResult.okResult(pageList);
@@ -71,7 +71,7 @@ public class reportController {
     @PutMapping("updateReport")
     @autoLog
     @ApiOperation(value = "更新汇报")
-    public ResponseResult updateReport(@RequestBody reportVo reportVo){
+    public ResponseResult updateReport(@RequestBody ReportVo reportVo){
 
 
         Report updateReport = BeanCopyUtils.copyBean(reportVo, Report.class);
@@ -102,7 +102,7 @@ public class reportController {
     @PostMapping("insertReport")
     @autoLog
     @ApiOperation(value = "新增汇报")
-    public ResponseResult insertReport(@RequestBody reportVo reportVo){
+    public ResponseResult insertReport(@RequestBody ReportVo reportVo){
 
         Report updateReport = BeanCopyUtils.copyBean(reportVo, Report.class);
 
@@ -159,7 +159,7 @@ public class reportController {
     //批量删除                                          TODO
     public ResponseResult deleteReportList(@RequestBody Integer categoryId){
 
-        notifyCategory notifycategory = new notifyCategory();
+        NotifyCategory notifycategory = new NotifyCategory();
 
         boolean b = false;
 
@@ -196,18 +196,18 @@ public class reportController {
 
         pageDto pagedto = new pageDto(pageNum, pageSize);
 
-        IPage<reportCategory> categoryList = new Page<>();
+        IPage<ReportCategory> categoryList = new Page<>();
 
         try {
 
             if(ObjectUtil.isNull(pagedto.getPageNum())){
-                List<reportCategory> list = categoryService.list();
+                List<ReportCategory> list = categoryService.list();
 
                 return ResponseResult.okResult(list);
             }else{
 
                 categoryList = categoryService.getReportCategoryList(pagedto);
-                pageVo<List<reportCategory>> pageList = new pageVo<>();
+                PageVo<List<ReportCategory>> pageList = new PageVo<>();
                 pageList.setData(categoryList.getRecords());
                 pageList.setTotal((int) categoryList.getTotal());
                 return ResponseResult.okResult(pageList);
@@ -222,14 +222,14 @@ public class reportController {
     @PutMapping("updateCategory")
     @autoLog
     @ApiOperation(value = "更新类型")
-    public ResponseResult updateCategory(@RequestBody categoryVo category){
+    public ResponseResult updateCategory(@RequestBody CategoryVo category){
 
-        reportCategory reportcategory = new reportCategory();
+        ReportCategory reportcategory = new ReportCategory();
 
         boolean b = false;
 
         try {
-            reportcategory = BeanCopyUtils.copyBean(category, reportCategory.class);
+            reportcategory = BeanCopyUtils.copyBean(category, ReportCategory.class);
 
             b = categoryService.updateById(reportcategory);
 
@@ -250,14 +250,14 @@ public class reportController {
     @PostMapping("insertCategory")
     @autoLog
     @ApiOperation(value = "新增类型")
-    public ResponseResult insertCategory(@RequestBody categoryVo category){
+    public ResponseResult insertCategory(@RequestBody CategoryVo category){
 
-        reportCategory reportcategory = new reportCategory();
+        ReportCategory reportcategory = new ReportCategory();
 
         boolean b = false;
 
         try {
-            reportcategory = BeanCopyUtils.copyBean(category, reportCategory.class);
+            reportcategory = BeanCopyUtils.copyBean(category, ReportCategory.class);
 
             b = categoryService.save(reportcategory);
 
@@ -280,7 +280,7 @@ public class reportController {
     @ApiOperation(value = "删除类型")
     public ResponseResult deleteCategory(@RequestParam("categoryId") Integer categoryId){
 
-        reportCategory reportcategory = new reportCategory();
+        ReportCategory reportcategory = new ReportCategory();
 
         System.out.println(categoryId);
 

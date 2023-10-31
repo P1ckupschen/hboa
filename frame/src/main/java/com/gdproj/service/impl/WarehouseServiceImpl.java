@@ -16,7 +16,7 @@ import com.gdproj.service.FlowService;
 import com.gdproj.service.RecordService;
 import com.gdproj.service.WarehouseService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.warehouseVo;
+import com.gdproj.vo.WarehouseVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -66,7 +66,7 @@ public class WarehouseServiceImpl extends ServiceImpl<WarehouseMapper, Warehouse
     }
 
     @Override
-    public IPage<warehouseVo> getWarehouseList(pageDto pageDto) {
+    public IPage<WarehouseVo> getWarehouseList(pageDto pageDto) {
         //类型
         Integer type = pageDto.getType();
         //部门
@@ -108,14 +108,14 @@ public class WarehouseServiceImpl extends ServiceImpl<WarehouseMapper, Warehouse
         }
         IPage<Warehouse> recordPage = page(page, queryWrapper);
 
-        Page<warehouseVo> resultPage = new Page<>();
+        Page<WarehouseVo> resultPage = new Page<>();
 
-        List<warehouseVo> resultList = new ArrayList<>();
+        List<WarehouseVo> resultList = new ArrayList<>();
         try {
 
             resultList = recordPage.getRecords().stream().map((item) -> {
 
-                warehouseVo vo = BeanCopyUtils.copyBean(item, warehouseVo.class);
+                WarehouseVo vo = BeanCopyUtils.copyBean(item, WarehouseVo.class);
 
                 if(item.getCategoryId() == 1){
                     vo.setCategory("入库");

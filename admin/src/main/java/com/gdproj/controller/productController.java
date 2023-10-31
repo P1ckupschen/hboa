@@ -6,22 +6,21 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.annotation.autoLog;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Product;
-import com.gdproj.entity.productCategory;
+import com.gdproj.entity.ProductCategory;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.ProductService;
 import com.gdproj.service.productCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.categoryVo;
-import com.gdproj.vo.pageVo;
-import com.gdproj.vo.productVo;
+import com.gdproj.vo.CategoryVo;
+import com.gdproj.vo.PageVo;
+import com.gdproj.vo.ProductVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +40,7 @@ public class productController {
     @ApiOperation(value = "查询用于选择的产品列表")
     public ResponseResult getProductForSelect(){
 
-        List<productVo> selectList = new ArrayList<>();
+        List<ProductVo> selectList = new ArrayList<>();
 
         try {
 
@@ -70,12 +69,12 @@ public class productController {
 
         pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
 
-        IPage<productVo> productList = new Page<>();
+        IPage<ProductVo> productList = new Page<>();
 
         try {
             productList = productService.getProductList(pageDto);
 
-            pageVo<List<productVo>> pageList = new pageVo<>();
+            PageVo<List<ProductVo>> pageList = new PageVo<>();
             pageList.setData(productList.getRecords());
             pageList.setTotal((int) productList.getTotal());
             return ResponseResult.okResult(pageList);
@@ -92,7 +91,7 @@ public class productController {
     @PutMapping("updateProduct")
     @autoLog
     @ApiOperation(value = "更新产品")
-    public ResponseResult updateProduct(@RequestBody productVo vo){
+    public ResponseResult updateProduct(@RequestBody ProductVo vo){
 
         Product updateInfo = BeanCopyUtils.copyBean(vo, Product.class);
 
@@ -122,7 +121,7 @@ public class productController {
     @PostMapping("insertProduct")
     @autoLog
     @ApiOperation(value = "新增产品")
-    public ResponseResult insertProduct(@RequestBody productVo vo){
+    public ResponseResult insertProduct(@RequestBody ProductVo vo){
 
         Product insertInfo = BeanCopyUtils.copyBean(vo, Product.class);
 
@@ -209,16 +208,16 @@ public class productController {
 
         pageDto pagedto = new pageDto(pageNum, pageSize);
 
-        IPage<categoryVo> categoryList = new Page<>();
+        IPage<CategoryVo> categoryList = new Page<>();
         try {
             if(ObjectUtil.isNull(pagedto.getPageNum())){
 
-                List<categoryVo> list = categoryService.getProductCategoryList();
+                List<CategoryVo> list = categoryService.getProductCategoryList();
                 return ResponseResult.okResult(list);
 
             }else{
                 categoryList = categoryService.getProductCategoryListByPage(pagedto);
-                pageVo<List<categoryVo>> pageList = new pageVo<>();
+                PageVo<List<CategoryVo>> pageList = new PageVo<>();
                 pageList.setData(categoryList.getRecords());
                 pageList.setTotal((int) categoryList.getTotal());
                 return ResponseResult.okResult(pageList);
@@ -234,15 +233,15 @@ public class productController {
     @PutMapping("updateCategory")
     @autoLog
     @ApiOperation(value = "更新类型")
-    public ResponseResult updateCategory(@RequestBody categoryVo category){
+    public ResponseResult updateCategory(@RequestBody CategoryVo category){
 
-        productCategory Category = new productCategory();
+        ProductCategory Category = new ProductCategory();
 
 
         boolean b = false;
 
         try {
-            Category = BeanCopyUtils.copyBean(category, productCategory.class);
+            Category = BeanCopyUtils.copyBean(category, ProductCategory.class);
 
             b = categoryService.updateById(Category);
 
@@ -264,14 +263,14 @@ public class productController {
     @PostMapping("insertCategory")
     @autoLog
     @ApiOperation(value = "新增类型")
-    public ResponseResult insertCategory(@RequestBody categoryVo category){
+    public ResponseResult insertCategory(@RequestBody CategoryVo category){
 
-        productCategory Category = new productCategory();
+        ProductCategory Category = new ProductCategory();
 
         boolean b = false;
 
         try {
-            Category = BeanCopyUtils.copyBean(category, productCategory.class);
+            Category = BeanCopyUtils.copyBean(category, ProductCategory.class);
 
             b = categoryService.save(Category);
 

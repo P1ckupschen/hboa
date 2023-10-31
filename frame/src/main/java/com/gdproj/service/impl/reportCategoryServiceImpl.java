@@ -4,8 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdproj.dto.pageDto;
-import com.gdproj.entity.notifyCategory;
-import com.gdproj.entity.reportCategory;
+import com.gdproj.entity.ReportCategory;
 import com.gdproj.mapper.reportCategoryMapper;
 import com.gdproj.service.reportCategoryService;
 import org.springframework.stereotype.Service;
@@ -16,18 +15,18 @@ import org.springframework.stereotype.Service;
 * @createDate 2023-09-19 09:39:07
 */
 @Service
-public class reportCategoryServiceImpl extends ServiceImpl<reportCategoryMapper, reportCategory>
+public class reportCategoryServiceImpl extends ServiceImpl<reportCategoryMapper, ReportCategory>
     implements reportCategoryService {
 
     @Override
-    public IPage<reportCategory> getReportCategoryList(pageDto pagedto) {
+    public IPage<ReportCategory> getReportCategoryList(pageDto pagedto) {
 
         Integer pageSize = pagedto.getPageSize();
         Integer pageNum = pagedto.getPageNum();
 
-        Page<reportCategory> page = new Page<>(pageNum, pageSize);
+        Page<ReportCategory> page = new Page<>(pageNum, pageSize);
 
-        IPage<reportCategory> pageList = page(page);
+        IPage<ReportCategory> pageList = page(page);
 
         return pageList;
     }

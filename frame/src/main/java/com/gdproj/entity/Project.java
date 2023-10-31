@@ -2,13 +2,12 @@ package com.gdproj.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
-import com.gdproj.vo.fileVo;
+import com.gdproj.vo.FileVo;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -80,7 +79,7 @@ public class Project implements Serializable {
      *
      */
     @TableField(value = "project_attachments", typeHandler = JacksonTypeHandler.class)
-    private List<fileVo> projectAttachments;
+    private List<FileVo> projectAttachments;
 
     /**
      *
@@ -152,7 +151,7 @@ public class Project implements Serializable {
      *
      */
     @TableField(value = "project_pic", typeHandler = JacksonTypeHandler.class)
-    private List<fileVo> projectPic;
+    private List<FileVo> projectPic;
 
     /**
      *
@@ -164,7 +163,7 @@ public class Project implements Serializable {
      * 完成的凭证
      */
     @TableField(value = "completed_voucher", typeHandler = JacksonTypeHandler.class)
-    private List<fileVo> completedVoucher;
+    private List<FileVo> completedVoucher;
 
     /**
      *
@@ -343,14 +342,14 @@ public class Project implements Serializable {
     /**
      *
      */
-    public List<fileVo> getProjectAttachments() {
+    public List<FileVo> getProjectAttachments() {
         return projectAttachments;
     }
 
     /**
      *
      */
-    public void setProjectAttachments(List<fileVo> projectAttachments) {
+    public void setProjectAttachments(List<FileVo> projectAttachments) {
         this.projectAttachments = projectAttachments;
     }
 
@@ -511,14 +510,14 @@ public class Project implements Serializable {
     /**
      *
      */
-    public List<fileVo> getProjectPic() {
+    public List<FileVo> getProjectPic() {
         return projectPic;
     }
 
     /**
      *
      */
-    public void setProjectPic(List<fileVo> projectPic) {
+    public void setProjectPic(List<FileVo> projectPic) {
         this.projectPic = projectPic;
     }
 
@@ -539,14 +538,14 @@ public class Project implements Serializable {
     /**
      * 完成的凭证
      */
-    public List<fileVo> getCompletedVoucher() {
+    public List<FileVo> getCompletedVoucher() {
         return completedVoucher;
     }
 
     /**
      * 完成的凭证
      */
-    public void setCompletedVoucher(List<fileVo> completedVoucher) {
+    public void setCompletedVoucher(List<FileVo> completedVoucher) {
         this.completedVoucher = completedVoucher;
     }
 

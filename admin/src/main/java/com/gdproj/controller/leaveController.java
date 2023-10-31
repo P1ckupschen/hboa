@@ -6,17 +6,17 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.annotation.autoLog;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Leave;
-import com.gdproj.entity.leaveCategory;
-import com.gdproj.entity.notifyCategory;
+import com.gdproj.entity.LeaveCategory;
+import com.gdproj.entity.NotifyCategory;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.LeaveService;
 import com.gdproj.service.leaveCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.categoryVo;
-import com.gdproj.vo.leaveVo;
-import com.gdproj.vo.pageVo;
+import com.gdproj.vo.CategoryVo;
+import com.gdproj.vo.LeaveVo;
+import com.gdproj.vo.PageVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,12 +47,12 @@ public class leaveController {
                                        @RequestParam(required = false) String time){
         pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
 
-        IPage<leaveVo> leaveList = new Page<leaveVo>();
+        IPage<LeaveVo> leaveList = new Page<LeaveVo>();
 
         try {
             leaveList = leaveService.getLeaveList(pageDto);
 
-            pageVo<List<leaveVo>> pageList = new pageVo<>();
+            PageVo<List<LeaveVo>> pageList = new PageVo<>();
             pageList.setData(leaveList.getRecords());
             pageList.setTotal((int) leaveList.getTotal());
             return ResponseResult.okResult(pageList);
@@ -68,7 +68,7 @@ public class leaveController {
     @PutMapping("updateLeave")
     @autoLog
     @ApiOperation(value = "更新请假")
-    public ResponseResult updateLeave(@RequestBody leaveVo leaveVo){
+    public ResponseResult updateLeave(@RequestBody LeaveVo leaveVo){
 
 
         Leave updateLeave = BeanCopyUtils.copyBean(leaveVo, Leave.class);
@@ -99,7 +99,7 @@ public class leaveController {
     @PostMapping("insertLeave")
     @autoLog
     @ApiOperation(value = "新增请假同时添加流程信息")
-    public ResponseResult insertLeave(@RequestBody leaveVo leaveVo){
+    public ResponseResult insertLeave(@RequestBody LeaveVo leaveVo){
 
         Leave insertLeave = BeanCopyUtils.copyBean(leaveVo, Leave.class);
 
@@ -157,7 +157,7 @@ public class leaveController {
     //批量删除
     public ResponseResult deleteLeaveList(@RequestBody Integer categoryId){
 
-        notifyCategory notifycategory = new notifyCategory();
+        NotifyCategory notifycategory = new NotifyCategory();
 
         boolean b = false;
 
@@ -194,16 +194,16 @@ public class leaveController {
 
         pageDto pagedto = new pageDto(pageNum, pageSize);
 
-        IPage<leaveCategory> categoryList = new Page<>();
+        IPage<LeaveCategory> categoryList = new Page<>();
 
         try {
             if(ObjectUtil.isNull(pagedto.getPageNum())){
-                List<leaveCategory> list = categoryService.list();
+                List<LeaveCategory> list = categoryService.list();
                 return ResponseResult.okResult(list);
             }else{
                 categoryList = categoryService.getLeaveCategoryList(pagedto);
 
-                pageVo<List<leaveCategory>> pageList = new pageVo<>();
+                PageVo<List<LeaveCategory>> pageList = new PageVo<>();
                 pageList.setData(categoryList.getRecords());
                 pageList.setTotal((int) categoryList.getTotal());
 
@@ -219,14 +219,14 @@ public class leaveController {
     @PutMapping("updateCategory")
     @autoLog
     @ApiOperation(value = "更新类型")
-    public ResponseResult updateCategory(@RequestBody categoryVo category){
+    public ResponseResult updateCategory(@RequestBody CategoryVo category){
 
-        leaveCategory leavecategory = new leaveCategory();
+        LeaveCategory leavecategory = new LeaveCategory();
 
         boolean b = false;
 
         try {
-            leavecategory = BeanCopyUtils.copyBean(category, leaveCategory.class);
+            leavecategory = BeanCopyUtils.copyBean(category, LeaveCategory.class);
 
             b = categoryService.updateById(leavecategory);
 
@@ -246,14 +246,14 @@ public class leaveController {
     @PostMapping("insertCategory")
     @autoLog
     @ApiOperation(value = "新增类型")
-    public ResponseResult insertCategory(@RequestBody categoryVo category){
+    public ResponseResult insertCategory(@RequestBody CategoryVo category){
 
-        leaveCategory leavecategory = new leaveCategory();
+        LeaveCategory leavecategory = new LeaveCategory();
 
         boolean b = false;
 
         try {
-            leavecategory = BeanCopyUtils.copyBean(category, leaveCategory.class);
+            leavecategory = BeanCopyUtils.copyBean(category, LeaveCategory.class);
 
             b = categoryService.save(leavecategory);
             if(b){

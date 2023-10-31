@@ -1,6 +1,6 @@
 package com.gdproj.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.gdproj.entity.contractCategory;
+import com.gdproj.entity.ContractCategory;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Mapper;
 * @Entity generator.entity.contractCategory
 */
 @Mapper
-public interface contractCategoryMapper extends BaseMapper<contractCategory> {
+public interface contractCategoryMapper extends BaseMapper<ContractCategory> {
 
 }
 

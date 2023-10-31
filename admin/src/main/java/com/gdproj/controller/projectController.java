@@ -6,18 +6,18 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.annotation.autoLog;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Project;
-import com.gdproj.entity.projectCategory;
-import com.gdproj.entity.reportCategory;
+import com.gdproj.entity.ProjectCategory;
+import com.gdproj.entity.ReportCategory;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.ProjectService;
 import com.gdproj.service.projectCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.categoryVo;
-import com.gdproj.vo.pageVo;
-import com.gdproj.vo.projectVo;
-import com.gdproj.vo.selectVo;
+import com.gdproj.vo.CategoryVo;
+import com.gdproj.vo.PageVo;
+import com.gdproj.vo.ProjectVo;
+import com.gdproj.vo.SelectVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ public class projectController {
     @ApiOperation(value = "查询用于选择的项目列表")
     public ResponseResult getListForSelect(){
 
-        List<selectVo> selectList = new ArrayList<>();
+        List<SelectVo> selectList = new ArrayList<>();
 
         try {
 
@@ -71,11 +71,11 @@ public class projectController {
 
         pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
 
-        IPage<projectVo> projectList = new Page<>();
+        IPage<ProjectVo> projectList = new Page<>();
 
         try {
             projectList = projectService.getProjectList(pageDto);
-            pageVo<List<projectVo>> pageList = new pageVo<>();
+            PageVo<List<ProjectVo>> pageList = new PageVo<>();
             pageList.setData(projectList.getRecords());
             pageList.setTotal((int) projectList.getTotal());
             return ResponseResult.okResult(pageList);
@@ -90,7 +90,7 @@ public class projectController {
     @PutMapping("updateProject")
     @autoLog
     @ApiOperation(value = "更新项目")
-    public ResponseResult updateProject(@RequestBody projectVo vo){
+    public ResponseResult updateProject(@RequestBody ProjectVo vo){
 
 
         Project updateInfo = BeanCopyUtils.copyBean(vo, Project.class);
@@ -120,7 +120,7 @@ public class projectController {
     @PostMapping("insertProject")
     @autoLog
     @ApiOperation(value = "新增项目")
-    public ResponseResult insertProject(@RequestBody projectVo vo){
+    public ResponseResult insertProject(@RequestBody ProjectVo vo){
 
         Project insertInfo = BeanCopyUtils.copyBean(vo, Project.class);
 
@@ -200,14 +200,14 @@ public class projectController {
 
         pageDto pagedto = new pageDto(pageNum, pageSize);
 
-        IPage<projectCategory> categoryList = new Page<>();
+        IPage<ProjectCategory> categoryList = new Page<>();
 
         try {
 
             if(ObjectUtil.isNull(pagedto.getPageNum())){
-                List<projectCategory> list = categoryService.list();
-                List<selectVo> collect = list.stream().map((item) -> {
-                    selectVo vo = new selectVo();
+                List<ProjectCategory> list = categoryService.list();
+                List<SelectVo> collect = list.stream().map((item) -> {
+                    SelectVo vo = new SelectVo();
                     vo.setId(item.getCategoryId());
                     vo.setName(item.getCategoryName());
                     return vo;
@@ -216,7 +216,7 @@ public class projectController {
             }else{
 
                 categoryList = categoryService.getProjectCategoryList(pagedto);
-                pageVo<List<projectCategory>> pageList = new pageVo<>();
+                PageVo<List<ProjectCategory>> pageList = new PageVo<>();
                 pageList.setData(categoryList.getRecords());
                 pageList.setTotal((int) categoryList.getTotal());
                 return ResponseResult.okResult(pageList);
@@ -231,14 +231,14 @@ public class projectController {
     @PutMapping("updateCategory")
     @autoLog
     @ApiOperation(value = "更新类型")
-    public ResponseResult updateCategory(@RequestBody categoryVo category){
+    public ResponseResult updateCategory(@RequestBody CategoryVo category){
 
-        projectCategory projectcategory = new projectCategory();
+        ProjectCategory projectcategory = new ProjectCategory();
 
         boolean b = false;
 
         try {
-            projectcategory = BeanCopyUtils.copyBean(category, projectCategory.class);
+            projectcategory = BeanCopyUtils.copyBean(category, ProjectCategory.class);
 
             b = categoryService.updateById(projectcategory);
 
@@ -259,14 +259,14 @@ public class projectController {
     @PostMapping("insertCategory")
     @autoLog
     @ApiOperation(value = "新增类型")
-    public ResponseResult insertCategory(@RequestBody categoryVo category){
+    public ResponseResult insertCategory(@RequestBody CategoryVo category){
 
-        projectCategory projectcategory = new projectCategory();
+        ProjectCategory projectcategory = new ProjectCategory();
 
         boolean b = false;
 
         try {
-            projectcategory = BeanCopyUtils.copyBean(category, projectCategory.class);
+            projectcategory = BeanCopyUtils.copyBean(category, ProjectCategory.class);
 
             b = categoryService.save(projectcategory);
 
@@ -289,7 +289,7 @@ public class projectController {
     @ApiOperation(value = "删除类型")
     public ResponseResult deleteCategory(@RequestParam("categoryId") Integer categoryId){
 
-        reportCategory reportcategory = new reportCategory();
+        ReportCategory reportcategory = new ReportCategory();
 
         boolean b = false;
 

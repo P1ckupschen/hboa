@@ -2,7 +2,7 @@ package com.gdproj.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
-import com.gdproj.vo.fileVo;
+import com.gdproj.vo.FileVo;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -42,7 +42,7 @@ public class Account implements Serializable {
      * 
      */
     @TableField(value = "avatar",typeHandler = JacksonTypeHandler.class)
-    private List<fileVo> avatar;
+    private List<FileVo> avatar;
 
     /**
      * 
@@ -131,14 +131,14 @@ public class Account implements Serializable {
     /**
      * 
      */
-    public List<fileVo> getAvatar() {
+    public List<FileVo> getAvatar() {
         return avatar;
     }
 
     /**
      * 
      */
-    public void setAvatar(List<fileVo> avatar) {
+    public void setAvatar(List<FileVo> avatar) {
         this.avatar = avatar;
     }
 

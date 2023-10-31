@@ -10,8 +10,8 @@ import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.WarehouseService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.pageVo;
-import com.gdproj.vo.warehouseVo;
+import com.gdproj.vo.PageVo;
+import com.gdproj.vo.WarehouseVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,13 +39,13 @@ public class warehouseController {
                                         @RequestParam(required = false) String time){
         pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
 
-        IPage<warehouseVo> warehouseList = new Page<>();
+        IPage<WarehouseVo> warehouseList = new Page<>();
 
         try {
 
             warehouseList =  warehouseService.getWarehouseList(pageDto);
 
-            pageVo<List<warehouseVo>> pageList = new pageVo<>();
+            PageVo<List<WarehouseVo>> pageList = new PageVo<>();
 
             pageList.setData(warehouseList.getRecords());
 
@@ -64,7 +64,7 @@ public class warehouseController {
     @PostMapping("/insertWarehouse")
     @autoLog
     @ApiOperation(value = "新增出入库审批")
-    public ResponseResult insertWarehouse(@RequestBody warehouseVo vo){
+    public ResponseResult insertWarehouse(@RequestBody WarehouseVo vo){
 
         Warehouse warehouse = BeanCopyUtils.copyBean(vo, Warehouse.class);
 

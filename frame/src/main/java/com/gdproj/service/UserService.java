@@ -4,7 +4,7 @@ package com.gdproj.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdproj.entity.User;
 import com.gdproj.result.ResponseResult;
-import com.gdproj.vo.userVo;
+import com.gdproj.vo.UserVo;
 
 /**
 * @author Administrator
@@ -16,5 +16,5 @@ public interface UserService extends IService<User> {
     ResponseResult userLogin(String username , String password);
 
 
-    userVo getUserInfo(String token) throws Exception;
+    UserVo getUserInfo(String token) throws Exception;
 }

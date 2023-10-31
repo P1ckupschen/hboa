@@ -5,13 +5,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdproj.dto.pageDto;
-import com.gdproj.entity.flowConfig;
+import com.gdproj.entity.FlowConfig;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.flowConfigMapper;
 import com.gdproj.service.flowConfigService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.flowConfigVo;
+import com.gdproj.vo.FlowConfigVo;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,11 +24,11 @@ import java.util.stream.Collectors;
 * @createDate 2023-10-17 15:09:38
 */
 @Service
-public class flowConfigServiceImpl extends ServiceImpl<flowConfigMapper, flowConfig>
+public class flowConfigServiceImpl extends ServiceImpl<flowConfigMapper, FlowConfig>
     implements flowConfigService {
 
     @Override
-    public IPage<flowConfigVo> getFlowConfigList(pageDto pageDto) {
+    public IPage<FlowConfigVo> getFlowConfigList(pageDto pageDto) {
         //类型
         Integer type = pageDto.getType();
         //部门
@@ -44,27 +44,27 @@ public class flowConfigServiceImpl extends ServiceImpl<flowConfigMapper, flowCon
         Integer pageNum = pageDto.getPageNum();
         Integer pageSize = pageDto.getPageSize();
 
-        Page<flowConfig> page = new Page<>(pageNum, pageSize);
+        Page<FlowConfig> page = new Page<>(pageNum, pageSize);
 
-        LambdaQueryWrapper<flowConfig> queryWrapper = new LambdaQueryWrapper<>();
+        LambdaQueryWrapper<FlowConfig> queryWrapper = new LambdaQueryWrapper<>();
         //排序
         if (sort.equals("+id")) {
-            queryWrapper.orderByAsc(flowConfig::getTypeId);
+            queryWrapper.orderByAsc(FlowConfig::getTypeId);
         } else {
-            queryWrapper.orderByDesc(flowConfig::getTypeId);
+            queryWrapper.orderByDesc(FlowConfig::getTypeId);
         }
 
 
-        IPage<flowConfig> recordPage = page(page, queryWrapper);
+        IPage<FlowConfig> recordPage = page(page, queryWrapper);
 
-        Page<flowConfigVo> resultPage = new Page<>();
+        Page<FlowConfigVo> resultPage = new Page<>();
 
-        List<flowConfigVo> resultList = new ArrayList<>();
+        List<FlowConfigVo> resultList = new ArrayList<>();
         try {
 
             resultList = recordPage.getRecords().stream().map((item) -> {
 
-                flowConfigVo vo = BeanCopyUtils.copyBean(item, flowConfigVo.class);
+                FlowConfigVo vo = BeanCopyUtils.copyBean(item, FlowConfigVo.class);
                 //类型名称?
                 return vo;
             }).collect(Collectors.toList());

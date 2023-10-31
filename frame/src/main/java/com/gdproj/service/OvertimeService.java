@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Overtime;
-import com.gdproj.vo.overtimeVo;
+import com.gdproj.vo.OvertimeVo;
 
 /**
 * @author Administrator
@@ -13,7 +13,7 @@ import com.gdproj.vo.overtimeVo;
 */
 public interface OvertimeService extends IService<Overtime> {
 
-    IPage<overtimeVo> getOverTimeList(pageDto pageDto);
+    IPage<OvertimeVo> getOverTimeList(pageDto pageDto);
 
     boolean insertOvertime(Overtime insertOvertime);
 }

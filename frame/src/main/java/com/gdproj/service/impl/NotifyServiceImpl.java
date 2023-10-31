@@ -14,7 +14,7 @@ import com.gdproj.service.DepartmentService;
 import com.gdproj.service.DeployeeService;
 import com.gdproj.service.NotifyService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.notifyVo;
+import com.gdproj.vo.NotifyVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +46,7 @@ public class NotifyServiceImpl extends ServiceImpl<NotifyMapper, Notify>
 
 
     @Override
-    public IPage<notifyVo> getNotifyList(pageDto pageDto) {
+    public IPage<NotifyVo> getNotifyList(pageDto pageDto) {
 
         Integer type = pageDto.getType();
         Integer departmentId = pageDto.getDepartmentId();
@@ -102,13 +102,13 @@ public class NotifyServiceImpl extends ServiceImpl<NotifyMapper, Notify>
 
         IPage<Notify> notifyPage = notifyMapper.selectPage(page, queryWrapper);
 
-        Page<notifyVo> resultPage = new Page<>();
+        Page<NotifyVo> resultPage = new Page<>();
         //结果里的部门 和用户都返回成string；
-        List<notifyVo> resultList = new ArrayList<>();
+        List<NotifyVo> resultList = new ArrayList<>();
         try {
             resultList = notifyPage.getRecords().stream().map((item) -> {
 
-                notifyVo notifyVo = BeanCopyUtils.copyBean(item, notifyVo.class);
+                NotifyVo notifyVo = BeanCopyUtils.copyBean(item, NotifyVo.class);
                 //人员
                 notifyVo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
 

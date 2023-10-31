@@ -1,7 +1,7 @@
 package com.gdproj.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.gdproj.entity.leaveCategory;
+import com.gdproj.entity.LeaveCategory;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Mapper;
 * @Entity generator.entity.leaveCategory
 */
 @Mapper
-public interface leaveCategoryMapper extends BaseMapper<leaveCategory> {
+public interface leaveCategoryMapper extends BaseMapper<LeaveCategory> {
 
 }
 

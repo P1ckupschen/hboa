@@ -9,7 +9,7 @@ import com.gdproj.service.UserService;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.utils.JwtUtils;
 import com.gdproj.utils.RSAUtil;
-import com.gdproj.vo.userVo;
+import com.gdproj.vo.UserVo;
 import org.springframework.stereotype.Service;
 
 /**
@@ -52,7 +52,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     @Override
-    public userVo getUserInfo(String token) throws Exception {
+    public UserVo getUserInfo(String token) throws Exception {
         String subToken = token.substring(7);
         String id = (String) JwtUtils.parseJWT(subToken).get("id");
         //id是account 表的 主键id
@@ -60,7 +60,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
         queryWrapper.eq(User::getId,id);
         User one = getOne(queryWrapper);
-        userVo vo = BeanCopyUtils.copyBean(one, userVo.class);
+        UserVo vo = BeanCopyUtils.copyBean(one, UserVo.class);
         return vo;
     }
 

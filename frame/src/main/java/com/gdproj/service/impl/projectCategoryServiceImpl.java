@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdproj.dto.pageDto;
-import com.gdproj.entity.projectCategory;
+import com.gdproj.entity.ProjectCategory;
 import com.gdproj.mapper.projectCategoryMapper;
 import com.gdproj.service.projectCategoryService;
 import org.springframework.stereotype.Service;
@@ -15,13 +15,13 @@ import org.springframework.stereotype.Service;
 * @createDate 2023-10-07 14:54:52
 */
 @Service
-public class projectCategoryServiceImpl extends ServiceImpl<projectCategoryMapper, projectCategory>
+public class projectCategoryServiceImpl extends ServiceImpl<projectCategoryMapper, ProjectCategory>
     implements projectCategoryService {
 
     @Override
-    public IPage<projectCategory> getProjectCategoryList(pageDto pagedto) {
-        Page<projectCategory> page = new Page<>(pagedto.getPageNum(), pagedto.getPageSize());
-        Page<projectCategory> pageList = page(page);
+    public IPage<ProjectCategory> getProjectCategoryList(pageDto pagedto) {
+        Page<ProjectCategory> page = new Page<>(pagedto.getPageNum(), pagedto.getPageSize());
+        Page<ProjectCategory> pageList = page(page);
         return pageList;
     }
 }

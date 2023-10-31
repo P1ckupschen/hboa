@@ -11,8 +11,8 @@ import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.TaskService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.pageVo;
-import com.gdproj.vo.taskVo;
+import com.gdproj.vo.PageVo;
+import com.gdproj.vo.TaskVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,13 +42,13 @@ public class taskController {
                                         @RequestParam(required = false) String time){
         pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
 
-        IPage<taskVo> taskList = new Page<>();
+        IPage<TaskVo> taskList = new Page<>();
 
         try {
 
             taskList =  taskService.getTaskList(pageDto);
 
-            pageVo<List<taskVo>> pageList = new pageVo<>();
+            PageVo<List<TaskVo>> pageList = new PageVo<>();
 
             pageList.setData(taskList.getRecords());
 
@@ -70,7 +70,7 @@ public class taskController {
     @PutMapping("updateTask")
     @autoLog
     @ApiOperation(value = "更新任务")
-    public ResponseResult updateTask(@RequestBody taskVo taskVo){
+    public ResponseResult updateTask(@RequestBody TaskVo taskVo){
 
         Task updateTask = BeanCopyUtils.copyBean(taskVo, Task.class);
 
@@ -100,7 +100,7 @@ public class taskController {
     @PostMapping("insertTask")
     @autoLog
     @ApiOperation(value = "新增任务")
-    public ResponseResult insertTask(@RequestBody taskVo taskVo){
+    public ResponseResult insertTask(@RequestBody TaskVo taskVo){
 
         Task updateTask = BeanCopyUtils.copyBean(taskVo, Task.class);
 

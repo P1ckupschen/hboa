@@ -14,8 +14,8 @@ import com.gdproj.mapper.DeployeeMapper;
 import com.gdproj.service.DepartmentService;
 import com.gdproj.service.DeployeeService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.deployeeVo;
-import com.gdproj.vo.userVo;
+import com.gdproj.vo.DeployeeVo;
+import com.gdproj.vo.UserVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -115,12 +115,12 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
     }
 
     @Override
-    public List<userVo> getListForSelect() {
+    public List<UserVo> getListForSelect() {
 
         List<Deployee> list = list();
 
-        List<userVo> collect = list.stream().map((item) -> {
-            userVo userVo = new userVo();
+        List<UserVo> collect = list.stream().map((item) -> {
+            UserVo userVo = new UserVo();
             userVo.setUserId(item.getDeployeeId());
             userVo.setUsername(item.getDeployeeName());
             userVo.setDepartmentId(item.getDepartmentId());
@@ -131,7 +131,7 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
     }
 
     @Override
-    public IPage<deployeeVo> getDeployeeList(pageDto pageDto) {
+    public IPage<DeployeeVo> getDeployeeList(pageDto pageDto) {
 
         //类型
         Integer type = pageDto.getType();
@@ -172,14 +172,14 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
 
         IPage<Deployee> recordPage = page(page, queryWrapper);
 
-        Page<deployeeVo> resultPage = new Page<>();
+        Page<DeployeeVo> resultPage = new Page<>();
 
-        List<deployeeVo> resultList = new ArrayList<>();
+        List<DeployeeVo> resultList = new ArrayList<>();
         try {
 
             resultList = recordPage.getRecords().stream().map((item) -> {
 
-                deployeeVo vo = BeanCopyUtils.copyBean(item, deployeeVo.class);
+                DeployeeVo vo = BeanCopyUtils.copyBean(item, DeployeeVo.class);
                 //类型名称?
                 return vo;
             }).collect(Collectors.toList());

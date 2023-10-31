@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdproj.dto.pageDto;
-import com.gdproj.entity.contractCategory;
+import com.gdproj.entity.ContractCategory;
 import com.gdproj.mapper.contractCategoryMapper;
 import com.gdproj.service.contractCategoryService;
 import org.springframework.stereotype.Service;
@@ -15,18 +15,18 @@ import org.springframework.stereotype.Service;
 * @createDate 2023-10-05 09:13:46
 */
 @Service
-public class contractCategoryServiceImpl extends ServiceImpl<contractCategoryMapper, contractCategory>
+public class contractCategoryServiceImpl extends ServiceImpl<contractCategoryMapper, ContractCategory>
     implements contractCategoryService {
 
     @Override
-    public IPage<contractCategory> getContractCategoryList(pageDto pagedto) {
+    public IPage<ContractCategory> getContractCategoryList(pageDto pagedto) {
 
         Integer pageSize = pagedto.getPageSize();
         Integer pageNum = pagedto.getPageNum();
 
-        Page<contractCategory> page = new Page<>(pageNum, pageSize);
+        Page<ContractCategory> page = new Page<>(pageNum, pageSize);
 
-        IPage<contractCategory> pageList = page(page);
+        IPage<ContractCategory> pageList = page(page);
 
         return pageList;
     }

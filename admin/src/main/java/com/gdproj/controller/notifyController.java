@@ -6,21 +6,22 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.annotation.autoLog;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Notify;
-import com.gdproj.entity.notifyCategory;
+import com.gdproj.entity.NotifyCategory;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.NotifyService;
 import com.gdproj.service.notifyCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.categoryVo;
-import com.gdproj.vo.notifyVo;
-import com.gdproj.vo.pageVo;
+import com.gdproj.vo.CategoryVo;
+import com.gdproj.vo.NotifyVo;
+import com.gdproj.vo.PageVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Calendar;
 import java.util.List;
 
 @RestController
@@ -48,13 +49,13 @@ public class notifyController {
                                         @RequestParam(required = false) String time){
         pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
 
-        IPage<notifyVo> notifyList = new Page<>();
+        IPage<NotifyVo> notifyList = new Page<>();
 
         try {
 
             notifyList =  notifyService.getNotifyList(pageDto);
 
-            pageVo<List<notifyVo>> pageList = new pageVo<>();
+            PageVo<List<NotifyVo>> pageList = new PageVo<>();
             pageList.setData(notifyList.getRecords());
             pageList.setTotal((int) notifyList.getTotal());
             return ResponseResult.okResult(pageList);
@@ -65,12 +66,42 @@ public class notifyController {
         }
 
     }
+    /**
+     * notify_status
+     * 0:待审批
+     * 1:生效/已审批
+     * 2:弃用/不通过
+     *
+     * */
+
+    @PutMapping("approvalNotify")
+    @autoLog
+    @ApiOperation(value = "审批公告")
+    public ResponseResult approvalNotify(@RequestBody NotifyVo vo){
+        try {
+            Notify notify = BeanCopyUtils.copyBean(vo, Notify.class);
+
+            Calendar instance = Calendar.getInstance();
+
+            boolean b = notifyService.updateById(notify);
+
+            if(b){
+                return ResponseResult.okResult(b);
+            }else{
+                return ResponseResult.errorResult(AppHttpCodeEnum.UPDATE_ERROR);
+            }
+
+        }catch (Exception e){
+            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+        }
+
+    }
+
 
     @PutMapping("updateNotify")
     @autoLog
     @ApiOperation(value = "更新公告")
-    public ResponseResult updateNotify(@RequestBody notifyVo notifyVo){
-
+    public ResponseResult updateNotify(@RequestBody NotifyVo notifyVo){
 
         Notify updateNotify = BeanCopyUtils.copyBean(notifyVo, Notify.class);
 //        vo中的 发布人  类型 部门
@@ -100,7 +131,7 @@ public class notifyController {
     @PostMapping("insertNotify")
     @autoLog
     @ApiOperation(value = "新增公告")
-    public ResponseResult insertNotify(@RequestBody notifyVo notifyVo){
+    public ResponseResult insertNotify(@RequestBody NotifyVo notifyVo){
 
         Notify updateNotify = BeanCopyUtils.copyBean(notifyVo, Notify.class);
 
@@ -156,7 +187,7 @@ public class notifyController {
     //批量删除
     public ResponseResult deleteNotifyList(@RequestBody Integer categoryId){
 
-        notifyCategory notifycategory = new notifyCategory();
+        NotifyCategory notifycategory = new NotifyCategory();
 
         boolean b = false;
 
@@ -193,17 +224,17 @@ public class notifyController {
 
         pageDto pagedto = new pageDto(pageNum, pageSize);
 
-        IPage<notifyCategory> categoryList = new Page<>();
+        IPage<NotifyCategory> categoryList = new Page<>();
 
         try {
 
             if(ObjectUtil.isNull(pagedto.getPageNum())){
-                List<notifyCategory> list = categoryService.list();
+                List<NotifyCategory> list = categoryService.list();
                 return ResponseResult.okResult(list);
             }else{
                 categoryList = categoryService.getNotifyCategoryList(pagedto);
 
-                pageVo<List<notifyCategory>> pageList = new pageVo<>();
+                PageVo<List<NotifyCategory>> pageList = new PageVo<>();
                 pageList.setData(categoryList.getRecords());
                 pageList.setTotal((int) categoryList.getTotal());
                 return ResponseResult.okResult(pageList);
@@ -220,14 +251,14 @@ public class notifyController {
     @PutMapping("updateCategory")
     @autoLog
     @ApiOperation(value = "更新类型")
-    public ResponseResult updateCategory(@RequestBody categoryVo category){
+    public ResponseResult updateCategory(@RequestBody CategoryVo category){
 
-        notifyCategory notifycategory = new notifyCategory();
+        NotifyCategory notifycategory = new NotifyCategory();
 
         boolean b = false;
 
         try {
-            notifycategory = BeanCopyUtils.copyBean(category, notifyCategory.class);
+            notifycategory = BeanCopyUtils.copyBean(category, NotifyCategory.class);
 
             b = categoryService.updateById(notifycategory);
 
@@ -248,14 +279,14 @@ public class notifyController {
     @PostMapping("insertCategory")
     @autoLog
     @ApiOperation(value = "新增类型")
-    public ResponseResult insertCategory(@RequestBody categoryVo category){
+    public ResponseResult insertCategory(@RequestBody CategoryVo category){
 
-        notifyCategory notifycategory = new notifyCategory();
+        NotifyCategory notifycategory = new NotifyCategory();
 
         boolean b = false;
 
         try {
-            notifycategory = BeanCopyUtils.copyBean(category, notifyCategory.class);
+            notifycategory = BeanCopyUtils.copyBean(category, NotifyCategory.class);
 
             b = categoryService.save(notifycategory);
 
@@ -278,7 +309,7 @@ public class notifyController {
     @ApiOperation(value = "删除类型")
     public ResponseResult deleteCategory(@RequestParam("categoryId") Integer categoryId){
 
-        notifyCategory notifycategory = new notifyCategory();
+        NotifyCategory notifycategory = new NotifyCategory();
 
         System.out.println(categoryId);
 

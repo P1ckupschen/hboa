@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="generator.mapper.DailyUseMapper">
+
+    <resultMap id="BaseResultMap" type="generator.entity.DailyUse">
+            <id property="dailyuseId" column="dailyuse_id" jdbcType="INTEGER"/>
+            <result property="dailyuseTitle" column="dailyuse_title" jdbcType="VARCHAR"/>
+            <result property="dailyuseContent" column="dailyuse_content" jdbcType="VARCHAR"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="categoryId" column="category_id" jdbcType="INTEGER"/>
+            <result property="dailyuseFeedback" column="dailyuse_feedback" jdbcType="VARCHAR"/>
+            <result property="dailyuseDescription" column="dailyuse_description" jdbcType="VARCHAR"/>
+            <result property="dailyuseStatus" column="dailyuse_status" jdbcType="INTEGER"/>
+            <result property="dailyuseAttachments" column="dailyuse_attachments" jdbcType="VARCHAR"/>
+            <result property="typeId" column="type_id" jdbcType="INTEGER"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+            <result property="userId" column="user_id" jdbcType="INTEGER"/>
+            <result property="projectId" column="project_id" jdbcType="INTEGER"/>
+            <result property="returnTime" column="return_time" jdbcType="TIMESTAMP"/>
+            <result property="tReturnTime" column="t_return_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        dailyuse_id,dailyuse_title,dailyuse_content,
+        created_time,update_time,category_id,
+        dailyuse_feedback,dailyuse_description,dailyuse_status,
+        dailyuse_attachments,type_id,is_deleted,
+        user_id,project_id,return_time,
+        t_return_time
+    </sql>
+</mapper>

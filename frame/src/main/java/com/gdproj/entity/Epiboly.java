@@ -2,7 +2,7 @@ package com.gdproj.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
-import com.gdproj.vo.fileVo;
+import com.gdproj.vo.FileVo;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -73,7 +73,7 @@ public class Epiboly implements Serializable {
      * 
      */
     @TableField(value = "epiboly_attachments",typeHandler = JacksonTypeHandler.class)
-    private List<fileVo> epibolyAttachments;
+    private List<FileVo> epibolyAttachments;
 
     /**
      * 
@@ -133,7 +133,7 @@ public class Epiboly implements Serializable {
      * 
      */
     @TableField(value = "epiboly_pic",typeHandler = JacksonTypeHandler.class)
-    private List<fileVo> epibolyPic;
+    private List<FileVo> epibolyPic;
 
     /**
      * 
@@ -145,7 +145,7 @@ public class Epiboly implements Serializable {
      * 完成的凭证
      */
     @TableField(value = "completed_voucher",typeHandler = JacksonTypeHandler.class)
-    private List<fileVo> completedVoucher;
+    private List<FileVo> completedVoucher;
 
     /**
      * 
@@ -322,14 +322,14 @@ public class Epiboly implements Serializable {
     /**
      * 
      */
-    public List<fileVo> getEpibolyAttachments() {
+    public List<FileVo> getEpibolyAttachments() {
         return epibolyAttachments;
     }
 
     /**
      * 
      */
-    public void setEpibolyAttachments(List<fileVo> epibolyAttachments) {
+    public void setEpibolyAttachments(List<FileVo> epibolyAttachments) {
         this.epibolyAttachments = epibolyAttachments;
     }
 
@@ -462,14 +462,14 @@ public class Epiboly implements Serializable {
     /**
      * 
      */
-    public List<fileVo> getEpibolyPic() {
+    public List<FileVo> getEpibolyPic() {
         return epibolyPic;
     }
 
     /**
      * 
      */
-    public void setEpibolyPic(List<fileVo> epibolyPic) {
+    public void setEpibolyPic(List<FileVo> epibolyPic) {
         this.epibolyPic = epibolyPic;
     }
 
@@ -490,14 +490,14 @@ public class Epiboly implements Serializable {
     /**
      * 完成的凭证
      */
-    public List<fileVo> getCompletedVoucher() {
+    public List<FileVo> getCompletedVoucher() {
         return completedVoucher;
     }
 
     /**
      * 完成的凭证
      */
-    public void setCompletedVoucher(List<fileVo> completedVoucher) {
+    public void setCompletedVoucher(List<FileVo> completedVoucher) {
         this.completedVoucher = completedVoucher;
     }
 

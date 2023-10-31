@@ -12,10 +12,10 @@ import com.gdproj.result.ResponseResult;
 import com.gdproj.service.SignService;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.utils.Iputil;
-import com.gdproj.vo.isSignVo;
-import com.gdproj.vo.monthSignVo;
-import com.gdproj.vo.pageVo;
-import com.gdproj.vo.signVo;
+import com.gdproj.vo.IsSignVo;
+import com.gdproj.vo.MonthSignVo;
+import com.gdproj.vo.PageVo;
+import com.gdproj.vo.SignVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,13 +45,13 @@ public class signController {
 
         pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
 
-        IPage<signVo> signList = new Page<signVo>();
+        IPage<SignVo> signList = new Page<SignVo>();
 
         try {
 
             signList  =  signService.getSignList(pageDto);
 
-            pageVo<List<signVo>> pageList = new pageVo<>();
+            PageVo<List<SignVo>> pageList = new PageVo<>();
             pageList.setData(signList.getRecords());
             pageList.setTotal((int) signList.getTotal());
             return ResponseResult.okResult(pageList);
@@ -81,13 +81,13 @@ public class signController {
 
         pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
 
-        IPage<monthSignVo> signList = new Page<monthSignVo>();
+        IPage<MonthSignVo> signList = new Page<MonthSignVo>();
 
         try {
 
             signList  =  signService.getMonthSignList(pageDto);
 
-            pageVo<List<monthSignVo>> pageList = new pageVo<>();
+            PageVo<List<MonthSignVo>> pageList = new PageVo<>();
             pageList.setData(signList.getRecords());
             pageList.setTotal((int) signList.getTotal());
             return ResponseResult.okResult(pageList);
@@ -109,7 +109,7 @@ public class signController {
     @PostMapping("insertSign")
     @autoLog
     @ApiOperation(value = "签到")
-    public ResponseResult insertSign(@RequestBody signVo vo, HttpServletRequest request){
+    public ResponseResult insertSign(@RequestBody SignVo vo, HttpServletRequest request){
 
         System.out.println(vo);
         Sign sign = BeanCopyUtils.copyBean(vo, Sign.class);
@@ -134,7 +134,7 @@ public class signController {
 
         //怎么添加签到信息
         try {
-             isSignVo vo = signService.getSignInfoByUserIdAndDate(userId);
+             IsSignVo vo = signService.getSignInfoByUserIdAndDate(userId);
 
              return ResponseResult.okResult(vo);
         }catch (Exception e){

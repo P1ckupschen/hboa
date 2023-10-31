@@ -1,20 +1,15 @@
 package com.gdproj.utils;
 
 
-import cn.hutool.core.lang.tree.TreeUtil;
-import cn.hutool.core.util.ObjectUtil;
-import com.gdproj.entity.Menu;
-import com.gdproj.entity.productCategory;
-import com.gdproj.vo.categoryVo;
+import com.gdproj.vo.CategoryVo;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class analysisTree {
 
-    public static List<categoryVo> builderTree(List<categoryVo> list, Integer parentId) {
-        List<categoryVo> Tree = list.stream()
+    public static List<CategoryVo> builderTree(List<CategoryVo> list, Integer parentId) {
+        List<CategoryVo> Tree = list.stream()
                 .filter(item -> item.getParentId().equals(parentId))
                 //set方法报错是因为set没有返回值而map需要返回值
                 //1.类上添加链式编程注解@Accessors(chain = true)
@@ -30,8 +25,8 @@ public class analysisTree {
      * @param
      * @return
      */
-    public static List<categoryVo> getChildren(categoryVo vo, List<categoryVo> list) {
-        List<categoryVo> childrenList = list.stream()
+    public static List<CategoryVo> getChildren(CategoryVo vo, List<CategoryVo> list) {
+        List<CategoryVo> childrenList = list.stream()
                 .filter(m -> m.getParentId().equals(vo.getCategoryId()))
                 .map(m->m.setChildren(getChildren(m,list)))
                 .collect(Collectors.toList());

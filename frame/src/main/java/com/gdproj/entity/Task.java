@@ -2,7 +2,7 @@ package com.gdproj.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
-import com.gdproj.vo.fileVo;
+import com.gdproj.vo.FileVo;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -90,7 +90,7 @@ public class Task implements Serializable {
      * 附件
      */
     @TableField(value = "task_attachments",typeHandler = JacksonTypeHandler.class)
-    private List<fileVo> taskAttachments;
+    private List<FileVo> taskAttachments;
 
     /**
      *
@@ -321,14 +321,14 @@ public class Task implements Serializable {
     /**
      * 附件
      */
-    public List<fileVo> getTaskAttachments() {
+    public List<FileVo> getTaskAttachments() {
         return taskAttachments;
     }
 
     /**
      * 附件
      */
-    public void setTaskAttachments(List<fileVo> taskAttachments) {
+    public void setTaskAttachments(List<FileVo> taskAttachments) {
         this.taskAttachments = taskAttachments;
     }
 

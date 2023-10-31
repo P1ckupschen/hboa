@@ -10,9 +10,9 @@ import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.DeployeeService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.deployeeVo;
-import com.gdproj.vo.pageVo;
-import com.gdproj.vo.userVo;
+import com.gdproj.vo.DeployeeVo;
+import com.gdproj.vo.PageVo;
+import com.gdproj.vo.UserVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class deployeeController {
     @ApiOperation(value = "查询用于选择的员工列表")
     public ResponseResult getListForSelect(){
 
-        List<userVo> selectList = new ArrayList<>();
+        List<UserVo> selectList = new ArrayList<>();
 
         try {
 
@@ -62,12 +62,12 @@ public class deployeeController {
 
         pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
 
-        IPage<deployeeVo> deployeeList = new Page<deployeeVo>();
+        IPage<DeployeeVo> deployeeList = new Page<DeployeeVo>();
 
         try {
             deployeeList = deployeeService.getDeployeeList(pageDto);
 
-            pageVo<List<deployeeVo>> pageList = new pageVo<>();
+            PageVo<List<DeployeeVo>> pageList = new PageVo<>();
             pageList.setData(deployeeList.getRecords());
             pageList.setTotal((int) deployeeList.getTotal());
             return ResponseResult.okResult(pageList);
@@ -84,7 +84,7 @@ public class deployeeController {
     @PutMapping("updateDeployee")
     @autoLog
     @ApiOperation(value = "更新员工")
-    public ResponseResult updateDeployee(@RequestBody deployeeVo vo){
+    public ResponseResult updateDeployee(@RequestBody DeployeeVo vo){
 
 
         Deployee updateInfo = BeanCopyUtils.copyBean(vo, Deployee.class);
@@ -115,7 +115,7 @@ public class deployeeController {
     @PostMapping("insertDeployee")
     @autoLog
     @ApiOperation(value = "新增员工")
-    public ResponseResult insertDeployee(@RequestBody deployeeVo vo){
+    public ResponseResult insertDeployee(@RequestBody DeployeeVo vo){
 
         Deployee insertInfo = BeanCopyUtils.copyBean(vo, Deployee.class);
 

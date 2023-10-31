@@ -11,7 +11,7 @@ import com.gdproj.service.SystemLoginService;
 import com.gdproj.service.UserService;
 import com.gdproj.utils.JwtUtils;
 import com.gdproj.utils.RSAUtil;
-import com.gdproj.vo.accountVo;
+import com.gdproj.vo.AccountVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -74,7 +74,7 @@ public class SystemLoginServiceImpl implements SystemLoginService {
     }
 
     @Override
-    public ResponseResult frontLogin(accountVo vo) {
+    public ResponseResult frontLogin(AccountVo vo) {
         Account one = new Account();
 
         try {

@@ -12,7 +12,7 @@ import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.LeaveMapper;
 import com.gdproj.service.*;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.leaveVo;
+import com.gdproj.vo.LeaveVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +43,7 @@ public class LeaveServiceImpl extends ServiceImpl<LeaveMapper, Leave>
 
 
     @Override
-    public IPage<leaveVo> getLeaveList(pageDto pageDto) {
+    public IPage<LeaveVo> getLeaveList(pageDto pageDto) {
         Integer type = pageDto.getType();
         Integer departmentId = pageDto.getDepartmentId();
         String time = pageDto.getTime();
@@ -96,14 +96,14 @@ public class LeaveServiceImpl extends ServiceImpl<LeaveMapper, Leave>
 
         IPage<Leave> leavePage = page(page, queryWrapper);
 
-        Page<leaveVo> resultPage = new Page<>();
+        Page<LeaveVo> resultPage = new Page<>();
 
-        List<leaveVo> resultList = new ArrayList<>();
+        List<LeaveVo> resultList = new ArrayList<>();
 
         //结果里的部门 和用户都返回成string；
         try {
             resultList = leavePage.getRecords().stream().map((item) -> {
-                leaveVo leavevo = BeanCopyUtils.copyBean(item, leaveVo.class);
+                LeaveVo leavevo = BeanCopyUtils.copyBean(item, LeaveVo.class);
 
                 //人员
                 leavevo.setUsername(deployeeService.getNameByUserId(item.getUserId()));

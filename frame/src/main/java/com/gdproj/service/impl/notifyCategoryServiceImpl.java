@@ -1,12 +1,11 @@
 package com.gdproj.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import com.gdproj.dto.pageDto;
-import com.gdproj.entity.notifyCategory;
+import com.gdproj.entity.NotifyCategory;
 import com.gdproj.mapper.notifyCategoryMapper;
 import com.gdproj.service.notifyCategoryService;
 import org.springframework.stereotype.Service;
@@ -17,18 +16,18 @@ import org.springframework.stereotype.Service;
 * @createDate 2023-09-15 15:27:55
 */
 @Service
-public class notifyCategoryServiceImpl extends ServiceImpl<notifyCategoryMapper, notifyCategory>
+public class notifyCategoryServiceImpl extends ServiceImpl<notifyCategoryMapper, NotifyCategory>
     implements notifyCategoryService {
 
     @Override
-    public IPage<notifyCategory> getNotifyCategoryList(pageDto pagedto) {
+    public IPage<NotifyCategory> getNotifyCategoryList(pageDto pagedto) {
 
         Integer pageSize = pagedto.getPageSize();
         Integer pageNum = pagedto.getPageNum();
 
-        Page<notifyCategory> page = new Page<>(pageNum, pageSize);
+        Page<NotifyCategory> page = new Page<>(pageNum, pageSize);
 
-        IPage<notifyCategory> pageList = page(page);
+        IPage<NotifyCategory> pageList = page(page);
 
         return pageList;
     }

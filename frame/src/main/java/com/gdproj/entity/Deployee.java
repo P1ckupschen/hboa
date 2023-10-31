@@ -2,7 +2,7 @@ package com.gdproj.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
-import com.gdproj.vo.fileVo;
+import com.gdproj.vo.FileVo;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -84,7 +84,7 @@ public class Deployee implements Serializable {
      *
      */
     @TableField(value = "contract",typeHandler = JacksonTypeHandler.class)
-    private List<fileVo> contract;
+    private List<FileVo> contract;
 
     /**
      *
@@ -127,7 +127,7 @@ public class Deployee implements Serializable {
      *
      */
     @TableField(value = "ensurance",typeHandler = JacksonTypeHandler.class)
-    private List<fileVo> ensurance;
+    private List<FileVo> ensurance;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -289,14 +289,14 @@ public class Deployee implements Serializable {
     /**
      *
      */
-    public List<fileVo> getContract() {
+    public List<FileVo> getContract() {
         return contract;
     }
 
     /**
      *
      */
-    public void setContract(List<fileVo> contract) {
+    public void setContract(List<FileVo> contract) {
         this.contract = contract;
     }
 
@@ -387,14 +387,14 @@ public class Deployee implements Serializable {
     /**
      *
      */
-    public List<fileVo> getEnsurance() {
+    public List<FileVo> getEnsurance() {
         return ensurance;
     }
 
     /**
      *
      */
-    public void setEnsurance(List<fileVo> ensurance) {
+    public void setEnsurance(List<FileVo> ensurance) {
         this.ensurance = ensurance;
     }
 

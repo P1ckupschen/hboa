@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Contract;
-import com.gdproj.vo.contractVo;
-import com.gdproj.vo.selectVo;
+import com.gdproj.vo.ContractVo;
+import com.gdproj.vo.SelectVo;
 
 import java.util.List;
 
@@ -16,9 +16,9 @@ import java.util.List;
 */
 public interface ContractService extends IService<Contract> {
 
-    IPage<contractVo> getContractList(pageDto pageDto);
+    IPage<ContractVo> getContractList(pageDto pageDto);
 
-    List<selectVo> getListForSelect();
+    List<SelectVo> getListForSelect();
 
     List<Contract> getListByClientId(Integer clientId);
 }

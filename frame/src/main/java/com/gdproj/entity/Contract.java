@@ -2,7 +2,7 @@ package com.gdproj.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
-import com.gdproj.vo.fileVo;
+import com.gdproj.vo.FileVo;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -157,7 +157,7 @@ public class Contract implements Serializable {
      * 附件
      */
     @TableField(value = "contract_attachments",typeHandler = JacksonTypeHandler.class)
-    private List<fileVo> contractAttachments;
+    private List<FileVo> contractAttachments;
 
     /**
      * 
@@ -538,14 +538,14 @@ public class Contract implements Serializable {
     /**
      * 附件
      */
-    public List<fileVo> getContractAttachments() {
+    public List<FileVo> getContractAttachments() {
         return contractAttachments;
     }
 
     /**
      * 附件
      */
-    public void setContractAttachments(List<fileVo> contractAttachments) {
+    public void setContractAttachments(List<FileVo> contractAttachments) {
         this.contractAttachments = contractAttachments;
     }
 

@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Record;
 import com.gdproj.entity.Warehouse;
-import com.gdproj.vo.productVo;
-import com.gdproj.vo.recordVo;
+import com.gdproj.vo.ProductVo;
+import com.gdproj.vo.RecordVo;
 
 import java.util.List;
 
@@ -17,14 +17,14 @@ import java.util.List;
 */
 public interface RecordService extends IService<Record> {
 
-    IPage<recordVo> getRecordList(pageDto pageDto);
+    IPage<RecordVo> getRecordList(pageDto pageDto);
 
     Integer getCountByProductId(Integer productId);
 
     List<String> getRecordInListByProductId(Integer productId);
 
     List<String> getRecordOutListByProductId(Integer productId);
-    IPage<productVo> getStockList(pageDto pageDto);
+    IPage<ProductVo> getStockList(pageDto pageDto);
 
     boolean insertRecord(Record updateRecord);
 

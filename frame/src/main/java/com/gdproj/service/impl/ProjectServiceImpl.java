@@ -14,8 +14,8 @@ import com.gdproj.service.DeployeeService;
 import com.gdproj.service.ProjectService;
 import com.gdproj.service.projectCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.projectVo;
-import com.gdproj.vo.selectVo;
+import com.gdproj.vo.ProjectVo;
+import com.gdproj.vo.SelectVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,12 +39,12 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project>
     projectCategoryService categoryService;
 
     @Override
-    public List<selectVo> getListForSelect() {
+    public List<SelectVo> getListForSelect() {
 
         List<Project> list = list();
 
-        List<selectVo> collect = list.stream().map((item) -> {
-            selectVo vo = new selectVo();
+        List<SelectVo> collect = list.stream().map((item) -> {
+            SelectVo vo = new SelectVo();
             vo.setId(item.getProjectId());
             vo.setName(item.getProjectName());
             return vo;
@@ -53,7 +53,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project>
     }
 
     @Override
-    public IPage<projectVo> getProjectList(pageDto pageDto) {
+    public IPage<ProjectVo> getProjectList(pageDto pageDto) {
 
         //类型
         Integer type = pageDto.getType();
@@ -92,14 +92,14 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project>
         }
         IPage<Project> recordPage = page(page, queryWrapper);
 
-        Page<projectVo> resultPage = new Page<>();
+        Page<ProjectVo> resultPage = new Page<>();
 
-        List<projectVo> resultList = new ArrayList<>();
+        List<ProjectVo> resultList = new ArrayList<>();
         try {
 
             resultList = recordPage.getRecords().stream().map((item) -> {
 
-                projectVo vo = BeanCopyUtils.copyBean(item, projectVo.class);
+                ProjectVo vo = BeanCopyUtils.copyBean(item, ProjectVo.class);
                 //类型名称?
                 vo.setCategory(categoryService.getById(item.getCategoryId()).getCategoryName());
                 vo.setSupervisorName(deployeeService.getNameByUserId(item.getSupervisorId()));
@@ -123,7 +123,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project>
     }
 
     @Override
-    public List<projectVo> getProjectListByClientId(Integer clientId) {
+    public List<ProjectVo> getProjectListByClientId(Integer clientId) {
 
         LambdaQueryWrapper<Project> queryWrapper =new LambdaQueryWrapper<>();
 
@@ -131,8 +131,8 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project>
 
         List<Project> list = list(queryWrapper);
 
-        List<projectVo> collect = list.stream().map((item) -> {
-            projectVo vo = BeanCopyUtils.copyBean(item, projectVo.class);
+        List<ProjectVo> collect = list.stream().map((item) -> {
+            ProjectVo vo = BeanCopyUtils.copyBean(item, ProjectVo.class);
             //类型名称?
             vo.setCategory(categoryService.getById(item.getCategoryId()).getCategoryName());
             vo.setSupervisorName(deployeeService.getNameByUserId(item.getSupervisorId()));

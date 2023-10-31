@@ -8,8 +8,8 @@ import com.gdproj.result.ResponseResult;
 import com.gdproj.service.AccountService;
 import com.gdproj.service.SystemLoginService;
 import com.gdproj.service.UserService;
-import com.gdproj.vo.accountVo;
-import com.gdproj.vo.userVo;
+import com.gdproj.vo.AccountVo;
+import com.gdproj.vo.UserVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ public class loginController {
     @PostMapping("/frontLogin")
     @autoLog
     @ApiOperation(value = "前台登录请求")
-    public ResponseResult frontLogin(@RequestBody accountVo vo, HttpServletRequest request){
+    public ResponseResult frontLogin(@RequestBody AccountVo vo, HttpServletRequest request){
 
         return  systemLoginService.frontLogin(vo);
     }
@@ -54,7 +54,7 @@ public class loginController {
 
         String token = request.getHeader("Authorization");
         try {
-            userVo vo = userService.getUserInfo(token);
+            UserVo vo = userService.getUserInfo(token);
 
             return ResponseResult.okResult(vo);
         }catch (Exception e){
@@ -72,7 +72,7 @@ public class loginController {
 
         String token = request.getHeader("Authorization");
         try {
-            accountVo vo = accountService.getAccountInfo(token);
+            AccountVo vo = accountService.getAccountInfo(token);
 
             return ResponseResult.okResult(vo);
         }catch (Exception e){

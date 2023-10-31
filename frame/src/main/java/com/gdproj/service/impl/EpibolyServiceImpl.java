@@ -13,9 +13,9 @@ import com.gdproj.mapper.EpibolyMapper;
 import com.gdproj.service.EpibolyService;
 import com.gdproj.service.ProjectService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.epibolyVo;
-import com.gdproj.vo.projectVo;
-import com.gdproj.vo.selectVo;
+import com.gdproj.vo.EpibolyVo;
+import com.gdproj.vo.ProjectVo;
+import com.gdproj.vo.SelectVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +36,7 @@ public class EpibolyServiceImpl extends ServiceImpl<EpibolyMapper, Epiboly>
     ProjectService projectService;
 
     @Override
-    public IPage<epibolyVo> getEpibolyList(pageDto pageDto) {
+    public IPage<EpibolyVo> getEpibolyList(pageDto pageDto) {
         //类型
         Integer type = pageDto.getType();
         //部门
@@ -74,18 +74,18 @@ public class EpibolyServiceImpl extends ServiceImpl<EpibolyMapper, Epiboly>
 //        }
         IPage<Epiboly> recordPage = page(page, queryWrapper);
 
-        Page<epibolyVo> resultPage = new Page<>();
+        Page<EpibolyVo> resultPage = new Page<>();
 
-        List<epibolyVo> resultList = new ArrayList<>();
+        List<EpibolyVo> resultList = new ArrayList<>();
         try {
 
             resultList = recordPage.getRecords().stream().map((item) -> {
 
-                epibolyVo vo = BeanCopyUtils.copyBean(item, epibolyVo.class);
+                EpibolyVo vo = BeanCopyUtils.copyBean(item, EpibolyVo.class);
 
                 Project projectInfo = projectService.getById(item.getProjectId());
 
-                projectVo projectVo = BeanCopyUtils.copyBean(projectInfo, projectVo.class);
+                ProjectVo projectVo = BeanCopyUtils.copyBean(projectInfo, ProjectVo.class);
 
                 vo.setProject(projectVo);
                 //设置是否延期
@@ -104,12 +104,12 @@ public class EpibolyServiceImpl extends ServiceImpl<EpibolyMapper, Epiboly>
     }
 
     @Override
-    public List<selectVo> getListForSelect() {
+    public List<SelectVo> getListForSelect() {
 
         List<Epiboly> list = list();
 
-        List<selectVo> collect = list.stream().map((item) -> {
-            selectVo vo = new selectVo();
+        List<SelectVo> collect = list.stream().map((item) -> {
+            SelectVo vo = new SelectVo();
             vo.setId(item.getEpibolyId());
             vo.setName(item.getEpibolyName());
             return vo;

@@ -1,7 +1,7 @@
 package com.gdproj.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.gdproj.entity.flowHistory;
+import com.gdproj.entity.FlowHistory;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -12,7 +12,7 @@ import org.apache.ibatis.annotations.Mapper;
 */
 
 @Mapper
-public interface flowHistoryMapper extends BaseMapper<flowHistory> {
+public interface flowHistoryMapper extends BaseMapper<FlowHistory> {
 
 }
 

@@ -5,9 +5,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Sign;
-import com.gdproj.vo.isSignVo;
-import com.gdproj.vo.monthSignVo;
-import com.gdproj.vo.signVo;
+import com.gdproj.vo.IsSignVo;
+import com.gdproj.vo.MonthSignVo;
+import com.gdproj.vo.SignVo;
 
 /**
 * @author Administrator
@@ -17,11 +17,11 @@ import com.gdproj.vo.signVo;
 */
 public interface SignService extends IService<Sign> {
 
-    IPage<signVo> getSignList(pageDto pagedto);
+    IPage<SignVo> getSignList(pageDto pagedto);
 
     boolean insertSign(Sign sign);
 
-    isSignVo getSignInfoByUserIdAndDate(Integer userId);
+    IsSignVo getSignInfoByUserIdAndDate(Integer userId);
 
-    IPage<monthSignVo> getMonthSignList(pageDto pageDto);
+    IPage<MonthSignVo> getMonthSignList(pageDto pageDto);
 }

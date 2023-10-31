@@ -2,7 +2,7 @@ package com.gdproj.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
-import com.gdproj.vo.fileVo;
+import com.gdproj.vo.FileVo;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -66,7 +66,7 @@ public class Overtime implements Serializable {
      *
      */
     @TableField(value = "overtime_pic",typeHandler = JacksonTypeHandler.class)
-    private List<fileVo> overtimePic;
+    private List<FileVo> overtimePic;
 
     /**
      *
@@ -239,14 +239,14 @@ public class Overtime implements Serializable {
     /**
      *
      */
-    public List<fileVo> getOvertimePic() {
+    public List<FileVo> getOvertimePic() {
         return overtimePic;
     }
 
     /**
      *
      */
-    public void setOvertimePic(List<fileVo> overtimePic) {
+    public void setOvertimePic(List<FileVo> overtimePic) {
         this.overtimePic = overtimePic;
     }
 

@@ -3,7 +3,7 @@ package com.gdproj.entity;
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
-import com.gdproj.vo.fileVo;
+import com.gdproj.vo.FileVo;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -129,7 +129,7 @@ public class Client implements Serializable {
      * 
      */
     @TableField(value = "client_attachments",typeHandler = JacksonTypeHandler.class)
-    private List<fileVo> clientAttachments;
+    private List<FileVo> clientAttachments;
 
     /**
      * 
@@ -407,14 +407,14 @@ public class Client implements Serializable {
     /**
      * 
      */
-    public List<fileVo> getClientAttachments() {
+    public List<FileVo> getClientAttachments() {
         return clientAttachments;
     }
 
     /**
      * 
      */
-    public void setClientAttachments(List<fileVo> clientAttachments) {
+    public void setClientAttachments(List<FileVo> clientAttachments) {
         this.clientAttachments = clientAttachments;
     }
 

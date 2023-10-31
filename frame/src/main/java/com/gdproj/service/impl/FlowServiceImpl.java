@@ -13,7 +13,7 @@ import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.FlowMapper;
 import com.gdproj.service.*;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.flowVo;
+import com.gdproj.vo.FlowVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -61,9 +61,8 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
     ProductService productService;
 
 
-
     @Override
-    public boolean approveFlow(flowVo vo) {
+    public boolean approveFlow(FlowVo vo) {
         //判断是否通过 通过增加一条记录 不通过也增加一条记录
         //1. 同一张表  TODO  查询sql？？？
 //        Flow flow = BeanCopyUtils.copyBean(vo, Flow.class);
@@ -113,52 +112,61 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
         //2.不同表 分主表 从表  主表更新数据 从表插入历史
         Flow flow = BeanCopyUtils.copyBean(vo, Flow.class);
         Flow dataInSql = getById(flow.getFlowId());
-        flowConfig config = configService.getById(flow.getTypeId());
+        FlowConfig config = configService.getById(flow.getTypeId());
         List<Integer> approvalFlow = config.getApprovalFlow();
         boolean isSuccess = false;
-        if(!ObjectUtil.isEmpty(approvalFlow)){
+        if (!ObjectUtil.isEmpty(approvalFlow)) {
             //如果前端修改的是flow_status 1通过或2不通过
             if (vo.getFlowStatus() == 1) {
                 //通过 保存一条 通过的记录
-                flowHistory history = BeanCopyUtils.copyBean(flow, flowHistory.class);
+                FlowHistory history = BeanCopyUtils.copyBean(flow, FlowHistory.class);
                 historyService.save(history);
                 flow.setFlowStatus(0);
-                flow.setCurrentStepId(flow.getCurrentStepId()+1);
-                if(flow.getTotalLevel() >= flow.getCurrentStepId()) {
+                flow.setCurrentStepId(flow.getCurrentStepId() + 1);
+                if (flow.getTotalLevel() >= flow.getCurrentStepId()) {
                     int index = approvalFlow.indexOf(flow.getCurrentUserId());
                     flow.setCurrentUserId(approvalFlow.get(index + 1));
-                }else{
+                } else {
                     //说明最后一级也通过了
                     flow.setCurrentUserId(0);
                     flow.setFlowStatus(1);
                     //并且把所有
-                    boolean isPass = setPassStatus(flow.getTypeId(),flow.getRunId());
-                    if(flow.getTypeId() == 3){
+                    boolean isPass = setPassStatus(flow.getTypeId(), flow.getRunId());
+
+                    if (flow.getTypeId() == 3) {
                         //如果typeId == 3 那么为出库申请，在最后一级都通过的情况下，出库申请为所有的材料生成record 插入record表
                         //warehouseId 就是 runId  遍历这条warehouse记录的warehouseContent，product_id 和 count
                         boolean w = recordService.insertRecordByWarehouseId(flow.getRunId());
                     }
-                    if(!isPass){
+                    //TODO 如果为日常领用
+                    if(flow.getTypeId() == 4){
+
+                    }
+                    //TODO 如果为采购
+                    if(flow.getTypeId() == 7){
+
+                    }
+                    if (!isPass) {
                         throw new SystemException(AppHttpCodeEnum.SET_PASS_ERROR);
                     }
                 }
                 updateById(flow);
                 //再保存一条到下一级的新的数据
-                flowHistory newHistory = BeanCopyUtils.copyBean(flow, flowHistory.class);
+                FlowHistory newHistory = BeanCopyUtils.copyBean(flow, FlowHistory.class);
                 return historyService.save(newHistory);
             } else {
                 //不通过 保存一条 不通过的记录
-                flowHistory history = BeanCopyUtils.copyBean(flow, flowHistory.class);
+                FlowHistory history = BeanCopyUtils.copyBean(flow, FlowHistory.class);
                 historyService.save(history);
                 updateById(flow);
                 //并且将各类表里的那条记录状态设为不通过；
-                boolean isNoPass = setNoPassStatus(flow.getTypeId(),flow.getRunId());
-                if(!isNoPass){
+                boolean isNoPass = setNoPassStatus(flow.getTypeId(), flow.getRunId());
+                if (!isNoPass) {
                     throw new SystemException(AppHttpCodeEnum.SET_NO_PASS_ERROR);
                 }
                 return isNoPass;
             }
-        }else{
+        } else {
             throw new SystemException(AppHttpCodeEnum.FLOW_CONFIG_CONTENT_NULL);
         }
 
@@ -167,42 +175,42 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
     private boolean setPassStatus(Integer typeId, Integer runId) {
         if (typeId == 1) {
             //加班申请
-            LambdaUpdateWrapper<Overtime> updateWrapper =new LambdaUpdateWrapper<>();
-            updateWrapper.eq(Overtime::getOvertimeId,runId);
-            updateWrapper.set(Overtime::getOvertimeStatus,1);
+            LambdaUpdateWrapper<Overtime> updateWrapper = new LambdaUpdateWrapper<>();
+            updateWrapper.eq(Overtime::getOvertimeId, runId);
+            updateWrapper.set(Overtime::getOvertimeStatus, 1);
             return overtimeService.update(updateWrapper);
 
         } else if (typeId == 2) {
             //请假申请
-            LambdaUpdateWrapper<Leave> updateWrapper =new LambdaUpdateWrapper<>();
-            updateWrapper.eq(Leave::getLeaveId,runId);
-            updateWrapper.set(Leave::getLeaveStatus,1);
+            LambdaUpdateWrapper<Leave> updateWrapper = new LambdaUpdateWrapper<>();
+            updateWrapper.eq(Leave::getLeaveId, runId);
+            updateWrapper.set(Leave::getLeaveStatus, 1);
             return leaveService.update(updateWrapper);
         } else if (typeId == 3) {
             //出库申请
-            LambdaUpdateWrapper<Warehouse> updateWrapper =new LambdaUpdateWrapper<>();
-            updateWrapper.eq(Warehouse::getWarehouseId,runId);
-            updateWrapper.set(Warehouse::getWarehouseStatus,1);
+            LambdaUpdateWrapper<Warehouse> updateWrapper = new LambdaUpdateWrapper<>();
+            updateWrapper.eq(Warehouse::getWarehouseId, runId);
+            updateWrapper.set(Warehouse::getWarehouseStatus, 1);
             return warehouseService.update(updateWrapper);
         } else if (typeId == 4) {
             //日常领用申请
             return false;
         } else if (typeId == 5) {
             //付款申请
-            LambdaUpdateWrapper<Payment> updateWrapper =new LambdaUpdateWrapper<>();
-            updateWrapper.eq(Payment::getPaymentId,runId);
-            updateWrapper.set(Payment::getPaymentStatus,1);
+            LambdaUpdateWrapper<Payment> updateWrapper = new LambdaUpdateWrapper<>();
+            updateWrapper.eq(Payment::getPaymentId, runId);
+            updateWrapper.set(Payment::getPaymentStatus, 1);
             return paymentService.update(updateWrapper);
         } else if (typeId == 6) {
             //报销申请
-            LambdaUpdateWrapper<Reimbursement> updateWrapper =new LambdaUpdateWrapper<>();
-            updateWrapper.eq(Reimbursement::getReimbursementId,runId);
-            updateWrapper.set(Reimbursement::getReimbursementStatus,1);
+            LambdaUpdateWrapper<Reimbursement> updateWrapper = new LambdaUpdateWrapper<>();
+            updateWrapper.eq(Reimbursement::getReimbursementId, runId);
+            updateWrapper.set(Reimbursement::getReimbursementStatus, 1);
             return reimbursementService.update(updateWrapper);
         } else if (typeId == 7) {
             //采购申请
             return false;
-        }else {
+        } else {
             return false;
         }
     }
@@ -211,48 +219,48 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
 
         if (typeId == 1) {
             //加班申请
-            LambdaUpdateWrapper<Overtime> updateWrapper =new LambdaUpdateWrapper<>();
-            updateWrapper.eq(Overtime::getOvertimeId,runId);
-            updateWrapper.set(Overtime::getOvertimeStatus,2);
+            LambdaUpdateWrapper<Overtime> updateWrapper = new LambdaUpdateWrapper<>();
+            updateWrapper.eq(Overtime::getOvertimeId, runId);
+            updateWrapper.set(Overtime::getOvertimeStatus, 2);
             return overtimeService.update(updateWrapper);
         } else if (typeId == 2) {
             //请假申请
-            LambdaUpdateWrapper<Leave> updateWrapper =new LambdaUpdateWrapper<>();
-            updateWrapper.eq(Leave::getLeaveId,runId);
-            updateWrapper.set(Leave::getLeaveStatus,2);
+            LambdaUpdateWrapper<Leave> updateWrapper = new LambdaUpdateWrapper<>();
+            updateWrapper.eq(Leave::getLeaveId, runId);
+            updateWrapper.set(Leave::getLeaveStatus, 2);
             return leaveService.update(updateWrapper);
         } else if (typeId == 3) {
             //出库申请
-            LambdaUpdateWrapper<Warehouse> updateWrapper =new LambdaUpdateWrapper<>();
-            updateWrapper.eq(Warehouse::getWarehouseId,runId);
-            updateWrapper.set(Warehouse::getWarehouseStatus,2);
+            LambdaUpdateWrapper<Warehouse> updateWrapper = new LambdaUpdateWrapper<>();
+            updateWrapper.eq(Warehouse::getWarehouseId, runId);
+            updateWrapper.set(Warehouse::getWarehouseStatus, 2);
             return warehouseService.update(updateWrapper);
         } else if (typeId == 4) {
             //日常领用申请
             return false;
         } else if (typeId == 5) {
             //付款申请
-            LambdaUpdateWrapper<Payment> updateWrapper =new LambdaUpdateWrapper<>();
-            updateWrapper.eq(Payment::getPaymentId,runId);
-            updateWrapper.set(Payment::getPaymentStatus,2);
+            LambdaUpdateWrapper<Payment> updateWrapper = new LambdaUpdateWrapper<>();
+            updateWrapper.eq(Payment::getPaymentId, runId);
+            updateWrapper.set(Payment::getPaymentStatus, 2);
             return paymentService.update(updateWrapper);
         } else if (typeId == 6) {
             //报销申请
-            LambdaUpdateWrapper<Reimbursement> updateWrapper =new LambdaUpdateWrapper<>();
-            updateWrapper.eq(Reimbursement::getReimbursementId,runId);
-            updateWrapper.set(Reimbursement::getReimbursementStatus,2);
+            LambdaUpdateWrapper<Reimbursement> updateWrapper = new LambdaUpdateWrapper<>();
+            updateWrapper.eq(Reimbursement::getReimbursementId, runId);
+            updateWrapper.set(Reimbursement::getReimbursementStatus, 2);
             return reimbursementService.update(updateWrapper);
         } else if (typeId == 7) {
             //采购申请
             return false;
-        }else{
+        } else {
             return false;
         }
 
     }
 
     @Override
-    public IPage<flowVo> getFlowList(pageDto pageDto) {
+    public IPage<FlowVo> getFlowList(pageDto pageDto) {
         //类型
         Integer type = pageDto.getType();
         //部门
@@ -292,14 +300,14 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
         IPage<Flow> recordPage = page(page, queryWrapper);
         //相同的typeId 和runId的只显示最早的createdTime的数据
 
-        Page<flowVo> resultPage = new Page<>();
+        Page<FlowVo> resultPage = new Page<>();
 
-        List<flowVo> resultList = new ArrayList<>();
+        List<FlowVo> resultList = new ArrayList<>();
         try {
 
             resultList = recordPage.getRecords().stream().map((item) -> {
 
-                flowVo vo = BeanCopyUtils.copyBean(item, flowVo.class);
+                FlowVo vo = BeanCopyUtils.copyBean(item, FlowVo.class);
                 //类型名称?
                 setFlowVoProperty(vo, item);
                 return vo;
@@ -314,120 +322,146 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
 
     }
 
-    private void setFlowVoProperty(flowVo vo, Flow item) {
+    private void setFlowVoProperty(FlowVo vo, Flow item) {
         Integer typeId = item.getTypeId();
         if (typeId == 1) {
             //加班申请
             Overtime overtime = overtimeService.getById(item.getRunId());
-            vo.setApplicantName(deployeeService.getNameByUserId(overtime.getApplicantId()));
-            //判断当前的状态是什么
-            if (vo.getTotalLevel() >= vo.getCurrentStepId()) {
-                if(vo.getFlowStatus() ==1){
-                    vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批通过");
-                }else if(vo.getFlowStatus() == 2){
-                    vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批不通过");
-                }else{
-                    vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批中");
+            if (!ObjectUtil.isEmpty(overtime)) {
+                vo.setApplicantName(deployeeService.getNameByUserId(overtime.getApplicantId()));
+                //判断当前的状态是什么
+                if (vo.getTotalLevel() >= vo.getCurrentStepId()) {
+                    if (vo.getFlowStatus() == 1) {
+                        vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批通过");
+                    } else if (vo.getFlowStatus() == 2) {
+                        vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批不通过");
+                    } else {
+                        vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批中");
+                    }
+                } else {
+                    vo.setCurrentStep("已完成");
                 }
+                vo.setTypeName(configService.getById(vo.getTypeId()).getTypeName());
+                vo.setRunStatus(overtime.getOvertimeStatus() + "");
+                vo.setFlowTitle(overtime.getOvertimeTitle());
             } else {
-                vo.setCurrentStep("已完成");
+                //                说明当前流程对应的申请被删除，当前申请删除
+                removeById(item.getFlowId());
             }
-            vo.setTypeName(configService.getById(vo.getTypeId()).getTypeName());
-            vo.setRunStatus(overtime.getOvertimeStatus() + "");
-            vo.setFlowTitle(overtime.getOvertimeTitle());
 
         } else if (typeId == 2) {
             //请假申请
             Leave leave = leaveService.getById(item.getRunId());
-            vo.setApplicantName(deployeeService.getNameByUserId(leave.getUserId()));
-            //判断当前的状态是什么
-            if (vo.getTotalLevel() >= vo.getCurrentStepId()) {
-                if(vo.getFlowStatus() ==1){
-                    vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批通过");
-                }else if(vo.getFlowStatus() == 2){
-                    vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批不通过");
-                }else{
-                    vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批中");
+            if (!ObjectUtil.isEmpty(leave)) {
+                vo.setApplicantName(deployeeService.getNameByUserId(leave.getUserId()));
+                //判断当前的状态是什么
+                if (vo.getTotalLevel() >= vo.getCurrentStepId()) {
+                    if (vo.getFlowStatus() == 1) {
+                        vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批通过");
+                    } else if (vo.getFlowStatus() == 2) {
+                        vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批不通过");
+                    } else {
+                        vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批中");
+                    }
+                } else {
+                    vo.setCurrentStep("已完成");
                 }
+                vo.setTypeName(configService.getById(vo.getTypeId()).getTypeName());
+                vo.setRunStatus(leave.getLeaveStatus() + "");
+                vo.setFlowTitle(leave.getLeaveTitle());
             } else {
-                vo.setCurrentStep("已完成");
+//                说明当前流程对应的申请被删除，当前申请删除
+                removeById(item.getFlowId());
             }
-            vo.setTypeName(configService.getById(vo.getTypeId()).getTypeName());
-            vo.setRunStatus(leave.getLeaveStatus() + "");
-            vo.setFlowTitle(leave.getLeaveTitle());
+
         } else if (typeId == 3) {
             //出库申请
             Warehouse warehouse = warehouseService.getById(item.getRunId());
-            vo.setApplicantName(deployeeService.getNameByUserId(warehouse.getUserId()));
-            //判断当前的状态是什么
-            if (vo.getTotalLevel() >= vo.getCurrentStepId()) {
-                if(vo.getFlowStatus() ==1){
-                    vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批通过");
-                }else if(vo.getFlowStatus() == 2){
-                    vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批不通过");
-                }else{
-                    vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批中");
+            if(!ObjectUtil.isEmpty(warehouse)) {
+                vo.setApplicantName(deployeeService.getNameByUserId(warehouse.getUserId()));
+                //判断当前的状态是什么
+                if (vo.getTotalLevel() >= vo.getCurrentStepId()) {
+                    if (vo.getFlowStatus() == 1) {
+                        vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批通过");
+                    } else if (vo.getFlowStatus() == 2) {
+                        vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批不通过");
+                    } else {
+                        vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批中");
+                    }
+                } else {
+                    vo.setCurrentStep("已完成");
                 }
-            } else {
-                vo.setCurrentStep("已完成");
+                vo.setTypeName(configService.getById(vo.getTypeId()).getTypeName());
+                vo.setRunStatus(warehouse.getWarehouseStatus() + "");
+                vo.setFlowTitle(warehouse.getWarehouseTitle());
+            }else{
+                //                说明当前流程对应的申请被删除，当前申请删除
+                removeById(item.getFlowId());
             }
-            vo.setTypeName(configService.getById(vo.getTypeId()).getTypeName());
-            vo.setRunStatus(warehouse.getWarehouseStatus() + "");
-            vo.setFlowTitle(warehouse.getWarehouseTitle());
         } else if (typeId == 4) {
             //日常领用申请
         } else if (typeId == 5) {
             //付款申请
             Payment payment = paymentService.getById(item.getRunId());
-            vo.setApplicantName(deployeeService.getNameByUserId(payment.getUserId()));
-            //判断当前的状态是什么
-            if (vo.getTotalLevel() >= vo.getCurrentStepId()) {
-                if(vo.getFlowStatus() ==1){
-                    vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批通过");
-                }else if(vo.getFlowStatus() == 2){
-                    vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批不通过");
-                }else{
-                    vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批中");
+            if(!ObjectUtil.isEmpty(payment)) {
+                vo.setApplicantName(deployeeService.getNameByUserId(payment.getUserId()));
+                //判断当前的状态是什么
+                if (vo.getTotalLevel() >= vo.getCurrentStepId()) {
+                    if (vo.getFlowStatus() == 1) {
+                        vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批通过");
+                    } else if (vo.getFlowStatus() == 2) {
+                        vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批不通过");
+                    } else {
+                        vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批中");
+                    }
+                } else {
+                    vo.setCurrentStep("已完成");
                 }
-            } else {
-                vo.setCurrentStep("已完成");
+                vo.setTypeName(configService.getById(vo.getTypeId()).getTypeName());
+                vo.setRunStatus(payment.getPaymentStatus() + "");
+                vo.setFlowTitle(payment.getPaymentTitle());
+            }else{
+                //                说明当前流程对应的申请被删除，当前申请删除
+                removeById(item.getFlowId());
             }
-            vo.setTypeName(configService.getById(vo.getTypeId()).getTypeName());
-            vo.setRunStatus(payment.getPaymentStatus() + "");
-            vo.setFlowTitle(payment.getPaymentTitle());
         } else if (typeId == 6) {
             //报销申请
             Reimbursement reimbursement = reimbursementService.getById(item.getRunId());
-            vo.setApplicantName(deployeeService.getNameByUserId(reimbursement.getUserId()));
-            //判断当前的状态是什么
-            if (vo.getTotalLevel() >= vo.getCurrentStepId()) {
-                if(vo.getFlowStatus() ==1){
-                    vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批通过");
-                }else if(vo.getFlowStatus() == 2){
-                    vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批不通过");
-                }else{
-                    vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批中");
+            if(!ObjectUtil.isEmpty(reimbursement)) {
+                vo.setApplicantName(deployeeService.getNameByUserId(reimbursement.getUserId()));
+                //判断当前的状态是什么
+                if (vo.getTotalLevel() >= vo.getCurrentStepId()) {
+                    if (vo.getFlowStatus() == 1) {
+                        vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批通过");
+                    } else if (vo.getFlowStatus() == 2) {
+                        vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批不通过");
+                    } else {
+                        vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批中");
+                    }
+                } else {
+                    vo.setCurrentStep("已完成");
                 }
-            } else {
-                vo.setCurrentStep("已完成");
+                vo.setTypeName(configService.getById(vo.getTypeId()).getTypeName());
+                vo.setRunStatus(reimbursement.getReimbursementStatus() + "");
+                vo.setFlowTitle(reimbursement.getReimbursementTitle());
+            }else{
+                //                说明当前流程对应的申请被删除，当前申请删除
+                removeById(item.getFlowId());
             }
-            vo.setTypeName(configService.getById(vo.getTypeId()).getTypeName());
-            vo.setRunStatus(reimbursement.getReimbursementStatus() + "");
-            vo.setFlowTitle(reimbursement.getReimbursementTitle());
         } else if (typeId == 7) {
             //采购申请
         }
 
     }
+
     /**
-     *
      * 加班 typeId =1
-     * */
+     */
     @Override
     public boolean insertFlow(Overtime insertOvertime) {
 
 
-        flowConfig config = configService.getById(insertOvertime.getTypeId());
+        FlowConfig config = configService.getById(insertOvertime.getTypeId());
 
         List<Integer> approvalFlow = config.getApprovalFlow();
 
@@ -447,13 +481,12 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
     }
 
     /**
-     *
      * 请假 typeId =2
-     * */
+     */
     @Override
     public boolean insertFlow(Leave insertLeave) {
 
-        flowConfig config = configService.getById(insertLeave.getTypeId());
+        FlowConfig config = configService.getById(insertLeave.getTypeId());
 
         List<Integer> approvalFlow = config.getApprovalFlow();
 
@@ -472,19 +505,17 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
         return save(flow);
 
 
-
     }
 
     /**
-     *
      * 出库 typeId = 3
-     * */
+     */
     @Override
     public boolean insertFlow(Warehouse warehouse) {
 
         if (warehouse.getCategoryId() == 2) {
             //如果为出库申请则需审批
-            flowConfig config = configService.getById(warehouse.getTypeId());
+            FlowConfig config = configService.getById(warehouse.getTypeId());
             List<Integer> approvalFlow = config.getApprovalFlow();
             //审批流里的所有下级用户
             Flow flow = new Flow();
@@ -496,23 +527,21 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
             flow.setTotalLevel(approvalFlow.size());
             List<Flow> list = list();
             return save(flow);
-        }else{
+        } else {
             return false;
         }
 
     }
 
 
-
     /**
-     *
      * 支付 typeId = 5
-     * */
+     */
     @Override
     public boolean insertFlow(Payment payment) {
 
 
-        flowConfig config = configService.getById(payment.getTypeId());
+        FlowConfig config = configService.getById(payment.getTypeId());
 
         List<Integer> approvalFlow = config.getApprovalFlow();
 
@@ -530,14 +559,14 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
         return save(flow);
 
     }
+
     /**
-     *
      * 报销 typeId = 6
-     * */
+     */
     @Override
     public boolean insertFlow(Reimbursement reimbursement) {
 
-        flowConfig config = configService.getById(reimbursement.getTypeId());
+        FlowConfig config = configService.getById(reimbursement.getTypeId());
 
         List<Integer> approvalFlow = config.getApprovalFlow();
 

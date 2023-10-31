@@ -3,14 +3,14 @@ package com.gdproj.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdproj.dto.pageDto;
-import com.gdproj.entity.contractCategory;
+import com.gdproj.entity.ContractCategory;
 
 /**
 * @author Administrator
 * @description 针对表【sys_contract_category】的数据库操作Service
 * @createDate 2023-10-05 09:13:46
 */
-public interface contractCategoryService extends IService<contractCategory> {
+public interface contractCategoryService extends IService<ContractCategory> {
 
-    IPage<contractCategory> getContractCategoryList(pageDto pagedto);
+    IPage<ContractCategory> getContractCategoryList(pageDto pagedto);
 }

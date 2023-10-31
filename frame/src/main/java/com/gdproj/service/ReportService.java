@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Report;
-import com.gdproj.vo.reportVo;
+import com.gdproj.vo.ReportVo;
 
 /**
 * @author Administrator
@@ -13,5 +13,5 @@ import com.gdproj.vo.reportVo;
 */
 public interface ReportService extends IService<Report> {
 
-    IPage<reportVo> getReportList(pageDto pageDto);
+    IPage<ReportVo> getReportList(pageDto pageDto);
 }

@@ -2,7 +2,7 @@ package com.gdproj.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.gdproj.handler.jsonAndListTypeHandler;
-import com.gdproj.vo.fileVo;
+import com.gdproj.vo.FileVo;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -48,7 +48,7 @@ public class Stock implements Serializable {
      * 
      */
     @TableField(value = "material_pic",typeHandler = jsonAndListTypeHandler.class)
-    private List<fileVo> materialPic;
+    private List<FileVo> materialPic;
 
     /**
      * 
@@ -145,14 +145,14 @@ public class Stock implements Serializable {
     /**
      * 
      */
-    public List<fileVo> getMaterialPic() {
+    public List<FileVo> getMaterialPic() {
         return materialPic;
     }
 
     /**
      * 
      */
-    public void setMaterialPic(List<fileVo> materialPic) {
+    public void setMaterialPic(List<FileVo> materialPic) {
         this.materialPic = materialPic;
     }
 

@@ -5,15 +5,13 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdproj.entity.Account;
 import com.gdproj.entity.Deployee;
-import com.gdproj.entity.User;
 import com.gdproj.mapper.AccountMapper;
 import com.gdproj.service.AccountService;
 import com.gdproj.service.DeployeeService;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.utils.JwtUtils;
-import com.gdproj.vo.accountVo;
-import com.gdproj.vo.deployeeVo;
-import com.gdproj.vo.userVo;
+import com.gdproj.vo.AccountVo;
+import com.gdproj.vo.DeployeeVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +27,7 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account>
     @Autowired
     DeployeeService deployeeService;
     @Override
-    public accountVo getAccountInfo(String token) throws Exception {
+    public AccountVo getAccountInfo(String token) throws Exception {
         String subToken = token.substring(7);
         String id = (String) JwtUtils.parseJWT(subToken).get("id");
         //id是account 表的 主键id
@@ -37,13 +35,13 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account>
 
         queryWrapper.eq(Account::getId,id);
         Account one = getOne(queryWrapper);
-        accountVo vo = BeanCopyUtils.copyBean(one, accountVo.class);
+        AccountVo vo = BeanCopyUtils.copyBean(one, AccountVo.class);
         vo.setUsername(null);
         vo.setPassword(null);
 
         if(!ObjectUtil.isEmpty(one.getDeployeeId())){
             Deployee deployee = deployeeService.getById(one.getDeployeeId());
-            vo.setDeployee(BeanCopyUtils.copyBean(deployee, deployeeVo.class));
+            vo.setDeployee(BeanCopyUtils.copyBean(deployee, DeployeeVo.class));
         }
         return vo;
     }

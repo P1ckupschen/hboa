@@ -13,7 +13,7 @@ import com.gdproj.mapper.LogMapper;
 import com.gdproj.service.DeployeeService;
 import com.gdproj.service.LogService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.logVo;
+import com.gdproj.vo.LogVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +34,7 @@ public class LogServiceImpl extends ServiceImpl<LogMapper, Log>
     DeployeeService deployeeService;
 
     @Override
-    public IPage<logVo> getLogList(pageDto pageDto) {
+    public IPage<LogVo> getLogList(pageDto pageDto) {
 
         //类型
         Integer type = pageDto.getType();
@@ -67,12 +67,12 @@ public class LogServiceImpl extends ServiceImpl<LogMapper, Log>
 
         IPage<Log> recordPage = page(page, queryWrapper);
 
-        Page<logVo> resultPage = new Page<>();
+        Page<LogVo> resultPage = new Page<>();
 
-        List<logVo> resultList = new ArrayList<>();
+        List<LogVo> resultList = new ArrayList<>();
         try {
             resultList = recordPage.getRecords().stream().map((item) -> {
-                logVo vo = BeanCopyUtils.copyBean(item, logVo.class);
+                LogVo vo = BeanCopyUtils.copyBean(item, LogVo.class);
                 if(ObjectUtil.isEmpty(item.getUserId())){
                     vo.setUsername("未登录状态未知用户");
                 }else{

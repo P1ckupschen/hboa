@@ -12,7 +12,7 @@ import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.OvertimeMapper;
 import com.gdproj.service.*;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.overtimeVo;
+import com.gdproj.vo.OvertimeVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,7 +42,7 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
     FlowService flowService;
 
     @Override
-    public IPage<overtimeVo> getOverTimeList(pageDto pageDto) {
+    public IPage<OvertimeVo> getOverTimeList(pageDto pageDto) {
 
         Integer type = pageDto.getType();
         Integer departmentId = pageDto.getDepartmentId();
@@ -95,12 +95,12 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
 
         IPage<Overtime> overtimePage = page(page, queryWrapper);
 
-        Page<overtimeVo> resultPage = new Page<>();
+        Page<OvertimeVo> resultPage = new Page<>();
         //结果里的部门 和用户都返回成string；
-        List<overtimeVo> resultList =  new ArrayList<>();
+        List<OvertimeVo> resultList =  new ArrayList<>();
         try {
             resultList = overtimePage.getRecords().stream().map((item) -> {
-                overtimeVo overtimevo = BeanCopyUtils.copyBean(item, overtimeVo.class);
+                OvertimeVo overtimevo = BeanCopyUtils.copyBean(item, OvertimeVo.class);
 
                 //人员
                 overtimevo.setUsername(deployeeService.getNameByUserId(item.getExecutorId()));

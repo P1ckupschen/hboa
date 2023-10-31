@@ -10,9 +10,9 @@ import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.ClientService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.clientVo;
-import com.gdproj.vo.pageVo;
-import com.gdproj.vo.selectVo;
+import com.gdproj.vo.ClientVo;
+import com.gdproj.vo.PageVo;
+import com.gdproj.vo.SelectVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ public class clientController {
     @ApiOperation(value = "查询用于选择的客户列表", notes = "用于下拉选择")
     public ResponseResult getListForSelect(){
 
-        List<selectVo> selectList = new ArrayList<>();
+        List<SelectVo> selectList = new ArrayList<>();
 
         try {
 
@@ -62,11 +62,11 @@ public class clientController {
 
         pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
 
-        IPage<clientVo> clientList = new Page<>();
+        IPage<ClientVo> clientList = new Page<>();
 
         try {
             clientList = clientService.getClientList(pageDto);
-            pageVo<List<clientVo>> pageList = new pageVo<>();
+            PageVo<List<ClientVo>> pageList = new PageVo<>();
             pageList.setData(clientList.getRecords());
             pageList.setTotal((int) clientList.getTotal());
             return ResponseResult.okResult(pageList);
@@ -82,7 +82,7 @@ public class clientController {
     @PutMapping("updateClient")
     @autoLog
     @ApiOperation(value = "更新客户数据", notes = "修改编辑")
-    public ResponseResult updateClient(@RequestBody clientVo vo){
+    public ResponseResult updateClient(@RequestBody ClientVo vo){
 
 
         Client updateInfo = BeanCopyUtils.copyBean(vo, Client.class);
@@ -113,7 +113,7 @@ public class clientController {
     @PostMapping("insertClient")
     @autoLog
     @ApiOperation(value = "新增客户数据", notes = "新增插入")
-    public ResponseResult insertClient(@RequestBody clientVo vo){
+    public ResponseResult insertClient(@RequestBody ClientVo vo){
 
         Client insertInfo = BeanCopyUtils.copyBean(vo, Client.class);
 

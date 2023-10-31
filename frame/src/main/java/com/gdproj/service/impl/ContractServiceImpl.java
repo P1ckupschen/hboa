@@ -14,8 +14,8 @@ import com.gdproj.service.ContractService;
 import com.gdproj.service.DeployeeService;
 import com.gdproj.service.contractCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.contractVo;
-import com.gdproj.vo.selectVo;
+import com.gdproj.vo.ContractVo;
+import com.gdproj.vo.SelectVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,7 +42,7 @@ public class ContractServiceImpl extends ServiceImpl<ContractMapper, Contract>
     contractCategoryService categoryService;
 
     @Override
-    public IPage<contractVo> getContractList(pageDto pageDto) {
+    public IPage<ContractVo> getContractList(pageDto pageDto) {
 
         //类型
         Integer type = pageDto.getType();
@@ -84,14 +84,14 @@ public class ContractServiceImpl extends ServiceImpl<ContractMapper, Contract>
 
         IPage<Contract> recordPage = contractMapper.selectPage(page, queryWrapper);
 
-        Page<contractVo> resultPage = new Page<>();
+        Page<ContractVo> resultPage = new Page<>();
 
-        List<contractVo> resultList = new ArrayList<>();
+        List<ContractVo> resultList = new ArrayList<>();
         try {
 
             resultList = recordPage.getRecords().stream().map((item) -> {
 
-                contractVo vo = BeanCopyUtils.copyBean(item, contractVo.class);
+                ContractVo vo = BeanCopyUtils.copyBean(item, ContractVo.class);
 
                 vo.setCategory(categoryService.getById(item.getCategoryId()).getCategoryName());
 
@@ -112,12 +112,12 @@ public class ContractServiceImpl extends ServiceImpl<ContractMapper, Contract>
     }
 
     @Override
-    public List<selectVo> getListForSelect() {
+    public List<SelectVo> getListForSelect() {
 
         List<Contract> list = list();
 
-        List<selectVo> collect = list.stream().map((item) -> {
-            selectVo vo = new selectVo();
+        List<SelectVo> collect = list.stream().map((item) -> {
+            SelectVo vo = new SelectVo();
             vo.setId(item.getContractId());
             vo.setName(item.getContractTitle());
             return vo;

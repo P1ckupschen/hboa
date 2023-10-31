@@ -1,9 +1,8 @@
 package com.gdproj.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.gdproj.handler.ListToVarcharTypeHandler;
 import com.gdproj.handler.jsonAndListTypeHandler;
-import com.gdproj.vo.fileVo;
+import com.gdproj.vo.FileVo;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -73,7 +72,7 @@ public class Notify implements Serializable {
      * 附件
      */
     @TableField(value = "notify_attachments",typeHandler = jsonAndListTypeHandler.class)
-    private List<fileVo> notifyAttachments;
+    private List<FileVo> notifyAttachments;
 
     /**
      * 公告状态（待审核0，生效1，弃用2）
@@ -232,14 +231,14 @@ public class Notify implements Serializable {
     /**
      * 附件
      */
-    public List<fileVo> getNotifyAttachments() {
+    public List<FileVo> getNotifyAttachments() {
         return notifyAttachments;
     }
 
     /**
      * 附件
      */
-    public void setNotifyAttachments(List<fileVo> notifyAttachments) {
+    public void setNotifyAttachments(List<FileVo> notifyAttachments) {
         this.notifyAttachments = notifyAttachments;
     }
 

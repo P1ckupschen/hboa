@@ -2,7 +2,7 @@ package com.gdproj.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
-import com.gdproj.vo.fileVo;
+import com.gdproj.vo.FileVo;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -97,7 +97,7 @@ public class Payment implements Serializable {
      * 
      */
     @TableField(value = "payment_attachments",typeHandler = JacksonTypeHandler.class)
-    private List<fileVo> paymentAttachments;
+    private List<FileVo> paymentAttachments;
 
     /**
      * 
@@ -312,14 +312,14 @@ public class Payment implements Serializable {
     /**
      * 
      */
-    public List<fileVo> getPaymentAttachments() {
+    public List<FileVo> getPaymentAttachments() {
         return paymentAttachments;
     }
 
     /**
      * 
      */
-    public void setPaymentAttachments(List<fileVo> paymentAttachments) {
+    public void setPaymentAttachments(List<FileVo> paymentAttachments) {
         this.paymentAttachments = paymentAttachments;
     }
 

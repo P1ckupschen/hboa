@@ -2,7 +2,7 @@ package com.gdproj.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdproj.entity.Account;
-import com.gdproj.vo.accountVo;
+import com.gdproj.vo.AccountVo;
 
 /**
 * @author Administrator
@@ -11,6 +11,6 @@ import com.gdproj.vo.accountVo;
 */
 public interface AccountService extends IService<Account> {
 
-    accountVo getAccountInfo(String token) throws Exception;
+    AccountVo getAccountInfo(String token) throws Exception;
 
 }

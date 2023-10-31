@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Log;
-import com.gdproj.vo.logVo;
+import com.gdproj.vo.LogVo;
 
 /**
 * @author Administrator
@@ -13,7 +13,7 @@ import com.gdproj.vo.logVo;
 */
 public interface LogService extends IService<Log> {
 
-    IPage<logVo> getLogList(pageDto pageDto);
+    IPage<LogVo> getLogList(pageDto pageDto);
 
     void insertLogWhenOperating(Log log);
 }

@@ -46,13 +46,13 @@ public class recordController {
                                       @RequestParam(required = false) String time){
         pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
 
-        IPage<recordVo> recordList = new Page<>();
+        IPage<RecordVo> recordList = new Page<>();
 
         try {
 
             recordList =  recordService.getRecordList(pageDto);
 
-            pageVo<List<recordVo>> pageList = new pageVo<>();
+            PageVo<List<RecordVo>> pageList = new PageVo<>();
 
             pageList.setData(recordList.getRecords());
 
@@ -71,7 +71,7 @@ public class recordController {
     @PutMapping("updateRecord")
     @autoLog
     @ApiOperation(value = "更新记录")
-    public ResponseResult updateRecord(@RequestBody recordVo recordVo){
+    public ResponseResult updateRecord(@RequestBody RecordVo recordVo){
 
         Record updateRecord = BeanCopyUtils.copyBean(recordVo, Record.class);
 
@@ -101,16 +101,13 @@ public class recordController {
     @PostMapping("insertRecord")
     @autoLog
     @ApiOperation(value = "新增记录")
-    public ResponseResult insertRecord(@RequestBody recordVo recordVo){
+    public ResponseResult insertRecord(@RequestBody RecordVo recordVo){
 
         Record updateRecord = BeanCopyUtils.copyBean(recordVo, Record.class);
         boolean b = false;
 
         try {
-
-//            b = recordService.insertRecord(updateRecord);
             b = recordService.save(updateRecord);
-
 
             if(b){
                 return ResponseResult.okResult(b);
@@ -171,16 +168,13 @@ public class recordController {
         //是通过统计出来的 不是通过增加记录的 所以不用新表stock
 //        IPage<stockVo> stockList = new Page<>();
 
-        IPage<productVo> stockList = new Page<>();
+        IPage<ProductVo> stockList = new Page<>();
 
         try {
 
             stockList =  recordService.getStockList(pageDto);
-//            stockList =  stockService.getStockList(pageDto);
 
-            pageVo<List<productVo>> pageList = new pageVo<>();
-
-//            pageVo<List<stockVo>> pageList = new pageVo<>();
+            PageVo<List<ProductVo>> pageList = new PageVo<>();
 
             pageList.setData(stockList.getRecords());
 

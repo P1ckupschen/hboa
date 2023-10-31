@@ -1,7 +1,7 @@
 package com.gdproj.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.gdproj.entity.notifyCategory;
+import com.gdproj.entity.NotifyCategory;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Mapper;
 * @Entity generator.entity.notifyCategory
 */
 @Mapper
-public interface notifyCategoryMapper extends BaseMapper<notifyCategory> {
+public interface notifyCategoryMapper extends BaseMapper<NotifyCategory> {
 
 }
 

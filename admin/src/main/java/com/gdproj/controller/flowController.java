@@ -9,9 +9,9 @@ import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.FlowService;
 import com.gdproj.service.flowConfigService;
-import com.gdproj.vo.flowConfigVo;
-import com.gdproj.vo.flowVo;
-import com.gdproj.vo.pageVo;
+import com.gdproj.vo.FlowConfigVo;
+import com.gdproj.vo.FlowVo;
+import com.gdproj.vo.PageVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public class flowController {
     @PutMapping("/approveFlow")
     @autoLog
     @ApiOperation(value = "审批是否通过")
-    public ResponseResult approveFlow(@RequestBody flowVo vo){
+    public ResponseResult approveFlow(@RequestBody FlowVo vo){
         boolean b = false;
 
         b = flowService.approveFlow(vo);
@@ -54,12 +54,12 @@ public class flowController {
                                           @RequestParam(required = false) String time){
         pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
 
-        IPage<flowVo> flowList = new Page<flowVo>();
+        IPage<FlowVo> flowList = new Page<FlowVo>();
 
         try {
             flowList = flowService.getFlowList(pageDto);
 
-            pageVo<List<flowVo>> pageList = new pageVo<>();
+            PageVo<List<FlowVo>> pageList = new PageVo<>();
             pageList.setData(flowList.getRecords());
             pageList.setTotal((int) flowList.getTotal());
             return ResponseResult.okResult(pageList);
@@ -116,12 +116,12 @@ public class flowController {
                                       @RequestParam(required = false) String time){
         pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
 
-        IPage<flowConfigVo> flowList = new Page<flowConfigVo>();
+        IPage<FlowConfigVo> flowList = new Page<FlowConfigVo>();
 
         try {
             flowList = configService.getFlowConfigList(pageDto);
 
-            pageVo<List<flowConfigVo>> pageList = new pageVo<>();
+            PageVo<List<FlowConfigVo>> pageList = new PageVo<>();
             pageList.setData(flowList.getRecords());
             pageList.setTotal((int) flowList.getTotal());
             return ResponseResult.okResult(pageList);

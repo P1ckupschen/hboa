@@ -4,15 +4,14 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdproj.dto.pageDto;
-import com.gdproj.entity.productCategory;
+import com.gdproj.entity.ProductCategory;
 import com.gdproj.mapper.productCategoryMapper;
 import com.gdproj.service.productCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.utils.analysisTree;
-import com.gdproj.vo.categoryVo;
+import com.gdproj.vo.CategoryVo;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,20 +20,20 @@ import java.util.List;
 * @createDate 2023-09-21 14:09:53
 */
 @Service
-public class productCategoryServiceImpl extends ServiceImpl<productCategoryMapper, productCategory>
+public class productCategoryServiceImpl extends ServiceImpl<productCategoryMapper, ProductCategory>
     implements productCategoryService {
 
 
     @Override
-    public IPage<categoryVo> getProductCategoryListByPage(pageDto pagedto) {
+    public IPage<CategoryVo> getProductCategoryListByPage(pageDto pagedto) {
 
-        List<productCategory> list = list();
+        List<ProductCategory> list = list();
 
-        IPage<categoryVo> page = new Page<>();
+        IPage<CategoryVo> page = new Page<>();
 
-        List<categoryVo> categoryVos = BeanCopyUtils.copyBeanList(list, categoryVo.class);
+        List<CategoryVo> categoryVos = BeanCopyUtils.copyBeanList(list, CategoryVo.class);
 
-        List<categoryVo> categoryVos1 = analysisTree.builderTree(categoryVos, 0);
+        List<CategoryVo> categoryVos1 = analysisTree.builderTree(categoryVos, 0);
 
         System.out.println(categoryVos1);
 
@@ -44,13 +43,13 @@ public class productCategoryServiceImpl extends ServiceImpl<productCategoryMappe
     }
 
     @Override
-    public List<categoryVo> getProductCategoryList() {
+    public List<CategoryVo> getProductCategoryList() {
 
-        List<productCategory> list = list();
+        List<ProductCategory> list = list();
 
-        List<categoryVo> categoryVos = BeanCopyUtils.copyBeanList(list, categoryVo.class);
+        List<CategoryVo> categoryVos = BeanCopyUtils.copyBeanList(list, CategoryVo.class);
 
-        List<categoryVo> categoryVos1 = analysisTree.builderTree(categoryVos, 0);
+        List<CategoryVo> categoryVos1 = analysisTree.builderTree(categoryVos, 0);
 
         return categoryVos1;
     }

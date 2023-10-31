@@ -2,7 +2,7 @@ package com.gdproj.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.gdproj.handler.jsonAndListTypeHandler;
-import com.gdproj.vo.fileVo;
+import com.gdproj.vo.FileVo;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -54,13 +54,13 @@ public class Report implements Serializable {
      * 
      */
     @TableField(value = "report_pic",typeHandler = jsonAndListTypeHandler.class)
-    private List<fileVo> reportPic;
+    private List<FileVo> reportPic;
 
     /**
      * 
      */
     @TableField(value = "report_file",typeHandler = jsonAndListTypeHandler.class)
-    private List<fileVo> reportFile;
+    private List<FileVo> reportFile;
 
     /**
      * 
@@ -159,28 +159,28 @@ public class Report implements Serializable {
     /**
      * 
      */
-    public List<fileVo> getReportPic() {
+    public List<FileVo> getReportPic() {
         return reportPic;
     }
 
     /**
      * 
      */
-    public void setReportPic(List<fileVo> reportPic) {
+    public void setReportPic(List<FileVo> reportPic) {
         this.reportPic = reportPic;
     }
 
     /**
      * 
      */
-    public List<fileVo> getReportFile() {
+    public List<FileVo> getReportFile() {
         return reportFile;
     }
 
     /**
      * 
      */
-    public void setReportFile(List<fileVo> reportFile) {
+    public void setReportFile(List<FileVo> reportFile) {
         this.reportFile = reportFile;
     }
 

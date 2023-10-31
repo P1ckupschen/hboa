@@ -15,10 +15,10 @@ import com.gdproj.service.DeployeeService;
 import com.gdproj.service.SignService;
 import com.gdproj.utils.BaiduMapUtil;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.deployeeVo;
-import com.gdproj.vo.isSignVo;
-import com.gdproj.vo.monthSignVo;
-import com.gdproj.vo.signVo;
+import com.gdproj.vo.DeployeeVo;
+import com.gdproj.vo.IsSignVo;
+import com.gdproj.vo.MonthSignVo;
+import com.gdproj.vo.SignVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,7 +51,7 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
     DepartmentService departmentService;
 
     @Override
-    public IPage<signVo> getSignList(pageDto pagedto) {
+    public IPage<SignVo> getSignList(pageDto pagedto) {
 
         LambdaQueryWrapper<Sign> queryWrapper = new LambdaQueryWrapper<>();
 
@@ -101,10 +101,10 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
 
         IPage<Sign> signPage = signMapper.selectPage(page, queryWrapper);
 
-        Page<signVo> resultPage = new Page<>();
+        Page<SignVo> resultPage = new Page<>();
         //结果里的部门 和用户都返回成string；
-        List<signVo> resultList = signPage.getRecords().stream().map((item) -> {
-            signVo signvo = BeanCopyUtils.copyBean(item, signVo.class);
+        List<SignVo> resultList = signPage.getRecords().stream().map((item) -> {
+            SignVo signvo = BeanCopyUtils.copyBean(item, SignVo.class);
             signvo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
             //部门
             signvo.setDepartment(departmentService.getDepartmentNameByDepartmentId(deployeeService.getById(item.getUserId()).getDepartmentId()));
@@ -118,7 +118,9 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
             if (signvo.getTWorkTime() < item.getWorkTime()) {
                 signvo.setSignStatus(0);
             }
+            //如果 迟到
             //设置是否完成考勤 判断时长 判断是否迟到 是否早退
+
             DateFormat timeInstance = DateFormat.getTimeInstance();
 
             if (workTime >= signvo.getWorkTime() && signvo.getSignAddr() == "XXXX附近") {
@@ -155,7 +157,7 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
         //拿到当前用户当天的打卡记录
         Sign one = getOne(queryWrapper);
         //先判断是否今天已打过卡
-        isSignVo vo = getSignInfoByUserIdAndDate(sign.getUserId());
+        IsSignVo vo = getSignInfoByUserIdAndDate(sign.getUserId());
         //如果早上签过到
         if (vo.getIsSignIn() == 1) {
             one.setEndTime(calendar.getTime());
@@ -181,7 +183,7 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
     }
 
     @Override
-    public isSignVo getSignInfoByUserIdAndDate(Integer userId) {
+    public IsSignVo getSignInfoByUserIdAndDate(Integer userId) {
 
         LambdaQueryWrapper<Sign> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Sign::getUserId, userId);
@@ -192,9 +194,10 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
         queryWrapper.like(Sign::getInTime, format);
 //            每天的打卡记录只有一条
         Sign one = getOne(queryWrapper);
-        isSignVo vo = new isSignVo();
+        IsSignVo vo = new IsSignVo();
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+
             Date shouldInTime = sdf.parse("8:30");
             Date shouldOutTime = sdf.parse("17:30");
             vo.setShouldInTime(shouldInTime);
@@ -231,7 +234,7 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
     }
 
     @Override
-    public IPage<monthSignVo> getMonthSignList(pageDto pageDto) {
+    public IPage<MonthSignVo> getMonthSignList(pageDto pageDto) {
 
         //类型
         Integer type = pageDto.getType();
@@ -249,7 +252,7 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
         Integer pageSize = pageDto.getPageSize();
 
 
-        Page<monthSignVo> resultPage = new Page<>();
+        Page<MonthSignVo> resultPage = new Page<>();
 
         try {
             //获取time 的年 月 日
@@ -262,9 +265,9 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
             int day = cal.get(Calendar.DAY_OF_MONTH);
 
             //首先获取员工列表，根据分页数据d
-            IPage<deployeeVo> deployeeListPage = deployeeService.getDeployeeList(pageDto);
-            List<deployeeVo> deployeeList = deployeeListPage.getRecords();
-            List<monthSignVo> resultList = deployeeList.stream().map((item) -> countMonthDataByDeployee(item, year, month, day)).collect(Collectors.toList());
+            IPage<DeployeeVo> deployeeListPage = deployeeService.getDeployeeList(pageDto);
+            List<DeployeeVo> deployeeList = deployeeListPage.getRecords();
+            List<MonthSignVo> resultList = deployeeList.stream().map((item) -> countMonthDataByDeployee(item, year, month, day)).collect(Collectors.toList());
 
             resultPage.setRecords(resultList);
 
@@ -278,10 +281,9 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
         }
     }
 
-    private monthSignVo countMonthDataByDeployee(deployeeVo deployee, int year, int month, int day) {
+    private MonthSignVo countMonthDataByDeployee(DeployeeVo deployee, int year, int month, int day) {
 
-        monthSignVo vo = new monthSignVo();
-
+        MonthSignVo vo = new MonthSignVo();
         //年份
         vo.setYear(year);
         //月份
@@ -292,16 +294,17 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
         queryWrapper.eq(Sign::getUserId, deployee.getDeployeeId());
         //获得这一个月内的这个用户的签到记录
         List<Sign> list = list(queryWrapper);
+
         //设置考勤人
         vo.setDeployee(deployee);
         vo.setUserId(deployee.getUserId());
-        //固定上班时间 一个月27天;
+        //固定上班时间 一个月27天; TODO  固定上班时间 设置为 27 天
         vo.setShouldAttendanceDays(27);
         //统计上班status == 1的list的size();
         //实际上班天数
         vo.setAttendanceDays((int) list.stream().filter((item) -> item.getSignStatus() == 1).count());
-        //出勤率 百分比
-        vo.setAttendanceRate(Math.round(vo.getAttendanceDays() / vo.getShouldAttendanceDays()));
+        //出勤率 百分比  实际上班天数 / 固定上班时间  算出百分比
+        vo.setAttendanceRate(Math.round(vo.getAttendanceDays() / vo.getShouldAttendanceDays() ));
         //迟到天数
         vo.setLateDays(getLateHistoryByMonthList(list).size());
         //迟到记录
@@ -313,14 +316,14 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
         return vo;
     }
 
-    private List<signVo> getEarlyHistoryByMonthList(List<Sign> list) {
+    private List<SignVo> getEarlyHistoryByMonthList(List<Sign> list) {
         List<Sign> collect = list.stream().filter((item) -> item.getIsEarly() == 1).collect(Collectors.toList());
-        return BeanCopyUtils.copyBeanList(collect, signVo.class);
+        return BeanCopyUtils.copyBeanList(collect, SignVo.class);
     }
 
-    private List<signVo> getLateHistoryByMonthList(List<Sign> list) {
+    private List<SignVo> getLateHistoryByMonthList(List<Sign> list) {
         List<Sign> collect = list.stream().filter((item) -> item.getIsLate() == 1).collect(Collectors.toList());
-        return BeanCopyUtils.copyBeanList(collect, signVo.class);
+        return BeanCopyUtils.copyBeanList(collect, SignVo.class);
     }
 
 

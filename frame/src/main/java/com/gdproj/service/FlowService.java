@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.*;
-import com.gdproj.vo.flowVo;
+import com.gdproj.vo.FlowVo;
 
 /**
 * @author Administrator
@@ -15,9 +15,9 @@ public interface FlowService extends IService<Flow> {
 
 
 
-    boolean approveFlow(flowVo vo);
+    boolean approveFlow(FlowVo vo);
 
-    IPage<flowVo> getFlowList(pageDto pageDto);
+    IPage<FlowVo> getFlowList(pageDto pageDto);
 
     boolean insertFlow(Overtime insertOvertime);
     boolean insertFlow(Leave insertLeave);

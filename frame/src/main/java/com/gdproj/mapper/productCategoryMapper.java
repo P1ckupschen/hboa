@@ -1,7 +1,7 @@
 package com.gdproj.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.gdproj.entity.productCategory;
+import com.gdproj.entity.ProductCategory;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Mapper;
 * @Entity generator.entity.productCategory
 */
 @Mapper
-public interface productCategoryMapper extends BaseMapper<productCategory> {
+public interface productCategoryMapper extends BaseMapper<ProductCategory> {
 
 }
 

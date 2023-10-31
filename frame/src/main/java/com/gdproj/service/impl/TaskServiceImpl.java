@@ -13,7 +13,7 @@ import com.gdproj.mapper.TaskMapper;
 import com.gdproj.service.DeployeeService;
 import com.gdproj.service.TaskService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.taskVo;
+import com.gdproj.vo.TaskVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +39,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
 
 
     @Override
-    public IPage<taskVo> getTaskList(pageDto pageDto) {
+    public IPage<TaskVo> getTaskList(pageDto pageDto) {
         Integer type = pageDto.getType();
         Integer departmentId = pageDto.getDepartmentId();
         String time = pageDto.getTime();
@@ -74,7 +74,6 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
         if(time != null){
             queryWrapper.like(Task::getTaskTime,time);
         }
-
         //模糊查询人名
         if(!title.isEmpty()){
             //如果有模糊查询的时间 先通过查title 的用户ids
@@ -86,23 +85,21 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
             }
             //通过ids去找所有符合ids的对象 sign;
         }
-
         //如果有类型的话
-
         if(!ObjectUtil.isEmpty(type)){
             queryWrapper.eq(Task::getCategoryId,type);
         }
 
         IPage<Task> taskPage = taskMapper.selectPage(page, queryWrapper);
 
-        Page<taskVo> resultPage = new Page<>();
+        Page<TaskVo> resultPage = new Page<>();
 
-        List<taskVo> resultList = new ArrayList<>();
+        List<TaskVo> resultList = new ArrayList<>();
         //结果里的部门 和用户都返回成string；
         try {
             resultList = taskPage.getRecords().stream().map((item) -> {
 
-                taskVo taskVo = BeanCopyUtils.copyBean(item, taskVo.class);
+                TaskVo taskVo = BeanCopyUtils.copyBean(item, TaskVo.class);
                 //创建人
                 taskVo.setUsername(deployeeService.getNameByUserId(item.getCreatedUser()));
 

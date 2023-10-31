@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Warehouse;
-import com.gdproj.vo.warehouseVo;
+import com.gdproj.vo.WarehouseVo;
 
 /**
 * @author Administrator
@@ -15,5 +15,5 @@ public interface WarehouseService extends IService<Warehouse> {
 
     boolean insertWarehouse(Warehouse warehouse);
 
-    IPage<warehouseVo> getWarehouseList(pageDto pageDto);
+    IPage<WarehouseVo> getWarehouseList(pageDto pageDto);
 }

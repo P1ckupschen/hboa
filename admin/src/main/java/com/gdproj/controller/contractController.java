@@ -8,7 +8,7 @@ import com.gdproj.annotation.autoLog;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Contract;
 import com.gdproj.entity.Template;
-import com.gdproj.entity.contractCategory;
+import com.gdproj.entity.ContractCategory;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
@@ -16,10 +16,10 @@ import com.gdproj.service.ContractService;
 import com.gdproj.service.TemplateService;
 import com.gdproj.service.contractCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.categoryVo;
-import com.gdproj.vo.contractVo;
-import com.gdproj.vo.pageVo;
-import com.gdproj.vo.selectVo;
+import com.gdproj.vo.CategoryVo;
+import com.gdproj.vo.ContractVo;
+import com.gdproj.vo.PageVo;
+import com.gdproj.vo.SelectVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +48,7 @@ public class contractController {
     @ApiOperation(value = "查询用于选择的合同列表")
     public ResponseResult getListForSelect(){
 
-        List<selectVo> selectList = new ArrayList<>();
+        List<SelectVo> selectList = new ArrayList<>();
 
         try {
 
@@ -75,11 +75,11 @@ public class contractController {
 
         pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
 
-        IPage<contractVo> List = new Page<>();
+        IPage<ContractVo> List = new Page<>();
 
         try {
             List = contractService.getContractList(pageDto);
-            pageVo<List<contractVo>> pageList = new pageVo<>();
+            PageVo<List<ContractVo>> pageList = new PageVo<>();
             pageList.setData(List.getRecords());
             pageList.setTotal((int) List.getTotal());
             return ResponseResult.okResult(pageList);
@@ -95,7 +95,7 @@ public class contractController {
     @PutMapping("updateContract")
     @autoLog
     @ApiOperation(value = "更新合同")
-    public ResponseResult updateContract(@RequestBody contractVo vo){
+    public ResponseResult updateContract(@RequestBody ContractVo vo){
 
 
         Contract updateInfo = BeanCopyUtils.copyBean(vo, Contract.class);
@@ -125,7 +125,7 @@ public class contractController {
     @PostMapping("insertContract")
     @autoLog
     @ApiOperation(value = "新增合同")
-    public ResponseResult insertContract(@RequestBody contractVo vo){
+    public ResponseResult insertContract(@RequestBody ContractVo vo){
 
         Contract insertInfo = BeanCopyUtils.copyBean(vo, Contract.class);
 
@@ -184,18 +184,18 @@ public class contractController {
 
         pageDto pagedto = new pageDto(pageNum, pageSize);
 
-        IPage<contractCategory> categoryList = new Page<>();
+        IPage<ContractCategory> categoryList = new Page<>();
 
         try {
 
             if(ObjectUtil.isNull(pagedto.getPageNum())){
-                List<contractCategory> list = categoryService.list();
+                List<ContractCategory> list = categoryService.list();
 
                 return ResponseResult.okResult(list);
             }else{
                 categoryList = categoryService.getContractCategoryList(pagedto);
 
-                pageVo<List<contractCategory>> pageList = new pageVo<>();
+                PageVo<List<ContractCategory>> pageList = new PageVo<>();
 
                 pageList.setData(categoryList.getRecords());
                 pageList.setTotal((int) categoryList.getTotal());
@@ -211,14 +211,14 @@ public class contractController {
     @PutMapping("updateCategory")
     @autoLog
     @ApiOperation(value = "更新类型", notes = "更新")
-    public ResponseResult updateCategory(@RequestBody categoryVo category){
+    public ResponseResult updateCategory(@RequestBody CategoryVo category){
 
-        contractCategory contractcategory = new contractCategory();
+        ContractCategory contractcategory = new ContractCategory();
 
         boolean b = false;
 
         try {
-            contractcategory = BeanCopyUtils.copyBean(category, contractCategory.class);
+            contractcategory = BeanCopyUtils.copyBean(category, ContractCategory.class);
 
             b = categoryService.updateById(contractcategory);
 
@@ -239,14 +239,14 @@ public class contractController {
     @PostMapping("insertCategory")
     @autoLog
     @ApiOperation(value = "新增类型", notes = "新增")
-    public ResponseResult insertCategory(@RequestBody categoryVo category){
+    public ResponseResult insertCategory(@RequestBody CategoryVo category){
 
-        contractCategory contractcategory = new contractCategory();
+        ContractCategory contractcategory = new ContractCategory();
 
         boolean b = false;
 
         try {
-            contractcategory = BeanCopyUtils.copyBean(category, contractCategory.class);
+            contractcategory = BeanCopyUtils.copyBean(category, ContractCategory.class);
 
             b = categoryService.save(contractcategory);
 
@@ -269,7 +269,7 @@ public class contractController {
     @ApiOperation(value = "删除类型", notes = "删除")
     public ResponseResult deleteCategory(@PathParam("categoryId") Integer categoryId){
 
-        contractCategory contractcategory = new contractCategory();
+        ContractCategory contractcategory = new ContractCategory();
 
 
         boolean b = false;
@@ -306,7 +306,7 @@ public class contractController {
                 return ResponseResult.okResult(list);
             }else {
                 templateList = templateService.getTemplateList(pageDto);
-                pageVo<List<Template>> pageList = new pageVo<>();
+                PageVo<List<Template>> pageList = new PageVo<>();
                 pageList.setTotal((int) templateList.getTotal());
                 pageList.setData(templateList.getRecords());
                 return  ResponseResult.okResult(pageList);

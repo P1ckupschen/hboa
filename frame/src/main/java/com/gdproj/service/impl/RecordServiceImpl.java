@@ -17,8 +17,8 @@ import com.gdproj.mapper.ProductMapper;
 import com.gdproj.mapper.RecordMapper;
 import com.gdproj.service.*;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.productVo;
-import com.gdproj.vo.recordVo;
+import com.gdproj.vo.ProductVo;
+import com.gdproj.vo.RecordVo;
 import com.gdproj.vo.warehouseSelectVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -59,7 +59,7 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
     FlowService flowService;
 
     @Override
-    public IPage<recordVo> getRecordList(pageDto pageDto) {
+    public IPage<RecordVo> getRecordList(pageDto pageDto) {
 
 
         Integer type = pageDto.getType();
@@ -110,14 +110,14 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
 
         IPage<Record> recordPage = page(page, queryWrapper);
 
-        Page<recordVo> resultPage = new Page<>();
+        Page<RecordVo> resultPage = new Page<>();
 
-        List<recordVo> resultList = new ArrayList<>();
+        List<RecordVo> resultList = new ArrayList<>();
         try {
 
             resultList = recordPage.getRecords().stream().map((item) -> {
 
-                recordVo vo = BeanCopyUtils.copyBean(item, recordVo.class);
+                RecordVo vo = BeanCopyUtils.copyBean(item, RecordVo.class);
                 //创建人
                 vo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
 
@@ -213,7 +213,7 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
     }
 
 
-    public IPage<productVo> getStockList(pageDto pageDto) {
+    public IPage<ProductVo> getStockList(pageDto pageDto) {
 
         //类型
         Integer type = pageDto.getType();
@@ -257,14 +257,14 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
 
         IPage<Product> recordPage = productMapper.selectPage(page, queryWrapper);
 
-        Page<productVo> resultPage = new Page<>();
+        Page<ProductVo> resultPage = new Page<>();
 
-        List<productVo> resultList = new ArrayList<>();
+        List<ProductVo> resultList = new ArrayList<>();
         try {
 
             resultList = recordPage.getRecords().stream().map((item) -> {
 
-                productVo vo = BeanCopyUtils.copyBean(item, productVo.class);
+                ProductVo vo = BeanCopyUtils.copyBean(item, ProductVo.class);
 
                 //产品类型名称
                 vo.setCategory(productService.getCategoryNameById(item.getProductId()));

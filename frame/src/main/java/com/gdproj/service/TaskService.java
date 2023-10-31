@@ -4,8 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Task;
-import com.gdproj.vo.notifyVo;
-import com.gdproj.vo.taskVo;
+import com.gdproj.vo.TaskVo;
 
 /**
 * @author Administrator
@@ -14,5 +13,5 @@ import com.gdproj.vo.taskVo;
 */
 public interface TaskService extends IService<Task> {
 
-    IPage<taskVo> getTaskList(pageDto pageDto);
+    IPage<TaskVo> getTaskList(pageDto pageDto);
 }

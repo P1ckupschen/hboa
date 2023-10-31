@@ -1,7 +1,7 @@
 package com.gdproj.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.gdproj.entity.overtimeCategory;
+import com.gdproj.entity.OvertimeCategory;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Mapper;
 * @Entity generator.entity.overtimeCategory
 */
 @Mapper
-public interface overtimeCategoryMapper extends BaseMapper<overtimeCategory> {
+public interface overtimeCategoryMapper extends BaseMapper<OvertimeCategory> {
 
 }
 

@@ -9,8 +9,8 @@ import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.LogService;
-import com.gdproj.vo.logVo;
-import com.gdproj.vo.pageVo;
+import com.gdproj.vo.LogVo;
+import com.gdproj.vo.PageVo;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,12 +40,12 @@ public class logController {
 
         pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
 
-        IPage<logVo> logList = new Page<logVo>();
+        IPage<LogVo> logList = new Page<LogVo>();
 
         try {
             logList = logService.getLogList(pageDto);
 
-            pageVo<List<logVo>> pageList = new pageVo<>();
+            PageVo<List<LogVo>> pageList = new PageVo<>();
             pageList.setData(logList.getRecords());
             pageList.setTotal((int) logList.getTotal());
             return ResponseResult.okResult(pageList);

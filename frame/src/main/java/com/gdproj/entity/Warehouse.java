@@ -1,9 +1,8 @@
 package com.gdproj.entity;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
-import com.gdproj.vo.fileVo;
+import com.gdproj.vo.FileVo;
 import com.gdproj.vo.warehouseSelectVo;
 
 import java.io.Serializable;
@@ -74,7 +73,7 @@ public class Warehouse implements Serializable {
      *
      */
     @TableField(value = "warehouse_attachments",typeHandler = JacksonTypeHandler.class)
-    private List<fileVo> warehouseAttachments;
+    private List<FileVo> warehouseAttachments;
 
     /**
      *
@@ -239,14 +238,14 @@ public class Warehouse implements Serializable {
     /**
      *
      */
-    public List<fileVo> getWarehouseAttachments() {
+    public List<FileVo> getWarehouseAttachments() {
         return warehouseAttachments;
     }
 
     /**
      *
      */
-    public void setWarehouseAttachments(List<fileVo> warehouseAttachments) {
+    public void setWarehouseAttachments(List<FileVo> warehouseAttachments) {
         this.warehouseAttachments = warehouseAttachments;
     }
 

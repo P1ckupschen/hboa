@@ -1,7 +1,7 @@
 package com.gdproj.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.gdproj.entity.flowHistory;
+import com.gdproj.entity.FlowHistory;
 import com.gdproj.mapper.flowHistoryMapper;
 import com.gdproj.service.flowHistoryService;
 import org.springframework.stereotype.Service;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 * @createDate 2023-10-19 10:47:14
 */
 @Service
-public class flowHistoryServiceImpl extends ServiceImpl<flowHistoryMapper, flowHistory>
+public class flowHistoryServiceImpl extends ServiceImpl<flowHistoryMapper, FlowHistory>
     implements flowHistoryService {
 
 }

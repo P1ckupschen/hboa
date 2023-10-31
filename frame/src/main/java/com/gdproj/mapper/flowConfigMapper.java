@@ -1,7 +1,7 @@
 package com.gdproj.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.gdproj.entity.flowConfig;
+import com.gdproj.entity.FlowConfig;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Mapper;
 * @Entity generator.entity.flowConfig
 */
 @Mapper
-public interface flowConfigMapper extends BaseMapper<flowConfig> {
+public interface flowConfigMapper extends BaseMapper<FlowConfig> {
 
 }
 

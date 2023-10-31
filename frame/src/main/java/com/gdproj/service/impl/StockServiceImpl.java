@@ -17,7 +17,7 @@ import com.gdproj.service.StockService;
 import com.gdproj.service.productCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.stockSelectVo;
-import com.gdproj.vo.stockVo;
+import com.gdproj.vo.StockVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,7 +47,7 @@ public class StockServiceImpl extends ServiceImpl<StockMapper, Stock>
     productCategoryService categoryService;
 
     @Override
-    public IPage<stockVo> getStockList(pageDto pageDto) {
+    public IPage<StockVo> getStockList(pageDto pageDto) {
 
         //类型
         Integer type = pageDto.getType();
@@ -91,14 +91,14 @@ public class StockServiceImpl extends ServiceImpl<StockMapper, Stock>
 
         IPage<Stock> recordPage = stockMapper.selectPage(page, queryWrapper);
 
-        Page<stockVo> resultPage = new Page<>();
+        Page<StockVo> resultPage = new Page<>();
 
-        List<stockVo> resultList = new ArrayList<>();
+        List<StockVo> resultList = new ArrayList<>();
         try {
 
             resultList = recordPage.getRecords().stream().map((item) -> {
 
-                stockVo vo = BeanCopyUtils.copyBean(item, stockVo.class);
+                StockVo vo = BeanCopyUtils.copyBean(item, StockVo.class);
 
                 //产品名称 对应的产品类型
                 vo.setProductName(productService.getById(item.getProductId()).getProductName());

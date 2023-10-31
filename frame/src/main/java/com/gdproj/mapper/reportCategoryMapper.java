@@ -1,7 +1,7 @@
 package com.gdproj.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.gdproj.entity.reportCategory;
+import com.gdproj.entity.ReportCategory;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -12,7 +12,7 @@ import org.apache.ibatis.annotations.Mapper;
 */
 
 @Mapper
-public interface reportCategoryMapper extends BaseMapper<reportCategory> {
+public interface reportCategoryMapper extends BaseMapper<ReportCategory> {
 
 }
 

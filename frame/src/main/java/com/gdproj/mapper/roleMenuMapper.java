@@ -1,7 +1,7 @@
 package com.gdproj.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.gdproj.entity.roleMenu;
+import com.gdproj.entity.RoleMenu;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Mapper;
 * @Entity generator.domain.roleMenu
 */
 @Mapper
-public interface roleMenuMapper extends BaseMapper<roleMenu> {
+public interface roleMenuMapper extends BaseMapper<RoleMenu> {
 
 }
 

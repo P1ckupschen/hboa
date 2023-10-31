@@ -14,7 +14,7 @@ import com.gdproj.service.DeployeeService;
 import com.gdproj.service.ReportService;
 import com.gdproj.service.reportCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.reportVo;
+import com.gdproj.vo.ReportVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,7 +42,7 @@ public class ReportServiceImpl extends ServiceImpl<ReportMapper, Report>
     ReportMapper reportMapper;
 
     @Override
-    public IPage<reportVo> getReportList(pageDto pageDto) {
+    public IPage<ReportVo> getReportList(pageDto pageDto) {
 
         //类型
         Integer type = pageDto.getType();
@@ -95,13 +95,13 @@ public class ReportServiceImpl extends ServiceImpl<ReportMapper, Report>
         }
         IPage<Report> reportPage = reportMapper.selectPage(page, queryWrapper);
 
-        Page<reportVo> resultPage = new Page<>();
+        Page<ReportVo> resultPage = new Page<>();
 
-        List<reportVo> resultList = new ArrayList<>();
+        List<ReportVo> resultList = new ArrayList<>();
         //结果里的部门 和用户都返回成string；
         try {
             resultList = reportPage.getRecords().stream().map((item) -> {
-                reportVo reportvo = BeanCopyUtils.copyBean(item, reportVo.class);
+                ReportVo reportvo = BeanCopyUtils.copyBean(item, ReportVo.class);
 
                 //人员
                 reportvo.setUsername(deployeeService.getNameByUserId(item.getUserId()));

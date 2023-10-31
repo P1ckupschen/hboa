@@ -2,7 +2,7 @@ package com.gdproj.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
-import com.gdproj.vo.fileVo;
+import com.gdproj.vo.FileVo;
 
 import java.io.Serializable;
 import java.util.List;
@@ -29,7 +29,7 @@ public class Template implements Serializable {
      *
      */
     @TableField(value = "template_content",typeHandler = JacksonTypeHandler.class)
-    private List<fileVo> templateContent;
+    private List<FileVo> templateContent;
 
     /**
      *
@@ -42,7 +42,7 @@ public class Template implements Serializable {
      *
      */
     @TableField(value = "template_pic",typeHandler = JacksonTypeHandler.class)
-    private List<fileVo> templatePic;
+    private List<FileVo> templatePic;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -78,14 +78,14 @@ public class Template implements Serializable {
     /**
      *
      */
-    public List<fileVo> getTemplateContent() {
+    public List<FileVo> getTemplateContent() {
         return templateContent;
     }
 
     /**
      *
      */
-    public void setTemplateContent(List<fileVo> templateContent) {
+    public void setTemplateContent(List<FileVo> templateContent) {
         this.templateContent = templateContent;
     }
 
@@ -106,14 +106,14 @@ public class Template implements Serializable {
     /**
      *
      */
-    public List<fileVo> getTemplatePic() {
+    public List<FileVo> getTemplatePic() {
         return templatePic;
     }
 
     /**
      *
      */
-    public void setTemplatePic(List<fileVo> templatePic) {
+    public void setTemplatePic(List<FileVo> templatePic) {
         this.templatePic = templatePic;
     }
 

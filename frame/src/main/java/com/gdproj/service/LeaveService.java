@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Leave;
-import com.gdproj.vo.leaveVo;
+import com.gdproj.vo.LeaveVo;
 
 /**
 * @author Administrator
@@ -14,7 +14,7 @@ import com.gdproj.vo.leaveVo;
 */
 public interface LeaveService extends IService<Leave> {
 
-    IPage<leaveVo> getLeaveList(pageDto pageDto);
+    IPage<LeaveVo> getLeaveList(pageDto pageDto);
 
     boolean insertLeave(Leave insertLeave);
 }

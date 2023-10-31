@@ -15,9 +15,9 @@ import com.gdproj.service.ContractService;
 import com.gdproj.service.DeployeeService;
 import com.gdproj.service.ProjectService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.clientVo;
-import com.gdproj.vo.projectVo;
-import com.gdproj.vo.selectVo;
+import com.gdproj.vo.ClientVo;
+import com.gdproj.vo.ProjectVo;
+import com.gdproj.vo.SelectVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,7 +48,7 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client>
 
 
     @Override
-    public IPage<clientVo> getClientList(pageDto pageDto) {
+    public IPage<ClientVo> getClientList(pageDto pageDto) {
 
         //类型
         Integer type = pageDto.getType();
@@ -92,18 +92,18 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client>
 
         IPage<Client> recordPage = clientMapper.selectPage(page, queryWrapper);
 
-        Page<clientVo> resultPage = new Page<>();
+        Page<ClientVo> resultPage = new Page<>();
 
-        List<clientVo> resultList = new ArrayList<>();
+        List<ClientVo> resultList = new ArrayList<>();
         try {
 
             resultList = recordPage.getRecords().stream().map((item) -> {
 
-                clientVo vo = BeanCopyUtils.copyBean(item, clientVo.class);
+                ClientVo vo = BeanCopyUtils.copyBean(item, ClientVo.class);
                 //类型名称?
                 vo.setProjectList(projectService.getProjectListByClientId(item.getClientId()));
-                List<projectVo> productList = projectService.getProjectListByClientId(item.getClientId());
-                List<Integer> collect1 = productList.stream().map(projectVo::getProjectId).collect(Collectors.toList());
+                List<ProjectVo> productList = projectService.getProjectListByClientId(item.getClientId());
+                List<Integer> collect1 = productList.stream().map(ProjectVo::getProjectId).collect(Collectors.toList());
                 //客户合同
                 vo.setProjectId(collect1);
                 //客户项目
@@ -125,12 +125,12 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client>
     }
 
     @Override
-    public List<selectVo> getListForSelect() {
+    public List<SelectVo> getListForSelect() {
 
         List<Client> list = list();
 
-        List<selectVo> collect = list.stream().map((item) -> {
-            selectVo vo = new selectVo();
+        List<SelectVo> collect = list.stream().map((item) -> {
+            SelectVo vo = new SelectVo();
             vo.setId(item.getClientId());
             vo.setName(item.getClientName());
             return vo;

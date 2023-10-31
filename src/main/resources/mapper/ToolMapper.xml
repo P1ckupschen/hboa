@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="generator.mapper.ToolMapper">
+
+    <resultMap id="BaseResultMap" type="generator.entity.Tool">
+            <id property="toolId" column="tool_id" jdbcType="INTEGER"/>
+            <result property="toolName" column="tool_name" jdbcType="VARCHAR"/>
+            <result property="toolOrderId" column="tool_order_id" jdbcType="INTEGER"/>
+            <result property="toolFactoryCode" column="tool_factory_code" jdbcType="VARCHAR"/>
+            <result property="categoryId" column="category_id" jdbcType="INTEGER"/>
+            <result property="toolBrand" column="tool_brand" jdbcType="VARCHAR"/>
+            <result property="toolUnit" column="tool_unit" jdbcType="VARCHAR"/>
+            <result property="toolModelname" column="tool_modelname" jdbcType="VARCHAR"/>
+            <result property="toolCost" column="tool_cost" jdbcType="DECIMAL"/>
+            <result property="toolPic" column="tool_pic" jdbcType="VARCHAR"/>
+            <result property="toolTotal" column="tool_total" jdbcType="INTEGER"/>
+            <result property="recordIn" column="record_in" jdbcType="VARCHAR"/>
+            <result property="recordOut" column="record_out" jdbcType="VARCHAR"/>
+            <result property="toolDescription" column="tool_description" jdbcType="VARCHAR"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+            <result property="toolPrice" column="tool_price" jdbcType="DECIMAL"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        tool_id,tool_name,tool_order_id,
+        tool_factory_code,category_id,tool_brand,
+        tool_unit,tool_modelname,tool_cost,
+        tool_pic,tool_total,record_in,
+        record_out,tool_description,is_deleted,
+        tool_price,update_time
+    </sql>
+</mapper>

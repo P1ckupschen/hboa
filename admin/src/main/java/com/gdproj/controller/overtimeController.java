@@ -6,17 +6,17 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.annotation.autoLog;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Overtime;
-import com.gdproj.entity.notifyCategory;
-import com.gdproj.entity.overtimeCategory;
+import com.gdproj.entity.NotifyCategory;
+import com.gdproj.entity.OvertimeCategory;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.OvertimeService;
 import com.gdproj.service.overtimeCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.categoryVo;
-import com.gdproj.vo.overtimeVo;
-import com.gdproj.vo.pageVo;
+import com.gdproj.vo.CategoryVo;
+import com.gdproj.vo.OvertimeVo;
+import com.gdproj.vo.PageVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,12 +47,12 @@ public class overtimeController {
                                           @RequestParam(required = false) String time){
         pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
 
-        IPage<overtimeVo> overtimeList = new Page<overtimeVo>();
+        IPage<OvertimeVo> overtimeList = new Page<OvertimeVo>();
 
         try {
             overtimeList = overtimeService.getOverTimeList(pageDto);
 
-            pageVo<List<overtimeVo>> pageList = new pageVo<>();
+            PageVo<List<OvertimeVo>> pageList = new PageVo<>();
             pageList.setData(overtimeList.getRecords());
             pageList.setTotal((int) overtimeList.getTotal());
             return ResponseResult.okResult(pageList);
@@ -69,7 +69,7 @@ public class overtimeController {
     @PutMapping("updateOvertime")
     @autoLog
     @ApiOperation(value = "更新加班")
-    public ResponseResult updateOvertime(@RequestBody overtimeVo overtimeVo){
+    public ResponseResult updateOvertime(@RequestBody OvertimeVo overtimeVo){
 
 
         Overtime updateOvertime = BeanCopyUtils.copyBean(overtimeVo, Overtime.class);
@@ -100,7 +100,7 @@ public class overtimeController {
     @PostMapping("insertOvertime")
     @autoLog
     @ApiOperation(value = "新增加班同时添加流程信息")
-    public ResponseResult insertOvertime(@RequestBody overtimeVo overtimeVo){
+    public ResponseResult insertOvertime(@RequestBody OvertimeVo overtimeVo){
 
         Overtime insertOvertime = BeanCopyUtils.copyBean(overtimeVo, Overtime.class);
 
@@ -161,7 +161,7 @@ public class overtimeController {
     //批量删除
     public ResponseResult deleteOvertimeList(@RequestBody Integer categoryId){
 
-        notifyCategory notifycategory = new notifyCategory();
+        NotifyCategory notifycategory = new NotifyCategory();
 
         boolean b = false;
 
@@ -195,16 +195,16 @@ public class overtimeController {
 
         pageDto pagedto = new pageDto(pageNum, pageSize);
 
-        IPage<overtimeCategory> categoryList = new Page<>();
+        IPage<OvertimeCategory> categoryList = new Page<>();
 
         try {
 
             if(ObjectUtil.isNull(pagedto.getPageNum())){
-                List<overtimeCategory> list = categoryService.list();
+                List<OvertimeCategory> list = categoryService.list();
                 return ResponseResult.okResult(list);
             }else{
                 categoryList = categoryService.getOvertimeCategoryList(pagedto);
-                pageVo<List<overtimeCategory>> pageList = new pageVo<>();
+                PageVo<List<OvertimeCategory>> pageList = new PageVo<>();
                 pageList.setData(categoryList.getRecords());
                 pageList.setTotal((int) categoryList.getTotal());
                 return ResponseResult.okResult(pageList);
@@ -219,15 +219,15 @@ public class overtimeController {
     @PutMapping("updateCategory")
     @autoLog
     @ApiOperation(value = "更新类型")
-    public ResponseResult updateCategory(@RequestBody categoryVo category){
+    public ResponseResult updateCategory(@RequestBody CategoryVo category){
 
-        overtimeCategory overcategory = new overtimeCategory();
+        OvertimeCategory overcategory = new OvertimeCategory();
 
 
         boolean b = false;
 
         try {
-            overcategory = BeanCopyUtils.copyBean(category, overtimeCategory.class);
+            overcategory = BeanCopyUtils.copyBean(category, OvertimeCategory.class);
 
             b = categoryService.updateById(overcategory);
 
@@ -249,14 +249,14 @@ public class overtimeController {
     @PostMapping("insertCategory")
     @autoLog
     @ApiOperation(value = "新增类型")
-    public ResponseResult insertCategory(@RequestBody categoryVo category){
+    public ResponseResult insertCategory(@RequestBody CategoryVo category){
 
-        overtimeCategory overcategory = new overtimeCategory();
+        OvertimeCategory overcategory = new OvertimeCategory();
 
         boolean b = false;
 
         try {
-            overcategory = BeanCopyUtils.copyBean(category, overtimeCategory.class);
+            overcategory = BeanCopyUtils.copyBean(category, OvertimeCategory.class);
 
             b = categoryService.save(overcategory);
 

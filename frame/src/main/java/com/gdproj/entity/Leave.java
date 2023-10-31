@@ -2,7 +2,7 @@ package com.gdproj.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
-import com.gdproj.vo.fileVo;
+import com.gdproj.vo.FileVo;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -60,7 +60,7 @@ public class Leave implements Serializable {
      *
      */
     @TableField(value = "leave_pic",typeHandler = JacksonTypeHandler.class)
-    private List<fileVo> leavePic;
+    private List<FileVo> leavePic;
 
     /**
      *
@@ -219,14 +219,14 @@ public class Leave implements Serializable {
     /**
      *
      */
-    public List<fileVo> getLeavePic() {
+    public List<FileVo> getLeavePic() {
         return leavePic;
     }
 
     /**
      *
      */
-    public void setLeavePic(List<fileVo> leavePic) {
+    public void setLeavePic(List<FileVo> leavePic) {
         this.leavePic = leavePic;
     }
 

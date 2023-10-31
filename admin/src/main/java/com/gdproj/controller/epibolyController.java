@@ -11,9 +11,9 @@ import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.EpibolyService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.epibolyVo;
-import com.gdproj.vo.pageVo;
-import com.gdproj.vo.selectVo;
+import com.gdproj.vo.EpibolyVo;
+import com.gdproj.vo.PageVo;
+import com.gdproj.vo.SelectVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@ public class epibolyController {
     @ApiOperation(value = "查询用于选择的外包列表")
     public ResponseResult getListForSelect(){
 
-        List<selectVo> selectList = new ArrayList<>();
+        List<SelectVo> selectList = new ArrayList<>();
 
         try {
 
@@ -64,11 +64,11 @@ public class epibolyController {
 
         pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
 
-        IPage<epibolyVo> epibolyList = new Page<>();
+        IPage<EpibolyVo> epibolyList = new Page<>();
 
         try {
             epibolyList = epibolyService.getEpibolyList(pageDto);
-            pageVo<List<epibolyVo>> pageList = new pageVo<>();
+            PageVo<List<EpibolyVo>> pageList = new PageVo<>();
             pageList.setData(epibolyList.getRecords());
             pageList.setTotal((int) epibolyList.getTotal());
             return ResponseResult.okResult(pageList);
@@ -83,7 +83,7 @@ public class epibolyController {
     @PutMapping("updateEpiboly")
     @autoLog
     @ApiOperation(value = "更新外包")
-    public ResponseResult updateEpiboly(@RequestBody epibolyVo vo){
+    public ResponseResult updateEpiboly(@RequestBody EpibolyVo vo){
 
 
         Epiboly updateInfo = BeanCopyUtils.copyBean(vo, Epiboly.class);
@@ -112,7 +112,7 @@ public class epibolyController {
     @PostMapping("insertEpiboly")
     @autoLog
     @ApiOperation(value = "新增外包")
-    public ResponseResult insertEpiboly(@RequestBody epibolyVo vo){
+    public ResponseResult insertEpiboly(@RequestBody EpibolyVo vo){
 
         Epiboly insertInfo = BeanCopyUtils.copyBean(vo, Epiboly.class);
 
