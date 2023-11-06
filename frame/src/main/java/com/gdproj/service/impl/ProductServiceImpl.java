@@ -81,8 +81,11 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product>
 
         //模糊查询产品名
         if(!title.isEmpty()){
-            //如果有模糊查询的时间 先通过查title 的用户ids
+//            queryWrapper.eq(Product::getProductId,title);
+//            System.out.println(title);
+//            //如果有模糊查询的时间 先通过查title 的用户ids
             List<Integer> ids = getIdsByTitle(title);
+//            System.out.println(ids);
             if(!ObjectUtil.isEmpty(ids)){
                 queryWrapper.in(Product::getProductId, ids);
             }else{
@@ -162,11 +165,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product>
 
         List<Product> list = list(queryWrapper);
 
-        List<Integer> collect = list.stream().map((item) -> {
-            return item.getProductId();
-        }).collect(Collectors.toList());
-
-        return collect;
+        return list.stream().map(Product::getProductId).collect(Collectors.toList());
     }
 }
 

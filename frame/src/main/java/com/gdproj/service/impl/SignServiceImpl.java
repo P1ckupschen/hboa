@@ -1,11 +1,13 @@
 package com.gdproj.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
+import com.alibaba.excel.EasyExcel;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdproj.dto.pageDto;
+import com.gdproj.entity.MonthSignExcelEntity;
 import com.gdproj.entity.Sign;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
@@ -22,6 +24,8 @@ import com.gdproj.vo.SignVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -49,6 +53,7 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
 
     @Autowired
     DepartmentService departmentService;
+
 
     @Override
     public IPage<SignVo> getSignList(pageDto pagedto) {
@@ -257,28 +262,124 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
         try {
             //获取time 的年 月 日
             Calendar cal = Calendar.getInstance();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date date = sdf.parse(time);
+            Date date = transferStringToDate(time);
             cal.setTime(date);
             int year = cal.get(Calendar.YEAR);
             int month = cal.get(Calendar.MONTH) + 1;
             int day = cal.get(Calendar.DAY_OF_MONTH);
-
             //首先获取员工列表，根据分页数据d
             IPage<DeployeeVo> deployeeListPage = deployeeService.getDeployeeList(pageDto);
             List<DeployeeVo> deployeeList = deployeeListPage.getRecords();
             List<MonthSignVo> resultList = deployeeList.stream().map((item) -> countMonthDataByDeployee(item, year, month, day)).collect(Collectors.toList());
-
             resultPage.setRecords(resultList);
-
             resultPage.setTotal(deployeeListPage.getTotal());
-
             return resultPage;
-        } catch (ParseException e) {
+        } catch (Exception e) {
+            throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
+        }
+    }
+
+    private Date transferStringToDate(String time) {
+        try {
+            if(ObjectUtil.isEmpty(time)){
+                int m = Calendar.getInstance().get(Calendar.MONTH) + 1;
+                int y =Calendar.getInstance().get(Calendar.YEAR);
+                int d =Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+                time = y + "-" + m + "-" + d;
+            }
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            return sdf.parse(time);
+        }catch (ParseException e){
             throw new SystemException(AppHttpCodeEnum.DATE_FORMAT_ERROR);
         } catch (Exception e) {
             throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
         }
+    }
+
+    @Override
+    public void exportMonthSignExcel(pageDto pageDto, HttpServletResponse response) {
+        String fileName = "admin/src/main/resources/signExcel/" + System.currentTimeMillis() + ".xlsx";
+        IPage<MonthSignVo> monthSignList = getMonthSignList(pageDto);
+        String time = pageDto.getTime();
+        List<MonthSignVo> records = monthSignList.getRecords();
+
+        Date date = transferStringToDate(time);
+
+        List<MonthSignExcelEntity> collect = records.stream().map((item) -> {
+            MonthSignExcelEntity excelEntity = BeanCopyUtils.copyBean(item, MonthSignExcelEntity.class);
+            excelEntity.setUserId(item.getDeployee().getDeployeeId());
+            excelEntity.setUsername(item.getDeployee().getDeployeeName());
+            //设置早退记录
+            excelEntity.setEarlyHistory(transferEarlyHistoryToString(item.getEarlyHistory()));
+            //设置迟到记录
+            excelEntity.setLateHistory(transferLateHistoryToString(item.getLateHistory()));
+            //设置考勤时期
+            excelEntity.setStage(setSignStage(date));
+            return excelEntity;
+        }).collect(Collectors.toList());
+        EasyExcel.write(fileName, MonthSignExcelEntity.class).sheet("月度考勤统计").doWrite(collect);
+        downloadExcel(fileName,response);
+    }
+
+    private void downloadExcel(String fileName, HttpServletResponse response) {
+        try {
+            File file = new File(fileName);
+            FileInputStream fis = new FileInputStream(file);
+            OutputStream outputStream = new BufferedOutputStream(response.getOutputStream());
+
+
+            response.setCharacterEncoding("UTF-8");
+            response.setHeader("Content-Disposition", "attachment;filename=" + "sign.xlsx");
+            // 设置响应头
+            response.setContentType("application/octet-stream");
+
+            //创建存放文件内容的数组
+            byte[] buff = new byte[1024];
+            //所读取的内容使用n来接收
+            int n;
+            //当没有读取完时,继续读取,循环
+            while ((n = fis.read(buff)) != -1) {
+                //将字节数组的数据全部写入到输出流中
+                outputStream.write(buff, 0, n);
+            }
+            //强制将缓存区的数据进行输出
+            outputStream.flush();
+            //关流
+            outputStream.close();
+            fis.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new SystemException(AppHttpCodeEnum.DOWNLOAD_EXCEL_ERROR);
+        }
+
+    }
+
+
+    private String setSignStage(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        int m = cal.get(Calendar.MONTH) + 1;
+        int d =cal.get(Calendar.DAY_OF_MONTH);
+        return (m-1) + "月" + d + "日" + "~" + m + "月" + d + "日";
+    }
+
+    private String transferLateHistoryToString(List<SignVo> lateHistory) {
+        List<String> collect1 = lateHistory.stream().map((i) -> {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String format = simpleDateFormat.format(i.getInTime());
+            return format+ " 早上打卡迟到";
+        }).collect(Collectors.toList());
+        return collect1.toString();
+    }
+
+    private String transferEarlyHistoryToString(List<SignVo> earlyHistory) {
+        List<String> collect1 = earlyHistory.stream().map((i) -> {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String format = simpleDateFormat.format(i.getEndTime());
+            return format+ " 下午打卡早退";
+        }).collect(Collectors.toList());
+        return collect1.toString();
     }
 
     private MonthSignVo countMonthDataByDeployee(DeployeeVo deployee, int year, int month, int day) {
@@ -304,7 +405,7 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
         //实际上班天数
         vo.setAttendanceDays((int) list.stream().filter((item) -> item.getSignStatus() == 1).count());
         //出勤率 百分比  实际上班天数 / 固定上班时间  算出百分比
-        vo.setAttendanceRate(Math.round(vo.getAttendanceDays() / vo.getShouldAttendanceDays() ));
+        vo.setAttendanceRate((double) Math.round(vo.getAttendanceDays() / (double)vo.getShouldAttendanceDays() *100.0) / 100.0);
         //迟到天数
         vo.setLateDays(getLateHistoryByMonthList(list).size());
         //迟到记录

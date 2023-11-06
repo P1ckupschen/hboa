@@ -22,7 +22,7 @@ public class MonthSignVo {
     //实际出勤
     private Integer shouldAttendanceDays;
     //出勤率
-    private Integer attendanceRate;
+    private Double attendanceRate;
     //迟到天数
     private Integer lateDays;
     //迟到记录

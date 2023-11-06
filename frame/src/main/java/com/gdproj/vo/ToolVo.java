@@ -35,9 +35,9 @@ public class ToolVo {
 
     private Integer toolTotal;
 
-    private String recordIn;
+    private List recordIn;
 
-    private String recordOut;
+    private List recordOut;
 
     private String toolDescription;
 
@@ -45,5 +45,7 @@ public class ToolVo {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date updateTime;
+
+    private String Category;
 }
 

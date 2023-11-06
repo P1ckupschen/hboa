@@ -63,8 +63,6 @@ public class reportController {
         } catch (Exception e){
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
         }
-
-
     }
 
 

@@ -1,7 +1,13 @@
 package com.gdproj.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.gdproj.dto.pageDto;
 import com.gdproj.entity.Tool;
+import com.gdproj.vo.ToolVo;
+import com.gdproj.vo.stockSelectVo;
+
+import java.util.List;
 
 /**
 * @author Administrator
@@ -10,4 +16,7 @@ import com.gdproj.entity.Tool;
 */
 public interface ToolService extends IService<Tool> {
 
+    List<stockSelectVo> getListForSelect();
+
+    IPage<ToolVo> getToolList(pageDto pageDto);
 }

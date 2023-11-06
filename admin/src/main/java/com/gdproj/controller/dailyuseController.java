@@ -1,19 +1,18 @@
 package com.gdproj.controller;
 
 
-import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.annotation.autoLog;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.DailyUse;
-import com.gdproj.entity.ToolCategory;
 import com.gdproj.enums.AppHttpCodeEnum;
+import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
-import com.gdproj.service.ToolCategoryService;
 import com.gdproj.service.DailyUseService;
+import com.gdproj.service.ToolCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.CategoryVo;
+import com.gdproj.vo.DailyUseRecordVo;
 import com.gdproj.vo.DailyUseVo;
 import com.gdproj.vo.PageVo;
 import io.swagger.annotations.Api;
@@ -75,104 +74,72 @@ public class dailyuseController {
 
         DailyUse dailyUse = BeanCopyUtils.copyBean(vo, DailyUse.class);
 
-        boolean b =false;
-
-        try {
-
-            b = dailyUseService.insertDailyUse(dailyUse);
-
+        boolean b = dailyUseService.insertDailyUse(dailyUse);
+        if(b){
             return ResponseResult.okResult(b);
-        }catch (Exception e){
-            //审批输入失败
-            return ResponseResult.errorResult(AppHttpCodeEnum.INSERT_ERROR);
+        }else{
+            throw new SystemException(AppHttpCodeEnum.INSERT_ERROR);
         }
 
     }
 
-
-
-
-
-
-
-
-    @GetMapping("/getCategoryList")
+    @PutMapping("/updateDailyUse")
     @autoLog
-    @ApiOperation(value = "查询类型列表")
-    public ResponseResult getCategoryList(@RequestParam(required = false) Integer pageNum,@RequestParam(required = false) Integer pageSize){
+    @ApiOperation(value = "更新日常领用申请/入库申请")
+    public ResponseResult updateDailyUse(@RequestBody DailyUseVo vo){
 
-        pageDto pagedto = new pageDto(pageNum, pageSize);
-
-        IPage<ToolCategory> categoryList = new Page<>();
-
-        try {
-
-            if(ObjectUtil.isNull(pagedto.getPageNum())){
-                List<ToolCategory> list = categoryService.list();
-                return ResponseResult.okResult(list);
-            }else{
-                categoryList = categoryService.getDailyUseCategoryList(pagedto);
-                PageVo<List<ToolCategory>> pageList = new PageVo<>();
-                pageList.setData(categoryList.getRecords());
-                pageList.setTotal((int) categoryList.getTotal());
-                return ResponseResult.okResult(pageList);
-            }
-
-        }catch (Exception e){
-            return  ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+        DailyUse dailyUse = BeanCopyUtils.copyBean(vo, DailyUse.class);
+        // TODO 如果修改了清单怎么办？ 通过过无法修改
+        boolean b = dailyUseService.updateById(dailyUse);
+        if(b){
+            return ResponseResult.okResult(b);
+        }else{
+            throw  new SystemException(AppHttpCodeEnum.UPDATE_ERROR);
         }
 
     }
 
-    @PutMapping("updateCategory")
+    @PostMapping("/deleteDailyUse")
     @autoLog
-    @ApiOperation(value = "更新类型")
-    public ResponseResult updateCategory(@RequestBody CategoryVo category){
-
-        ToolCategory category1 = new ToolCategory();
-
-
-        boolean b = false;
-
-        try {
-            category1 = BeanCopyUtils.copyBean(category, ToolCategory.class);
-
-            b = categoryService.updateById(category1);
-
-            if(b){
-                return ResponseResult.okResult(b);
-            }else{
-                return ResponseResult.errorResult(AppHttpCodeEnum.UPDATE_ERROR);
-            }
-
-        }catch (Exception e){
-
-            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
-
+    @ApiOperation(value = "删除")
+    public ResponseResult deleteDailyUse(@RequestBody Integer id){
+        boolean b = dailyUseService.removeById(id);
+        if(b){
+            return ResponseResult.okResult(b);
+        }else{
+            throw new SystemException(AppHttpCodeEnum.DELETE_ERROR);
         }
-
-
     }
 
-    @PostMapping("insertCategory")
+
+
+    //record
+
+    @GetMapping("/getDailyUseRecordList")
     @autoLog
-    @ApiOperation(value = "新增类型")
-    public ResponseResult insertCategory(@RequestBody CategoryVo category){
+    @ApiOperation(value = "查询日常领用详细记录列表")
+    public ResponseResult getDailyUseRecordList(@RequestParam Integer pageNum,
+                                          @RequestParam Integer pageSize,
+                                          @RequestParam(required = false,defaultValue = "+id")String sort,
+                                          @RequestParam(required = false,defaultValue = "") String title ,
+                                          @RequestParam(required = false) Integer departmentId,
+                                          @RequestParam(required = false) Integer type,
+                                          @RequestParam(required = false) String time){
+        pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
 
-        ToolCategory category1 = new ToolCategory();
-
-        boolean b = false;
+        IPage<DailyUseRecordVo> DailyUseRecordList = new Page<>();
 
         try {
-            category1 = BeanCopyUtils.copyBean(category, ToolCategory.class);
 
-            b = categoryService.save(category1);
+            DailyUseRecordList =  dailyUseService.getDailyUseRecordList(pageDto);
 
-            if(b){
-                return ResponseResult.okResult(b);
-            }else{
-                return ResponseResult.errorResult(AppHttpCodeEnum.INSERT_ERROR);
-            }
+            PageVo<List<DailyUseRecordVo>> pageList = new PageVo<>();
+
+            pageList.setData(DailyUseRecordList.getRecords());
+
+            pageList.setTotal((int) DailyUseRecordList.getTotal());
+
+            return ResponseResult.okResult(pageList);
 
         }catch (Exception e){
 
@@ -182,31 +149,12 @@ public class dailyuseController {
 
     }
 
-    @DeleteMapping("deleteCategory")
-    @autoLog
-    @ApiOperation(value = "删除类型")
-    public ResponseResult deleteCategory(@RequestParam("categoryId") Integer categoryId){
 
 
-        System.out.println(categoryId);
 
-        boolean b = false;
 
-        try {
 
-            b = categoryService.removeById(categoryId);
 
-            if(b){
-                return ResponseResult.okResult(b);
-            }else{
-                return ResponseResult.errorResult(AppHttpCodeEnum.DELETE_ERROR);
-            }
 
-        }catch (Exception e){
 
-            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
-
-        }
-
-    }
 }

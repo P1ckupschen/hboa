@@ -23,7 +23,7 @@ public class ToolCategoryServiceImpl extends ServiceImpl<ToolCategoryMapper, Too
 
         Integer pageSize = pagedto.getPageSize();
         Integer pageNum = pagedto.getPageNum();
-
+        
         Page<ToolCategory> page = new Page<>(pageNum, pageSize);
 
         IPage<ToolCategory> pageList = page(page);

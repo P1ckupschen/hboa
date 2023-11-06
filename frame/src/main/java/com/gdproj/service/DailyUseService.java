@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdproj.dto.pageDto;
 import com.gdproj.entity.DailyUse;
+import com.gdproj.vo.DailyUseRecordVo;
 import com.gdproj.vo.DailyUseVo;
 
 /**
@@ -16,4 +17,6 @@ public interface DailyUseService extends IService<DailyUse> {
     IPage<DailyUseVo> getDailyUseList(pageDto pageDto);
 
     boolean insertDailyUse(DailyUse dailyUse);
+
+    IPage<DailyUseRecordVo> getDailyUseRecordList(pageDto pageDto);
 }

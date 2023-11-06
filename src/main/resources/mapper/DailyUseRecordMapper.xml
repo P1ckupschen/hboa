@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="generator.mapper.DailyUseRecordMapper">
+
+    <resultMap id="BaseResultMap" type="generator.entity.DailyUseRecord">
+            <id property="recordId" column="record_id" jdbcType="INTEGER"/>
+            <result property="categoryId" column="category_id" jdbcType="INTEGER"/>
+            <result property="count" column="count" jdbcType="INTEGER"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="userId" column="user_id" jdbcType="INTEGER"/>
+            <result property="recordTime" column="record_time" jdbcType="TIMESTAMP"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+            <result property="recordDescription" column="record_description" jdbcType="VARCHAR"/>
+            <result property="recordAttachments" column="record_attachments" jdbcType="VARCHAR"/>
+            <result property="recordStatus" column="record_status" jdbcType="INTEGER"/>
+            <result property="productId" column="product_id" jdbcType="INTEGER"/>
+            <result property="productUnit" column="product_unit" jdbcType="VARCHAR"/>
+            <result property="recordTitle" column="record_title" jdbcType="VARCHAR"/>
+            <result property="dailyuseId" column="dailyuse_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        record_id,category_id,count,
+        update_time,created_time,user_id,
+        record_time,is_deleted,record_description,
+        record_attachments,record_status,product_id,
+        product_unit,record_title,dailyuse_id
+    </sql>
+</mapper>

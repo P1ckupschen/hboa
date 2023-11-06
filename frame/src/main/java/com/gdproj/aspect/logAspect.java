@@ -59,29 +59,28 @@ public class logAspect {
     @Around("pt()")
     public Object around(ProceedingJoinPoint point) throws Throwable {
         MethodSignature ms = (MethodSignature) point.getSignature();
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         Method method = ms.getMethod();
         logger.info("===============请求内容===============");
+        logger.info("请求方式:" + request.getMethod());
         logger.info("请求地址:" + point.getTarget().getClass().getName());
-        logger.info("请求方式:" + method);
         logger.info("方法名称:" + method.getAnnotation(ApiOperation.class).value());
         logger.info("请求类方法:" + point.getSignature().getName());
         logger.info("请求类方法参数:" + JSONUtil.toJsonStr(point.getArgs()));
         logger.info("===============请求内容===============");
-
-        Log log = new Log();
-
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        log.setLogContent(method.getAnnotation(ApiOperation.class).value());
-        log.setUserIp(getIpAddress(request));
         String token = request.getHeader("Authorization");
-
-        if(!ObjectUtil.isEmpty(token) &&  JwtUtils.checkToken(token)){
-            String subToken = token.substring(7);
-            String id = (String) JwtUtils.parseJWT(subToken).get("id");
-            log.setUserId(Integer.valueOf(id));
-        }
-//
+        if(!"GET".equals(request.getMethod())){
+            Log log = new Log();
+            log.setLogContent(method.getAnnotation(ApiOperation.class).value());
+            log.setUserIp(getIpAddress(request));
+            if(!ObjectUtil.isEmpty(token) &&  JwtUtils.checkToken(token)){
+                String subToken = token.substring(7);
+                String id = (String) JwtUtils.parseJWT(subToken).get("id");
+                log.setUserId(Integer.valueOf(id));
+            }
+            //
 //        logService.insertLogWhenOperating(log);
+        }
 
         long beginTime = System.currentTimeMillis();
         //执行方法
@@ -89,11 +88,13 @@ public class logAspect {
         //执行时长(毫秒)
         long time = System.currentTimeMillis() - beginTime;
         logger.info("===============返回内容===============");
-        String jsonString = JSONUtil.toJsonStr(result);
-        if (jsonString.length() > 10000) {
-            logger.info("Response内容:" + "返回内容过大");
-        } else {
-            logger.info("Response内容:" + jsonString);
+        if(!ObjectUtil.isEmpty(result) ){
+            String jsonString = JSONUtil.toJsonStr(result);
+            if (jsonString.length() > 10000) {
+                logger.info("Response内容:" + "返回内容过大");
+            } else {
+                logger.info("Response内容:" + jsonString);
+            }
         }
         logger.info("请求响应时间:" + time + "ms");
         logger.info("===============返回内容===============");

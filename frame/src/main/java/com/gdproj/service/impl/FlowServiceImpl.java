@@ -49,6 +49,12 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
     RecordService recordService;
 
     @Autowired
+    DailyUseService dailyUseService;
+
+    @Autowired
+    DailyUseRecordService dailyUseRecordService;
+
+    @Autowired
     PaymentService paymentService;
 
     @Autowired
@@ -140,7 +146,7 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
                     }
                     //TODO 如果为日常领用
                     if(flow.getTypeId() == 4){
-
+                        boolean w = dailyUseRecordService.insertRecordByDailyUseId(flow.getRunId());
                     }
                     //TODO 如果为采购
                     if(flow.getTypeId() == 7){
@@ -194,7 +200,10 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
             return warehouseService.update(updateWrapper);
         } else if (typeId == 4) {
             //日常领用申请
-            return false;
+            LambdaUpdateWrapper<DailyUse> updateWrapper = new LambdaUpdateWrapper<>();
+            updateWrapper.eq(DailyUse::getDailyuseId, runId);
+            updateWrapper.set(DailyUse::getDailyuseStatus, 1);
+            return dailyUseService.update(updateWrapper);
         } else if (typeId == 5) {
             //付款申请
             LambdaUpdateWrapper<Payment> updateWrapper = new LambdaUpdateWrapper<>();
@@ -237,7 +246,10 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
             return warehouseService.update(updateWrapper);
         } else if (typeId == 4) {
             //日常领用申请
-            return false;
+            LambdaUpdateWrapper<DailyUse> updateWrapper = new LambdaUpdateWrapper<>();
+            updateWrapper.eq(DailyUse::getDailyuseId, runId);
+            updateWrapper.set(DailyUse::getDailyuseStatus, 2);
+            return dailyUseService.update(updateWrapper);
         } else if (typeId == 5) {
             //付款申请
             LambdaUpdateWrapper<Payment> updateWrapper = new LambdaUpdateWrapper<>();
@@ -400,6 +412,29 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
             }
         } else if (typeId == 4) {
             //日常领用申请
+            //出库申请
+            DailyUse dailyUse = dailyUseService.getById(item.getRunId());
+            if(!ObjectUtil.isEmpty(dailyUse)) {
+                vo.setApplicantName(deployeeService.getNameByUserId(dailyUse.getUserId()));
+                //判断当前的状态是什么
+                if (vo.getTotalLevel() >= vo.getCurrentStepId()) {
+                    if (vo.getFlowStatus() == 1) {
+                        vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批通过");
+                    } else if (vo.getFlowStatus() == 2) {
+                        vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批不通过");
+                    } else {
+                        vo.setCurrentStep(item.getCurrentStepId() + ":" + deployeeService.getNameByUserId(vo.getCurrentUserId()) + "审批中");
+                    }
+                } else {
+                    vo.setCurrentStep("已完成");
+                }
+                vo.setTypeName(configService.getById(vo.getTypeId()).getTypeName());
+                vo.setRunStatus(dailyUse.getDailyuseStatus() + "");
+                vo.setFlowTitle(dailyUse.getDailyuseTitle());
+            }else{
+                //                说明当前流程对应的申请被删除，当前申请删除
+                removeById(item.getFlowId());
+            }
         } else if (typeId == 5) {
             //付款申请
             Payment payment = paymentService.getById(item.getRunId());
@@ -533,6 +568,31 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
 
     }
 
+    /**
+     * 日常领用 typeId = 4
+     */
+    @Override
+    public boolean insertFlow(DailyUse dailyUse) {
+
+        if (dailyUse.getCategoryId() == 2) {
+            //如果为日常领用的出库申请则需审批
+            FlowConfig config = configService.getById(dailyUse.getTypeId());
+            List<Integer> approvalFlow = config.getApprovalFlow();
+            //审批流里的所有下级用户
+            Flow flow = new Flow();
+            flow.setTypeId(dailyUse.getTypeId());
+            flow.setCurrentUserId(approvalFlow.get(0));
+            flow.setFlowTitle(dailyUse.getDailyuseTitle());
+            flow.setRunId(dailyUse.getDailyuseId());
+            flow.setCurrentStepId(1);
+            flow.setTotalLevel(approvalFlow.size());
+            List<Flow> list = list();
+            return save(flow);
+        } else {
+            return false;
+        }
+    }
+
 
     /**
      * 支付 typeId = 5
@@ -584,6 +644,7 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
         return save(flow);
 
     }
+
 }
 
 

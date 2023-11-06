@@ -26,4 +26,6 @@ public interface FlowService extends IService<Flow> {
     boolean insertFlow(Payment payment);
 
     boolean insertFlow(Reimbursement reimbursement);
+
+    boolean insertFlow(DailyUse dailyUse);
 }

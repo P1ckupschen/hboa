@@ -17,7 +17,7 @@ public class DailyUseVo {
 
     private String dailyuseTitle;
 
-    private String dailyuseContent;
+    private List<DailyUseContentVo> dailyuseContent;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date createdTime;
@@ -25,6 +25,8 @@ public class DailyUseVo {
     private Date updateTime;
 
     private Integer categoryId;
+
+    private Integer purposeId;
 
     private String dailyuseFeedback;
 
@@ -43,4 +45,8 @@ public class DailyUseVo {
     private Date returnTime;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date tReturnTime;
+
+    private String Category;
+
+    private String Username;
 }

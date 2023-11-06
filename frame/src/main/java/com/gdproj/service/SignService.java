@@ -9,6 +9,8 @@ import com.gdproj.vo.IsSignVo;
 import com.gdproj.vo.MonthSignVo;
 import com.gdproj.vo.SignVo;
 
+import javax.servlet.http.HttpServletResponse;
+
 /**
 * @author Administrator
 * @description 针对表【sys_sign(考勤
@@ -24,4 +26,6 @@ public interface SignService extends IService<Sign> {
     IsSignVo getSignInfoByUserIdAndDate(Integer userId);
 
     IPage<MonthSignVo> getMonthSignList(pageDto pageDto);
+
+    void exportMonthSignExcel(pageDto pageDto, HttpServletResponse response);
 }

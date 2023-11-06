@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -139,6 +140,27 @@ public class signController {
              return ResponseResult.okResult(vo);
         }catch (Exception e){
             return ResponseResult.errorResult(AppHttpCodeEnum.SIGN_IN_ERROR);
+        }
+    }
+
+    @GetMapping("exportMonthSignExcel")
+    @autoLog
+    @ApiOperation(value = "考勤数据导出")
+    public void exportMonthSignExcel(@RequestParam Integer pageNum,
+                                               @RequestParam Integer pageSize,
+                                               @RequestParam(required = false,defaultValue = "+id")String sort,
+                                               @RequestParam(required = false,defaultValue = "") String title ,
+                                               @RequestParam(required = false) Integer departmentId,
+                                               @RequestParam(required = false) Integer type,
+                                               @RequestParam(required = false) String time, HttpServletResponse response){
+        pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
+        //怎么添加签到信息
+        try {
+             signService.exportMonthSignExcel(pageDto,response);
+//            return ResponseResult.okResult(200,"导出成功");
+        }catch (Exception e){
+            e.printStackTrace();
+//            return ResponseResult.errorResult(AppHttpCodeEnum.EXCEL_EXPORT_ERROR);
         }
     }
 }

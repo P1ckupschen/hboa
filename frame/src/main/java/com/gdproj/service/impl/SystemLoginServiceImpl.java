@@ -47,6 +47,18 @@ public class SystemLoginServiceImpl implements SystemLoginService {
             one.setLoginTime(new Date());
 
             userService.updateById(one);
+            //密码正确 登录信息 生成token
+            if(RSAUtil.decrypt(one.getPassword()).equals(RSAUtil.decrypt(user.getPassword()))){
+
+                String jwtToken = JwtUtils.getJwtToken(one.getId().toString());
+
+                return ResponseResult.okResult(jwtToken);
+
+            }else{
+
+                return ResponseResult.errorResult(AppHttpCodeEnum.LOGIN_ERROR);
+
+            }
 
         }catch (Exception e){
 
@@ -57,19 +69,6 @@ public class SystemLoginServiceImpl implements SystemLoginService {
 
 //        System.out.println(RSAUtil.encrypt("Aa112211"));
 //        System.out.println(RSAUtil.decrypt("H7bgrDF48dcd4+RHyw0cRzzI/SBicgj+aMXqdPSZIe/IrFQ06jm9AkScZN+QddRAWrLmk9Ea5nWhr3FixtR6t+se+3F0ovdpJ+s5Crt9wkKDagqi1yKN0CxFv6k0JXCTvV9IBL8QhIXQY5Rf64qdYhQ2b6wd9ULsHb+NMVV/J/GmtrkiEHGPTzllACzkG8UK7dTMdjTq8mnsYDpBqAm6TowSyG54BGlEXk8ny0HGZ3/HNFItaQbF0wjOU+4HoX79qFLvDBv8kGAJvzP86fWIu2jGqwYOH+/CUVX5Gn2wcspzXfjC1XQGCeN1JoM1+pRtHkE8CGRnmKcQoN0965TgDg=="));
-
-        //密码正确 登录信息 生成token
-        if(RSAUtil.decrypt(one.getPassword()).equals(RSAUtil.decrypt(user.getPassword()))){
-
-            String jwtToken = JwtUtils.getJwtToken(one.getId().toString());
-
-            return ResponseResult.okResult(jwtToken);
-
-        }else{
-
-            return ResponseResult.errorResult(AppHttpCodeEnum.LOGIN_ERROR);
-
-        }
 
     }
 
@@ -89,6 +88,19 @@ public class SystemLoginServiceImpl implements SystemLoginService {
 
             accountService.updateById(one);
 
+            //密码正确 登录信息 生成token
+            if(RSAUtil.decrypt(one.getPassword()).equals(RSAUtil.decrypt(vo.getPassword()))){
+
+                String jwtToken = JwtUtils.getJwtToken(one.getId().toString());
+
+                return ResponseResult.okResult(jwtToken);
+
+            }else{
+
+                return ResponseResult.errorResult(AppHttpCodeEnum.LOGIN_ERROR);
+
+            }
+
         }catch (Exception e){
 
             e.printStackTrace();
@@ -99,18 +111,7 @@ public class SystemLoginServiceImpl implements SystemLoginService {
 //        System.out.println(RSAUtil.encrypt("Aa112211"));
 //        System.out.println(RSAUtil.decrypt("H7bgrDF48dcd4+RHyw0cRzzI/SBicgj+aMXqdPSZIe/IrFQ06jm9AkScZN+QddRAWrLmk9Ea5nWhr3FixtR6t+se+3F0ovdpJ+s5Crt9wkKDagqi1yKN0CxFv6k0JXCTvV9IBL8QhIXQY5Rf64qdYhQ2b6wd9ULsHb+NMVV/J/GmtrkiEHGPTzllACzkG8UK7dTMdjTq8mnsYDpBqAm6TowSyG54BGlEXk8ny0HGZ3/HNFItaQbF0wjOU+4HoX79qFLvDBv8kGAJvzP86fWIu2jGqwYOH+/CUVX5Gn2wcspzXfjC1XQGCeN1JoM1+pRtHkE8CGRnmKcQoN0965TgDg=="));
 
-        //密码正确 登录信息 生成token
-        if(RSAUtil.decrypt(one.getPassword()).equals(RSAUtil.decrypt(vo.getPassword()))){
 
-            String jwtToken = JwtUtils.getJwtToken(one.getId().toString());
-
-            return ResponseResult.okResult(jwtToken);
-
-        }else{
-
-            return ResponseResult.errorResult(AppHttpCodeEnum.LOGIN_ERROR);
-
-        }
 
     }
 }

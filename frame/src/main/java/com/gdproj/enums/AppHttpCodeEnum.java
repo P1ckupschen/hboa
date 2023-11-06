@@ -42,6 +42,8 @@ public enum AppHttpCodeEnum {
     FILE_CONTENT_NULL(10012,"文件为空" ),
     FILE_STORAGE_ERROR(10013,"文件保存异常"),
 
+    EXCEL_EXPORT_ERROR(10014,"excel导出失败"),
+    DOWNLOAD_EXCEL_ERROR(10015,"excel下载失败"),
     SIGN_IN_ERROR(20001,"签到打卡失败"),
     FLOW_CONFIG_CONTENT_NULL(40001,"流程类配置审核级数为空"),
 
