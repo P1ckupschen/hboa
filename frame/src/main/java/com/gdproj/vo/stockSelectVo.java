@@ -11,6 +11,9 @@ public class stockSelectVo {
 
     private Integer stockId;
     private String stockName;
+    //库存
+    private Integer stockNum;
+    //数量
     private Integer count;
     //单位
     private String unit;

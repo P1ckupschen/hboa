@@ -3,7 +3,7 @@ package com.gdproj.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.ReportCategory;
 import com.gdproj.mapper.reportCategoryMapper;
 import com.gdproj.service.reportCategoryService;
@@ -19,7 +19,7 @@ public class reportCategoryServiceImpl extends ServiceImpl<reportCategoryMapper,
     implements reportCategoryService {
 
     @Override
-    public IPage<ReportCategory> getReportCategoryList(pageDto pagedto) {
+    public IPage<ReportCategory> getReportCategoryList(PageQueryDto pagedto) {
 
         Integer pageSize = pagedto.getPageSize();
         Integer pageNum = pagedto.getPageNum();

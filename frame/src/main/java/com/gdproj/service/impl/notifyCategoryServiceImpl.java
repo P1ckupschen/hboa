@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.NotifyCategory;
 import com.gdproj.mapper.notifyCategoryMapper;
 import com.gdproj.service.notifyCategoryService;
@@ -20,7 +20,7 @@ public class notifyCategoryServiceImpl extends ServiceImpl<notifyCategoryMapper,
     implements notifyCategoryService {
 
     @Override
-    public IPage<NotifyCategory> getNotifyCategoryList(pageDto pagedto) {
+    public IPage<NotifyCategory> getNotifyCategoryList(PageQueryDto pagedto) {
 
         Integer pageSize = pagedto.getPageSize();
         Integer pageNum = pagedto.getPageNum();

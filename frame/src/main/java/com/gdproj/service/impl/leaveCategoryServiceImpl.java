@@ -3,7 +3,7 @@ package com.gdproj.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.LeaveCategory;
 import com.gdproj.service.leaveCategoryService;
 import com.gdproj.mapper.leaveCategoryMapper;
@@ -19,7 +19,7 @@ public class leaveCategoryServiceImpl extends ServiceImpl<leaveCategoryMapper, L
     implements leaveCategoryService{
 
     @Override
-    public IPage<LeaveCategory> getLeaveCategoryList(pageDto pagedto) {
+    public IPage<LeaveCategory> getLeaveCategoryList(PageQueryDto pagedto) {
 
         Integer pageSize = pagedto.getPageSize();
         Integer pageNum = pagedto.getPageNum();

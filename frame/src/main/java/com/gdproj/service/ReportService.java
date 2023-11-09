@@ -2,7 +2,7 @@ package com.gdproj.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Report;
 import com.gdproj.vo.ReportVo;
 
@@ -13,5 +13,5 @@ import com.gdproj.vo.ReportVo;
 */
 public interface ReportService extends IService<Report> {
 
-    IPage<ReportVo> getReportList(pageDto pageDto);
+    IPage<ReportVo> getReportList(PageQueryDto pageDto);
 }

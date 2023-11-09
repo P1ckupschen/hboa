@@ -4,7 +4,7 @@ package com.gdproj.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.annotation.autoLog;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Department;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.result.ResponseResult;
@@ -61,7 +61,7 @@ public class departmentController {
             @RequestParam(required = false) String time){
 
 
-        pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
+        PageQueryDto pageDto = new PageQueryDto(pageNum,pageSize,departmentId,type,title,time,sort);
 
         IPage<DepartmentVo> departmentList = new Page<DepartmentVo>();
 

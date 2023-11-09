@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Tool;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
@@ -46,15 +46,15 @@ public class ToolServiceImpl extends ServiceImpl<ToolMapper, Tool>
             vo.setStockId(item.getToolId());
             vo.setStockName(item.getToolName());
             vo.setUnit(item.getToolUnit());
-//           TODO 计算库存
-            vo.setCount(100);
+            vo.setStockNum(recordService.getCountByToolId(item.getToolId()));
+            vo.setCount(0);
             return vo;
         }).collect(Collectors.toList());
         return collect;
     }
 
     @Override
-    public IPage<ToolVo> getToolList(pageDto pageDto) {
+    public IPage<ToolVo> getToolList(PageQueryDto pageDto) {
         Integer type = pageDto.getType();
         Integer departmentId = pageDto.getDepartmentId();
         String time = pageDto.getTime();

@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Product;
 import com.gdproj.entity.Record;
 import com.gdproj.entity.Warehouse;
@@ -59,7 +59,7 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
     FlowService flowService;
 
     @Override
-    public IPage<RecordVo> getRecordList(pageDto pageDto) {
+    public IPage<RecordVo> getRecordList(PageQueryDto pageDto) {
 
 
         Integer type = pageDto.getType();
@@ -213,7 +213,7 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
     }
 
 
-    public IPage<ProductVo> getStockList(pageDto pageDto) {
+    public IPage<ProductVo> getStockList(PageQueryDto pageDto) {
 
         //类型
         Integer type = pageDto.getType();
@@ -265,7 +265,6 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
             resultList = recordPage.getRecords().stream().map((item) -> {
 
                 ProductVo vo = BeanCopyUtils.copyBean(item, ProductVo.class);
-
                 //产品类型名称
                 vo.setCategory(productService.getCategoryNameById(item.getProductId()));
                 vo.setProductTotal(getCountByProductId(item.getProductId()));
@@ -309,7 +308,6 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
     @Override
     public List<Record> transferWarehouseContentToRecord(Warehouse warehouse) {
         List<warehouseSelectVo> warehouseContent = warehouse.getWarehouseContent();
-        // map 转json  再转object TODO 赋值
         String s = JSONUtil.toJsonStr(warehouse.getWarehouseContent());
         List<warehouseSelectVo> warehouseSelectVos = JSONUtil.toList(s, warehouseSelectVo.class);
         List<Record> collect = warehouseSelectVos.stream().map((item) -> {

@@ -60,14 +60,21 @@ public class DailyUseRecordServiceImpl extends ServiceImpl<DailyUseRecordMapper,
     public List<DailyUseRecord> transferDailyUseContentToRecord(DailyUse dailyUse) {
 
         // map 转json  再转object
+
         String Content = JSONUtil.toJsonStr(dailyUse.getDailyuseContent());
         List<DailyUseContentVo> contentVoList = JSONUtil.toList(Content, DailyUseContentVo.class);
         List<DailyUseRecord> collect = contentVoList.stream().map((item) -> {
-            // 所以List 需要一个实体类声明 不能用泛型  TODO contentVo里有个id属性
             DailyUseRecord record = BeanCopyUtils.copyBean(item, DailyUseRecord.class);
+            record.setToolId(item.getStockId());
+            record.setCount(item.getCount());
+            record.setToolName(item.getStockName());
             record.setDailyuseId(dailyUse.getDailyuseId());
             record.setUserId(dailyUse.getUserId());
             record.setCategoryId(dailyUse.getCategoryId());
+            record.setRecordDescription(dailyUse.getDailyuseDescription());
+            record.setPurposeId(dailyUse.getPurposeId());
+            record.setRecordTime(dailyUse.getDailyuseTime());
+            record.setReturnTime(dailyUse.getReturnTime());
             return record;
         }).collect(Collectors.toList());
         return collect;

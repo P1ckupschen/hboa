@@ -1,10 +1,11 @@
 package com.gdproj.service.impl;
 
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Epiboly;
 import com.gdproj.entity.Project;
 import com.gdproj.enums.AppHttpCodeEnum;
@@ -16,6 +17,7 @@ import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.EpibolyVo;
 import com.gdproj.vo.ProjectVo;
 import com.gdproj.vo.SelectVo;
+import com.gdproj.vo.stockSelectVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +38,7 @@ public class EpibolyServiceImpl extends ServiceImpl<EpibolyMapper, Epiboly>
     ProjectService projectService;
 
     @Override
-    public IPage<EpibolyVo> getEpibolyList(pageDto pageDto) {
+    public IPage<EpibolyVo> getEpibolyList(PageQueryDto pageDto) {
         //类型
         Integer type = pageDto.getType();
         //部门
@@ -82,6 +84,12 @@ public class EpibolyServiceImpl extends ServiceImpl<EpibolyMapper, Epiboly>
             resultList = recordPage.getRecords().stream().map((item) -> {
 
                 EpibolyVo vo = BeanCopyUtils.copyBean(item, EpibolyVo.class);
+
+                String Content = JSONUtil.toJsonStr(item.getMaterialBill());
+
+                List<stockSelectVo> contentVoList = JSONUtil.toList(Content, stockSelectVo.class);
+
+                vo.setMaterialBill(contentVoList);
 
                 Project projectInfo = projectService.getById(item.getProjectId());
 

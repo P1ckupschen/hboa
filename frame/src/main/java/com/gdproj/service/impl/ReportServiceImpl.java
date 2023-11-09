@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Report;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
@@ -42,7 +42,7 @@ public class ReportServiceImpl extends ServiceImpl<ReportMapper, Report>
     ReportMapper reportMapper;
 
     @Override
-    public IPage<ReportVo> getReportList(pageDto pageDto) {
+    public IPage<ReportVo> getReportList(PageQueryDto pageDto) {
 
         //类型
         Integer type = pageDto.getType();

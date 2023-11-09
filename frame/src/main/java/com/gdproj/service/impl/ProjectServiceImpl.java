@@ -1,11 +1,12 @@
 package com.gdproj.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Project;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
@@ -16,6 +17,7 @@ import com.gdproj.service.projectCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.ProjectVo;
 import com.gdproj.vo.SelectVo;
+import com.gdproj.vo.stockSelectVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,7 +55,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project>
     }
 
     @Override
-    public IPage<ProjectVo> getProjectList(pageDto pageDto) {
+    public IPage<ProjectVo> getProjectList(PageQueryDto pageDto) {
 
         //类型
         Integer type = pageDto.getType();
@@ -101,6 +103,10 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project>
 
                 ProjectVo vo = BeanCopyUtils.copyBean(item, ProjectVo.class);
                 //类型名称?
+                String Content = JSONUtil.toJsonStr(item.getMaterialBill());
+                List<stockSelectVo> contentVoList = JSONUtil.toList(Content, stockSelectVo.class);
+
+                vo.setMaterialBill(contentVoList);
                 vo.setCategory(categoryService.getById(item.getCategoryId()).getCategoryName());
                 vo.setSupervisorName(deployeeService.getNameByUserId(item.getSupervisorId()));
                 //设置是否延期

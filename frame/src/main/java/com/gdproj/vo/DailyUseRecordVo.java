@@ -41,6 +41,10 @@ public class DailyUseRecordVo {
 
     private ToolVo Tool;
 
+    private String toolName;
+
+    private Date dailyuseTime;
+
     private String Username;
     private String Department;
     private String Category;

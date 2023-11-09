@@ -3,7 +3,7 @@ package com.gdproj.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.ProjectCategory;
 import com.gdproj.mapper.projectCategoryMapper;
 import com.gdproj.service.projectCategoryService;
@@ -19,7 +19,7 @@ public class projectCategoryServiceImpl extends ServiceImpl<projectCategoryMappe
     implements projectCategoryService {
 
     @Override
-    public IPage<ProjectCategory> getProjectCategoryList(pageDto pagedto) {
+    public IPage<ProjectCategory> getProjectCategoryList(PageQueryDto pagedto) {
         Page<ProjectCategory> page = new Page<>(pagedto.getPageNum(), pagedto.getPageSize());
         Page<ProjectCategory> pageList = page(page);
         return pageList;

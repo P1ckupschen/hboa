@@ -3,7 +3,7 @@ package com.gdproj.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Leave;
 import com.gdproj.vo.LeaveVo;
 
@@ -14,7 +14,7 @@ import com.gdproj.vo.LeaveVo;
 */
 public interface LeaveService extends IService<Leave> {
 
-    IPage<LeaveVo> getLeaveList(pageDto pageDto);
+    IPage<LeaveVo> getLeaveList(PageQueryDto pageDto);
 
     boolean insertLeave(Leave insertLeave);
 }

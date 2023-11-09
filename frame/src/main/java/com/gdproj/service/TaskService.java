@@ -2,7 +2,7 @@ package com.gdproj.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Task;
 import com.gdproj.vo.TaskVo;
 
@@ -13,5 +13,5 @@ import com.gdproj.vo.TaskVo;
 */
 public interface TaskService extends IService<Task> {
 
-    IPage<TaskVo> getTaskList(pageDto pageDto);
+    IPage<TaskVo> getTaskList(PageQueryDto pageDto);
 }

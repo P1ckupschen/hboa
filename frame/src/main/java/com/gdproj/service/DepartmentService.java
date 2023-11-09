@@ -2,7 +2,7 @@ package com.gdproj.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Department;
 import com.gdproj.vo.DepartmentVo;
 import com.gdproj.vo.SelectVo;
@@ -20,5 +20,5 @@ public interface DepartmentService extends IService<Department> {
 
     List<SelectVo> getListForSelect();
 
-    IPage<DepartmentVo> getDepartmentList(pageDto pageDto);
+    IPage<DepartmentVo> getDepartmentList(PageQueryDto pageDto);
 }

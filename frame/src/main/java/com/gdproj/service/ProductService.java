@@ -2,7 +2,7 @@ package com.gdproj.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Product;
 import com.gdproj.vo.ProductVo;
 
@@ -17,7 +17,7 @@ public interface ProductService extends IService<Product> {
 
     List<ProductVo> getProductForSelect();
 
-    IPage<ProductVo> getProductList(pageDto pageDto);
+    IPage<ProductVo> getProductList(PageQueryDto pageDto);
 
     List<Integer> getIdsByCategoryId(Integer type);
 

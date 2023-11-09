@@ -3,7 +3,7 @@ package com.gdproj.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.ProductCategory;
 import com.gdproj.mapper.productCategoryMapper;
 import com.gdproj.service.productCategoryService;
@@ -25,7 +25,7 @@ public class productCategoryServiceImpl extends ServiceImpl<productCategoryMappe
 
 
     @Override
-    public IPage<CategoryVo> getProductCategoryListByPage(pageDto pagedto) {
+    public IPage<CategoryVo> getProductCategoryListByPage(PageQueryDto pagedto) {
 
         List<ProductCategory> list = list();
 

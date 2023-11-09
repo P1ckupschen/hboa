@@ -2,7 +2,7 @@ package com.gdproj.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Notify;
 import com.gdproj.vo.NotifyVo;
 
@@ -13,5 +13,5 @@ import com.gdproj.vo.NotifyVo;
 */
 public interface NotifyService extends IService<Notify> {
 
-    IPage<NotifyVo> getNotifyList(pageDto pageDto);
+    IPage<NotifyVo> getNotifyList(PageQueryDto pageDto);
 }

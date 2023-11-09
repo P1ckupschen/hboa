@@ -3,7 +3,7 @@ package com.gdproj.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.ToolCategory;
 import com.gdproj.mapper.ToolCategoryMapper;
 import com.gdproj.service.ToolCategoryService;
@@ -19,7 +19,7 @@ public class ToolCategoryServiceImpl extends ServiceImpl<ToolCategoryMapper, Too
     implements ToolCategoryService {
 
     @Override
-    public IPage<ToolCategory> getDailyUseCategoryList(pageDto pagedto) {
+    public IPage<ToolCategory> getDailyUseCategoryList(PageQueryDto pagedto) {
 
         Integer pageSize = pagedto.getPageSize();
         Integer pageNum = pagedto.getPageNum();

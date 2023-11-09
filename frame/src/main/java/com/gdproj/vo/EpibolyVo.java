@@ -70,7 +70,7 @@ public class EpibolyVo {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date updateTime;
 
-    private List materialBill;
+    private List<stockSelectVo> materialBill;
 
     private Integer projectId;
 

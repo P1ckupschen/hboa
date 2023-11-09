@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.FlowConfig;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
@@ -28,7 +28,7 @@ public class flowConfigServiceImpl extends ServiceImpl<flowConfigMapper, FlowCon
     implements flowConfigService {
 
     @Override
-    public IPage<FlowConfigVo> getFlowConfigList(pageDto pageDto) {
+    public IPage<FlowConfigVo> getFlowConfigList(PageQueryDto pageDto) {
         //类型
         Integer type = pageDto.getType();
         //部门

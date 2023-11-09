@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Product;
 import com.gdproj.entity.Stock;
 import com.gdproj.enums.AppHttpCodeEnum;
@@ -47,7 +47,7 @@ public class StockServiceImpl extends ServiceImpl<StockMapper, Stock>
     productCategoryService categoryService;
 
     @Override
-    public IPage<StockVo> getStockList(pageDto pageDto) {
+    public IPage<StockVo> getStockList(PageQueryDto pageDto) {
 
         //类型
         Integer type = pageDto.getType();
@@ -142,10 +142,11 @@ public class StockServiceImpl extends ServiceImpl<StockMapper, Stock>
             vo.setUnit(productService.getById(item.getProductId()).getProductUnit());
             //库存
             if (recordService.getCountByProductId(item.getProductId()) == null) {
-                vo.setCount(0);
+                vo.setStockNum(0);
             } else {
-                vo.setCount(recordService.getCountByProductId(item.getProductId()));
+                vo.setStockNum(recordService.getCountByProductId(item.getProductId()));
             }
+            vo.setCount(0);
             return vo;
         }).collect(Collectors.toList());
 

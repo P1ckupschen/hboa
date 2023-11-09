@@ -3,7 +3,7 @@ package com.gdproj.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Sign;
 import com.gdproj.vo.IsSignVo;
 import com.gdproj.vo.MonthSignVo;
@@ -19,13 +19,13 @@ import javax.servlet.http.HttpServletResponse;
 */
 public interface SignService extends IService<Sign> {
 
-    IPage<SignVo> getSignList(pageDto pagedto);
+    IPage<SignVo> getSignList(PageQueryDto pagedto);
 
     boolean insertSign(Sign sign);
 
     IsSignVo getSignInfoByUserIdAndDate(Integer userId);
 
-    IPage<MonthSignVo> getMonthSignList(pageDto pageDto);
+    IPage<MonthSignVo> getMonthSignList(PageQueryDto pageDto);
 
-    void exportMonthSignExcel(pageDto pageDto, HttpServletResponse response);
+    void exportMonthSignExcel(PageQueryDto pageDto, HttpServletResponse response);
 }

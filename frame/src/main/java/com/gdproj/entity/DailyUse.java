@@ -118,6 +118,9 @@ public class DailyUse implements Serializable {
     @TableField(value = "purpose_id")
     private Integer purposeId;
 
+    @TableField(value = "dailyuse_time")
+    private Date dailyuseTime;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
@@ -440,5 +443,13 @@ public class DailyUse implements Serializable {
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
+    }
+
+    public Date getDailyuseTime() {
+        return dailyuseTime;
+    }
+
+    public void setDailyuseTime(Date dailyuseTime) {
+        this.dailyuseTime = dailyuseTime;
     }
 }

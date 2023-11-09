@@ -4,7 +4,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.annotation.autoLog;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Tool;
 import com.gdproj.entity.ToolCategory;
 import com.gdproj.enums.AppHttpCodeEnum;
@@ -62,7 +62,7 @@ public class toolController {
                                       @RequestParam(required = false) Integer type,
                                       @RequestParam(required = false) String time) {
 
-        pageDto pageDto = new pageDto(pageNum, pageSize, departmentId, type, title, time, sort);
+        PageQueryDto pageDto = new PageQueryDto(pageNum, pageSize, departmentId, type, title, time, sort);
 
         IPage<ToolVo> toolList = new Page<>();
 
@@ -140,7 +140,7 @@ public class toolController {
     @ApiOperation(value = "查询类型列表")
     public ResponseResult getCategoryList(@RequestParam(required = false) Integer pageNum, @RequestParam(required = false) Integer pageSize) {
 
-        pageDto pagedto = new pageDto(pageNum, pageSize);
+        PageQueryDto pagedto = new PageQueryDto(pageNum, pageSize);
 
         IPage<ToolCategory> categoryList = new Page<>();
 

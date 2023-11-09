@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Department;
 import com.gdproj.entity.Deployee;
 import com.gdproj.enums.AppHttpCodeEnum;
@@ -131,7 +131,7 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
     }
 
     @Override
-    public IPage<DeployeeVo> getDeployeeList(pageDto pageDto) {
+    public IPage<DeployeeVo> getDeployeeList(PageQueryDto pageDto) {
 
         //类型
         Integer type = pageDto.getType();

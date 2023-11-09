@@ -2,7 +2,7 @@ package com.gdproj.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.*;
 import com.gdproj.vo.FlowVo;
 
@@ -17,7 +17,7 @@ public interface FlowService extends IService<Flow> {
 
     boolean approveFlow(FlowVo vo);
 
-    IPage<FlowVo> getFlowList(pageDto pageDto);
+    IPage<FlowVo> getFlowList(PageQueryDto pageDto);
 
     boolean insertFlow(Overtime insertOvertime);
     boolean insertFlow(Leave insertLeave);
@@ -28,4 +28,6 @@ public interface FlowService extends IService<Flow> {
     boolean insertFlow(Reimbursement reimbursement);
 
     boolean insertFlow(DailyUse dailyUse);
+
+    boolean insertFlow(Purchase purchase);
 }

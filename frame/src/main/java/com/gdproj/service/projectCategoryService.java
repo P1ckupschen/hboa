@@ -2,7 +2,7 @@ package com.gdproj.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.ProjectCategory;
 
 /**
@@ -12,5 +12,5 @@ import com.gdproj.entity.ProjectCategory;
 */
 public interface projectCategoryService extends IService<ProjectCategory> {
 
-    IPage<ProjectCategory> getProjectCategoryList(pageDto pagedto);
+    IPage<ProjectCategory> getProjectCategoryList(PageQueryDto pagedto);
 }

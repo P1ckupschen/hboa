@@ -2,7 +2,7 @@ package com.gdproj.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Stock;
 import com.gdproj.vo.stockSelectVo;
 import com.gdproj.vo.StockVo;
@@ -16,7 +16,7 @@ import java.util.List;
 */
 public interface StockService extends IService<Stock> {
 
-    IPage<StockVo> getStockList(pageDto pageDto);
+    IPage<StockVo> getStockList(PageQueryDto pageDto);
 
     List<stockSelectVo> getStockListForSelect();
 }

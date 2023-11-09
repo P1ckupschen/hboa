@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.DailyUse;
 import com.gdproj.entity.DailyUseRecord;
 import com.gdproj.enums.AppHttpCodeEnum;
@@ -47,7 +47,7 @@ public class DailyUseServiceImpl extends ServiceImpl<DailyUseMapper, DailyUse>
 
 
     @Override
-    public IPage<DailyUseVo> getDailyUseList(pageDto pageDto) {
+    public IPage<DailyUseVo> getDailyUseList(PageQueryDto pageDto) {
 
 
         //类型
@@ -77,7 +77,13 @@ public class DailyUseServiceImpl extends ServiceImpl<DailyUseMapper, DailyUse>
 
         //查询名称？
         if (!title.isEmpty()) {
-            queryWrapper.eq(DailyUse::getDailyuseId,title);
+            List<Integer> ids = deployeeService.getIdsByTitle(title);
+            if(!ObjectUtil.isEmpty(ids)){
+                queryWrapper.in(DailyUse::getUserId,ids);
+            }else{
+                queryWrapper.eq(DailyUse::getUserId,0);
+            }
+
         }
 
         if(!ObjectUtil.isEmpty(time)){
@@ -127,16 +133,17 @@ public class DailyUseServiceImpl extends ServiceImpl<DailyUseMapper, DailyUse>
     @Override
     public boolean insertDailyUse(DailyUse dailyUse) {
         Integer categoryId = dailyUse.getCategoryId();
+        dailyUse.setDailyuseStatus(1);
         boolean f = false;
         boolean o = save(dailyUse);
-
         //如果为入库申请则无需审批
         if(dailyUse.getCategoryId() == 1){
-//            并且遍历dailyuse 的一个json属性 将所有入库产品都加入record
-//            拿到所有的入库材料清单       TODO
-//            或者一条记录就是一条record
-            List<DailyUseRecord> recordList = recordService.transferDailyUseContentToRecord(dailyUse);
-            return recordService.saveBatch(recordList);
+            if(!ObjectUtil.isEmpty(dailyUse.getDailyuseContent())){
+                List<DailyUseRecord> recordList = recordService.transferDailyUseContentToRecord(dailyUse);
+                return recordService.saveBatch(recordList);
+            }else{
+                return true;
+            }
         }else{
             if (o) {
                 f = flowService.insertFlow(dailyUse);
@@ -148,7 +155,7 @@ public class DailyUseServiceImpl extends ServiceImpl<DailyUseMapper, DailyUse>
     }
 
     @Override
-    public IPage<DailyUseRecordVo> getDailyUseRecordList(pageDto pageDto) {
+    public IPage<DailyUseRecordVo> getDailyUseRecordList(PageQueryDto pageDto) {
         Integer type = pageDto.getType();
         Integer departmentId = pageDto.getDepartmentId();
         String time = pageDto.getTime();

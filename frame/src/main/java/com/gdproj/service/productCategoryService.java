@@ -2,7 +2,7 @@ package com.gdproj.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.ProductCategory;
 import com.gdproj.vo.CategoryVo;
 
@@ -15,7 +15,7 @@ import java.util.List;
 */
 public interface productCategoryService extends IService<ProductCategory> {
 
-    IPage<CategoryVo> getProductCategoryListByPage(pageDto pagedto);
+    IPage<CategoryVo> getProductCategoryListByPage(PageQueryDto pagedto);
 
     List<CategoryVo> getProductCategoryList();
 }

@@ -4,7 +4,7 @@ package com.gdproj.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.annotation.autoLog;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Warehouse;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.result.ResponseResult;
@@ -15,6 +15,7 @@ import com.gdproj.vo.WarehouseVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,14 +31,16 @@ public class warehouseController {
     @GetMapping("/getWarehouseList")
     @autoLog
     @ApiOperation(value = "查询出入库审批列表")
-    public ResponseResult getWarehouseList(@RequestParam Integer pageNum,
-                                        @RequestParam Integer pageSize,
-                                        @RequestParam(required = false,defaultValue = "+id")String sort,
-                                        @RequestParam(required = false,defaultValue = "") String title ,
-                                        @RequestParam(required = false) Integer departmentId,
-                                        @RequestParam(required = false) Integer type,
-                                        @RequestParam(required = false) String time){
-        pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
+    //TODO  content 部分需要 修改 Warehouse
+//    public ResponseResult getWarehouseList(@RequestParam Integer pageNum,
+//                                        @RequestParam Integer pageSize,
+//                                        @RequestParam(required = false,defaultValue = "+id")String sort,
+//                                        @RequestParam(required = false,defaultValue = "") String title ,
+//                                        @RequestParam(required = false) Integer departmentId,
+//                                        @RequestParam(required = false) Integer type,
+//                                        @RequestParam(required = false) String time){
+//        PageQueryDto pageDto = new PageQueryDto(pageNum,pageSize,departmentId,type,title,time,sort);
+        public ResponseResult getWarehouseList(@Validated PageQueryDto pageDto){
 
         IPage<WarehouseVo> warehouseList = new Page<>();
 

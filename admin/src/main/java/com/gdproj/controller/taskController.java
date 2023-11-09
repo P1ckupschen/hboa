@@ -4,7 +4,7 @@ package com.gdproj.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.annotation.autoLog;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Task;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
@@ -40,7 +40,7 @@ public class taskController {
                                         @RequestParam(required = false) Integer departmentId,
                                         @RequestParam(required = false) Integer type,
                                         @RequestParam(required = false) String time){
-        pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
+        PageQueryDto pageDto = new PageQueryDto(pageNum,pageSize,departmentId,type,title,time,sort);
 
         IPage<TaskVo> taskList = new Page<>();
 

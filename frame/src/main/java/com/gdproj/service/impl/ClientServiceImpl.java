@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Client;
 import com.gdproj.entity.Contract;
 import com.gdproj.enums.AppHttpCodeEnum;
@@ -48,7 +48,7 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client>
 
 
     @Override
-    public IPage<ClientVo> getClientList(pageDto pageDto) {
+    public IPage<ClientVo> getClientList(PageQueryDto pageDto) {
 
         //类型
         Integer type = pageDto.getType();

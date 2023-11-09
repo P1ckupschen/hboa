@@ -51,7 +51,7 @@ public class DailyUseRecord implements Serializable {
     private Integer userId;
 
     /**
-     * 出库时间/归还时间
+     * 领用时间
      */
     @TableField(value = "record_time")
     private Date recordTime;
@@ -110,6 +110,10 @@ public class DailyUseRecord implements Serializable {
      */
     @TableField(value = "purpose_id")
     private Integer purposeId;
+
+    @TableField(value = "tool_name")
+    private String toolName;
+
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -417,4 +421,13 @@ public class DailyUseRecord implements Serializable {
         sb.append("]");
         return sb.toString();
     }
+
+    public String getToolName() {
+        return toolName;
+    }
+
+    public void setToolName(String toolName) {
+        this.toolName = toolName;
+    }
+
 }

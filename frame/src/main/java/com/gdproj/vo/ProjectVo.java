@@ -17,7 +17,7 @@ public class ProjectVo {
 
     private String Category;
     private Integer projectDays;
-    private List materialBill;
+    private List<stockSelectVo> materialBill;
     private Integer isLate;
     private String supervisorName;
     private Integer projectId;

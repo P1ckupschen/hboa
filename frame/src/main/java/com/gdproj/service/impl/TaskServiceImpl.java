@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Task;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
@@ -39,7 +39,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
 
 
     @Override
-    public IPage<TaskVo> getTaskList(pageDto pageDto) {
+    public IPage<TaskVo> getTaskList(PageQueryDto pageDto) {
         Integer type = pageDto.getType();
         Integer departmentId = pageDto.getDepartmentId();
         String time = pageDto.getTime();

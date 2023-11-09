@@ -3,7 +3,7 @@ package com.gdproj.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.annotation.autoLog;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Record;
 import com.gdproj.entity.Stock;
 import com.gdproj.enums.AppHttpCodeEnum;
@@ -44,7 +44,7 @@ public class recordController {
                                       @RequestParam(required = false) Integer departmentId,
                                       @RequestParam(required = false) Integer type,
                                       @RequestParam(required = false) String time){
-        pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
+        PageQueryDto pageDto = new PageQueryDto(pageNum,pageSize,departmentId,type,title,time,sort);
 
         IPage<RecordVo> recordList = new Page<>();
 
@@ -163,7 +163,7 @@ public class recordController {
                                         @RequestParam(required = false) Integer departmentId,
                                         @RequestParam(required = false) Integer type,
                                         @RequestParam(required = false) String time){
-        pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
+        PageQueryDto pageDto = new PageQueryDto(pageNum,pageSize,departmentId,type,title,time,sort);
 
         //是通过统计出来的 不是通过增加记录的 所以不用新表stock
 //        IPage<stockVo> stockList = new Page<>();

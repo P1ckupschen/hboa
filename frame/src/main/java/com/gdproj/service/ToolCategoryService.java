@@ -3,7 +3,7 @@ package com.gdproj.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.ToolCategory;
 
 /**
@@ -13,5 +13,5 @@ import com.gdproj.entity.ToolCategory;
 */
 public interface ToolCategoryService extends IService<ToolCategory> {
 
-    IPage<ToolCategory> getDailyUseCategoryList(pageDto pagedto);
+    IPage<ToolCategory> getDailyUseCategoryList(PageQueryDto pagedto);
 }

@@ -2,7 +2,7 @@ package com.gdproj.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Tool;
 import com.gdproj.vo.ToolVo;
 import com.gdproj.vo.stockSelectVo;
@@ -18,5 +18,5 @@ public interface ToolService extends IService<Tool> {
 
     List<stockSelectVo> getListForSelect();
 
-    IPage<ToolVo> getToolList(pageDto pageDto);
+    IPage<ToolVo> getToolList(PageQueryDto pageDto);
 }

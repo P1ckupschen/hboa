@@ -2,7 +2,7 @@ package com.gdproj.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Template;
 
 /**
@@ -12,5 +12,5 @@ import com.gdproj.entity.Template;
 */
 public interface TemplateService extends IService<Template> {
 
-    IPage<Template> getTemplateList(pageDto pageDto);
+    IPage<Template> getTemplateList(PageQueryDto pageDto);
 }

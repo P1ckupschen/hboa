@@ -4,7 +4,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.annotation.autoLog;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Notify;
 import com.gdproj.entity.NotifyCategory;
 import com.gdproj.enums.AppHttpCodeEnum;
@@ -47,7 +47,7 @@ public class notifyController {
                                         @RequestParam(required = false) Integer departmentId,
                                         @RequestParam(required = false) Integer type,
                                         @RequestParam(required = false) String time){
-        pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
+        PageQueryDto pageDto = new PageQueryDto(pageNum,pageSize,departmentId,type,title,time,sort);
 
         IPage<NotifyVo> notifyList = new Page<>();
 
@@ -222,7 +222,7 @@ public class notifyController {
     @ApiOperation(value = "查询类型列表")
     public ResponseResult getCategoryList(@RequestParam(required = false) Integer pageNum,@RequestParam(required = false) Integer pageSize){
 
-        pageDto pagedto = new pageDto(pageNum, pageSize);
+        PageQueryDto pagedto = new PageQueryDto(pageNum, pageSize);
 
         IPage<NotifyCategory> categoryList = new Page<>();
 

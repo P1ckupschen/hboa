@@ -3,7 +3,7 @@ package com.gdproj.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.ContractCategory;
 import com.gdproj.mapper.contractCategoryMapper;
 import com.gdproj.service.contractCategoryService;
@@ -19,7 +19,7 @@ public class contractCategoryServiceImpl extends ServiceImpl<contractCategoryMap
     implements contractCategoryService {
 
     @Override
-    public IPage<ContractCategory> getContractCategoryList(pageDto pagedto) {
+    public IPage<ContractCategory> getContractCategoryList(PageQueryDto pagedto) {
 
         Integer pageSize = pagedto.getPageSize();
         Integer pageNum = pagedto.getPageNum();

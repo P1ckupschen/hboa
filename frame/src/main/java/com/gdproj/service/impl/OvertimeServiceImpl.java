@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Overtime;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
@@ -42,7 +42,7 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
     FlowService flowService;
 
     @Override
-    public IPage<OvertimeVo> getOverTimeList(pageDto pageDto) {
+    public IPage<OvertimeVo> getOverTimeList(PageQueryDto pageDto) {
 
         Integer type = pageDto.getType();
         Integer departmentId = pageDto.getDepartmentId();
@@ -103,6 +103,7 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
                 OvertimeVo overtimevo = BeanCopyUtils.copyBean(item, OvertimeVo.class);
 
                 //人员
+//                if(!ObjectUtil.isEmpty( deployeeService.getById(item.getExecutorId())))
                 overtimevo.setUsername(deployeeService.getNameByUserId(item.getExecutorId()));
 
                 //加班类型
@@ -132,9 +133,7 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
         }catch (Exception e){
             throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
         }
-
         resultPage.setRecords(resultList);
-
         resultPage.setTotal(overtimePage.getTotal());
 
 

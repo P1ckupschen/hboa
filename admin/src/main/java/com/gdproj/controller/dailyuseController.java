@@ -4,7 +4,7 @@ package com.gdproj.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.annotation.autoLog;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.DailyUse;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
@@ -43,7 +43,7 @@ public class dailyuseController {
                                            @RequestParam(required = false) Integer departmentId,
                                            @RequestParam(required = false) Integer type,
                                            @RequestParam(required = false) String time){
-        pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
+        PageQueryDto pageDto = new PageQueryDto(pageNum,pageSize,departmentId,type,title,time,sort);
 
         IPage<DailyUseVo> DailyUseList = new Page<>();
 
@@ -89,7 +89,6 @@ public class dailyuseController {
     public ResponseResult updateDailyUse(@RequestBody DailyUseVo vo){
 
         DailyUse dailyUse = BeanCopyUtils.copyBean(vo, DailyUse.class);
-        // TODO 如果修改了清单怎么办？ 通过过无法修改
         boolean b = dailyUseService.updateById(dailyUse);
         if(b){
             return ResponseResult.okResult(b);
@@ -99,18 +98,17 @@ public class dailyuseController {
 
     }
 
-    @PostMapping("/deleteDailyUse")
+    @DeleteMapping("/deleteDailyUse")
     @autoLog
     @ApiOperation(value = "删除")
-    public ResponseResult deleteDailyUse(@RequestBody Integer id){
-        boolean b = dailyUseService.removeById(id);
+    public ResponseResult deleteDailyUse(@RequestParam("dailyuseId") Integer dailyuseId){
+        boolean b = dailyUseService.removeById(dailyuseId);
         if(b){
             return ResponseResult.okResult(b);
         }else{
             throw new SystemException(AppHttpCodeEnum.DELETE_ERROR);
         }
     }
-
 
 
     //record
@@ -125,7 +123,7 @@ public class dailyuseController {
                                           @RequestParam(required = false) Integer departmentId,
                                           @RequestParam(required = false) Integer type,
                                           @RequestParam(required = false) String time){
-        pageDto pageDto = new pageDto(pageNum,pageSize,departmentId,type,title,time,sort);
+        PageQueryDto pageDto = new PageQueryDto(pageNum,pageSize,departmentId,type,title,time,sort);
 
         IPage<DailyUseRecordVo> DailyUseRecordList = new Page<>();
 

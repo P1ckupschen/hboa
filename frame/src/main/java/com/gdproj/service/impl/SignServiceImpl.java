@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.gdproj.dto.pageDto;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.MonthSignExcelEntity;
 import com.gdproj.entity.Sign;
 import com.gdproj.enums.AppHttpCodeEnum;
@@ -56,7 +56,7 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
 
 
     @Override
-    public IPage<SignVo> getSignList(pageDto pagedto) {
+    public IPage<SignVo> getSignList(PageQueryDto pagedto) {
 
         LambdaQueryWrapper<Sign> queryWrapper = new LambdaQueryWrapper<>();
 
@@ -239,7 +239,7 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
     }
 
     @Override
-    public IPage<MonthSignVo> getMonthSignList(pageDto pageDto) {
+    public IPage<MonthSignVo> getMonthSignList(PageQueryDto pageDto) {
 
         //类型
         Integer type = pageDto.getType();
@@ -297,7 +297,7 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
     }
 
     @Override
-    public void exportMonthSignExcel(pageDto pageDto, HttpServletResponse response) {
+    public void exportMonthSignExcel(PageQueryDto pageDto, HttpServletResponse response) {
         String fileName = "admin/src/main/resources/signExcel/" + System.currentTimeMillis() + ".xlsx";
         IPage<MonthSignVo> monthSignList = getMonthSignList(pageDto);
         String time = pageDto.getTime();

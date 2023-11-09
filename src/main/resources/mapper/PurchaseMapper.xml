@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="generator.mapper.PurchaseMapper">
+
+    <resultMap id="BaseResultMap" type="generator.entity.Purchase">
+            <id property="purchaseId" column="purchase_id" jdbcType="INTEGER"/>
+            <result property="purchaseTitle" column="purchase_title" jdbcType="VARCHAR"/>
+            <result property="purchaseContent" column="purchase_content" jdbcType="VARCHAR"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="categoryId" column="category_id" jdbcType="INTEGER"/>
+            <result property="purchaseFeedback" column="purchase_feedback" jdbcType="VARCHAR"/>
+            <result property="purchaseDescription" column="purchase_description" jdbcType="VARCHAR"/>
+            <result property="purchaseStatus" column="purchase_status" jdbcType="INTEGER"/>
+            <result property="purchaseAttachments" column="purchase_attachments" jdbcType="VARCHAR"/>
+            <result property="typeId" column="type_id" jdbcType="INTEGER"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+            <result property="userId" column="user_id" jdbcType="INTEGER"/>
+            <result property="urgencyLevel" column="urgency_level" jdbcType="INTEGER"/>
+            <result property="deliveryTime" column="delivery_time" jdbcType="TIMESTAMP"/>
+            <result property="contractId" column="contract_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        purchase_id,purchase_title,purchase_content,
+        created_time,update_time,category_id,
+        purchase_feedback,purchase_description,purchase_status,
+        purchase_attachments,type_id,is_deleted,
+        user_id,urgency_level,delivery_time,
+        contract_id
+    </sql>
+</mapper>

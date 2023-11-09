@@ -78,8 +78,7 @@ public class logAspect {
                 String id = (String) JwtUtils.parseJWT(subToken).get("id");
                 log.setUserId(Integer.valueOf(id));
             }
-            //
-//        logService.insertLogWhenOperating(log);
+            //        logService.insertLogWhenOperating(log);
         }
 
         long beginTime = System.currentTimeMillis();

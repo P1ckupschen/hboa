@@ -3,6 +3,7 @@ package com.gdproj.entity;
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.gdproj.vo.FileVo;
+import com.gdproj.vo.stockSelectVo;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -78,7 +79,7 @@ public class Epiboly implements Serializable {
     /**
      * 
      */
-    @TableField(value = "created_time")
+    @TableField(value = "created_time", fill = FieldFill.INSERT)
     private Date createdTime;
 
     /**
@@ -170,7 +171,7 @@ public class Epiboly implements Serializable {
      * 材料清单
      */
     @TableField(value = "material_bill",typeHandler = JacksonTypeHandler.class)
-    private List materialBill;
+    private List<stockSelectVo> materialBill;
 
     /**
      * 
@@ -546,14 +547,14 @@ public class Epiboly implements Serializable {
     /**
      * 材料清单
      */
-    public List getMaterialBill() {
+    public List<stockSelectVo> getMaterialBill() {
         return materialBill;
     }
 
     /**
      * 材料清单
      */
-    public void setMaterialBill(List materialBill) {
+    public void setMaterialBill(List<stockSelectVo> materialBill) {
         this.materialBill = materialBill;
     }
 
