@@ -35,9 +35,7 @@ public class flowController {
     @ApiOperation(value = "审批是否通过")
     public ResponseResult approveFlow(@RequestBody FlowVo vo){
         boolean b = false;
-
         b = flowService.approveFlow(vo);
-
         return ResponseResult.okResult(b);
     }
 

@@ -17,7 +17,6 @@ import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.DailyUseContentVo;
 import com.gdproj.vo.DailyUseRecordVo;
 import com.gdproj.vo.DailyUseVo;
-import com.gdproj.vo.ToolVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -219,8 +218,13 @@ public class DailyUseServiceImpl extends ServiceImpl<DailyUseMapper, DailyUse>
                 vo.setDepartment(deployeeService.getDepartmentNameByUserId(item.getUserId()));
 
                 //产品名称 对应的产品类型
-                vo.setTool(BeanCopyUtils.copyBean(toolService.getById(item.getToolId()), ToolVo.class));
+//                vo.setTool(BeanCopyUtils.copyBean(toolService.getById(item.getToolId()), ToolVo.class));
 
+                if (!ObjectUtil.isEmpty(item.getTrueReturnTime()) ) {
+                    vo.setReturnStatus(1);
+                } else {
+                    vo.setReturnStatus(0);
+                }
                 //产品类型
                 if (vo.getCategoryId() == 1) {
                     vo.setCategory("入库");

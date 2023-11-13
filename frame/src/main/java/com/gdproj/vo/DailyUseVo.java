@@ -46,6 +46,9 @@ public class DailyUseVo {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date tReturnTime;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    private Date dailyuseTime;
+
     private String Category;
 
     private String Username;

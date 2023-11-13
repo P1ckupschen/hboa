@@ -7,10 +7,14 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class warehouseSelectVo {
-
-    //TODO 名字没有下划线  并且需要遍历的 stream 报错
-    private Integer id;
+public class WarehouseContentVo {
+    private Integer stockId;
+    private String stockName;
+    //库存
+    private Integer stockNum;
+    //数量
     private Integer count;
+    //单位
     private String unit;
+
 }

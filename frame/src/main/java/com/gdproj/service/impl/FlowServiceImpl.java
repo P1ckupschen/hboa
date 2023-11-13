@@ -152,10 +152,6 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
                     if (flow.getTypeId() == 4) {
                         boolean w = dailyUseRecordService.insertRecordByDailyUseId(flow.getRunId());
                     }
-                    //TODO 如果为采购
-                    if (flow.getTypeId() == 7) {
-
-                    }
                     if (!isPass) {
                         throw new SystemException(AppHttpCodeEnum.SET_PASS_ERROR);
                     }

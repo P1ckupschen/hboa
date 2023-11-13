@@ -7,7 +7,9 @@ import com.gdproj.annotation.autoLog;
 import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Warehouse;
 import com.gdproj.enums.AppHttpCodeEnum;
+import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
+import com.gdproj.service.RecordService;
 import com.gdproj.service.WarehouseService;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.PageVo;
@@ -28,6 +30,9 @@ public class warehouseController {
     @Autowired
     WarehouseService warehouseService;
 
+    @Autowired
+    RecordService recordService;
+
     @GetMapping("/getWarehouseList")
     @autoLog
     @ApiOperation(value = "查询出入库审批列表")
@@ -40,13 +45,13 @@ public class warehouseController {
 //                                        @RequestParam(required = false) Integer type,
 //                                        @RequestParam(required = false) String time){
 //        PageQueryDto pageDto = new PageQueryDto(pageNum,pageSize,departmentId,type,title,time,sort);
-        public ResponseResult getWarehouseList(@Validated PageQueryDto pageDto){
+    public ResponseResult getWarehouseList(@Validated PageQueryDto pageDto) {
 
         IPage<WarehouseVo> warehouseList = new Page<>();
 
         try {
 
-            warehouseList =  warehouseService.getWarehouseList(pageDto);
+            warehouseList = warehouseService.getWarehouseList(pageDto);
 
             PageVo<List<WarehouseVo>> pageList = new PageVo<>();
 
@@ -56,7 +61,7 @@ public class warehouseController {
 
             return ResponseResult.okResult(pageList);
 
-        }catch (Exception e){
+        } catch (Exception e) {
 
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
 
@@ -67,21 +72,43 @@ public class warehouseController {
     @PostMapping("/insertWarehouse")
     @autoLog
     @ApiOperation(value = "新增出入库审批")
-    public ResponseResult insertWarehouse(@RequestBody WarehouseVo vo){
+    public ResponseResult insertWarehouse(@RequestBody WarehouseVo vo) {
 
         Warehouse warehouse = BeanCopyUtils.copyBean(vo, Warehouse.class);
 
-        boolean b =false;
-
-        try {
-
-            b = warehouseService.insertWarehouse(warehouse);
-
+        boolean b = warehouseService.insertWarehouse(warehouse);
+        if (b) {
             return ResponseResult.okResult(b);
-        }catch (Exception e){
-            //审批输入失败
-            return ResponseResult.errorResult(AppHttpCodeEnum.INSERT_ERROR);
+        } else {
+            throw new SystemException(AppHttpCodeEnum.INSERT_ERROR);
+        }
+    }
+    @PutMapping("/updateWarehouse")
+    @autoLog
+    @ApiOperation(value = "更新记录")
+    public ResponseResult updateWarehouse(@RequestBody WarehouseVo vo){
+
+        Warehouse warehouse = BeanCopyUtils.copyBean(vo, Warehouse.class);
+        boolean b = warehouseService.updateById(warehouse);
+        // TODO 是否需要同时修改对应的record记录；
+
+        if(b){
+            return ResponseResult.okResult(b);
+        }else{
+            throw  new SystemException(AppHttpCodeEnum.UPDATE_ERROR);
         }
 
+    }
+
+    @DeleteMapping("/deleteWarehouse")
+    @autoLog
+    @ApiOperation(value = "删除")
+    public ResponseResult deleteWarehouse(@RequestParam("warehouseId") Integer warehouseId){
+        boolean b = warehouseService.removeById(warehouseId);
+        if(b){
+            return ResponseResult.okResult(b);
+        }else{
+            throw new SystemException(AppHttpCodeEnum.DELETE_ERROR);
+        }
     }
 }

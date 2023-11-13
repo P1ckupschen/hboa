@@ -74,7 +74,9 @@ public class DailyUseRecordServiceImpl extends ServiceImpl<DailyUseRecordMapper,
             record.setRecordDescription(dailyUse.getDailyuseDescription());
             record.setPurposeId(dailyUse.getPurposeId());
             record.setRecordTime(dailyUse.getDailyuseTime());
-            record.setReturnTime(dailyUse.getReturnTime());
+            record.setPlanReturnTime(dailyUse.getReturnTime());
+            record.setRecordStatus(1);
+            record.setToolUnit(item.getUnit());
             return record;
         }).collect(Collectors.toList());
         return collect;

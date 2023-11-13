@@ -36,23 +36,6 @@ public class logAspect {
     }
     @Before("pt()")
     public void beforeAdvice(JoinPoint joinPoint){
-//        logger.info("=======Start=======");
-//        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-
-//         打印请求 URL
-//        logger.info("URL            : {}",request.getRequestURL());
-//        // 打印 Http method
-//        logger.info("HTTP Method    : {}",request.getMethod() );
-//        // 打印调用 controller 的全路径以及执行方法 ？？？
-//        logger.info("Class Method   : {}.{}",request.getContextPath(),joinPoint.getSignature().getName() );
-//        // 打印请求的 IP ？？？
-//        logger.info("IP             : {}",getIpAddress(request));
-//        // 打印请求入参
-//        logger.info("Request Args   : {}",joinPoint.getArgs());
-//        // 打印结果 ？？？
-////        logger.info("Response       : {}", );
-//        // 结束后换行
-//        logger.info("=======End=======" + System.lineSeparator());
         starttime = System.currentTimeMillis();
     }
 
@@ -78,7 +61,9 @@ public class logAspect {
                 String id = (String) JwtUtils.parseJWT(subToken).get("id");
                 log.setUserId(Integer.valueOf(id));
             }
-            //        logService.insertLogWhenOperating(log);
+            //    TODO  新增log日志
+//                 logService.insertLogWhenOperating(log);
+
         }
 
         long beginTime = System.currentTimeMillis();

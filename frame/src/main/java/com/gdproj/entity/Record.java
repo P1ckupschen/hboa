@@ -123,6 +123,9 @@ public class Record implements Serializable {
     @TableField(value = "warehouse_id")
     private Integer warehouseId;
 
+    @TableField(value = "product_name")
+    private String productName;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
@@ -462,5 +465,13 @@ public class Record implements Serializable {
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 }

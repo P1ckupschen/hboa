@@ -121,6 +121,28 @@ public class PurchaseServiceImpl extends ServiceImpl<PurchaseMapper, Purchase>
         return o && f;
 
     }
+
+    @Override
+    public ResponseResult deletePurchase(Integer id) {
+
+        boolean b = removeById(id);
+        if(b){
+            return ResponseResult.okResult(b);
+        }else{
+            throw new SystemException(AppHttpCodeEnum.DELETE_ERROR);
+        }
+    }
+
+    @Override
+    public ResponseResult updatePurchase(PurchaseVo vo) {
+        Purchase purchase = BeanCopyUtils.copyBean(vo, Purchase.class);
+        boolean b = updateById(purchase);
+        if(b){
+            return ResponseResult.okResult(b);
+        }else{
+            throw  new SystemException(AppHttpCodeEnum.UPDATE_ERROR);
+        }
+    }
 }
 
 

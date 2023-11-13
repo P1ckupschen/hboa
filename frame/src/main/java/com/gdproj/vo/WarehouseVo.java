@@ -15,16 +15,14 @@ import java.util.List;
 public class WarehouseVo {
 
     private Integer warehouseId;
-
     private String warehouseTitle;
-
-    private List<warehouseSelectVo> warehouseContent;
-
+    private List<WarehouseContentVo> warehouseContent;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date createdTime;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date updateTime;
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    private Date recordTime;
     private Integer categoryId;
     private String warehouseFeedback;
 

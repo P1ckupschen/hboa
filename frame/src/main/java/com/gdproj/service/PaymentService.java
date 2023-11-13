@@ -1,7 +1,10 @@
 package com.gdproj.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Payment;
+import com.gdproj.result.ResponseResult;
+import com.gdproj.vo.PaymentVo;
 
 /**
 * @author Administrator
@@ -12,4 +15,9 @@ public interface PaymentService extends IService<Payment> {
 
     boolean insertPayment(Payment payment);
 
+    ResponseResult getPaymentList(PageQueryDto queryDto);
+
+    ResponseResult updatePayment(PaymentVo vo);
+
+    ResponseResult deletePayment(Integer id);
 }

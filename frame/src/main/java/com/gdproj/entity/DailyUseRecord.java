@@ -93,17 +93,6 @@ public class DailyUseRecord implements Serializable {
     @TableField(value = "dailyuse_id")
     private Integer dailyuseId;
 
-    /**
-     *
-     */
-    @TableField(value = "return_time")
-    private Date returnTime;
-
-    /**
-     *
-     */
-    @TableField(value = "t_return_time")
-    private Date tReturnTime;
 
     /**
      * 1个人 2项目
@@ -114,6 +103,14 @@ public class DailyUseRecord implements Serializable {
     @TableField(value = "tool_name")
     private String toolName;
 
+    @TableField(value = "tool_unit")
+    private String toolUnit;
+
+    @TableField(value = "plan_return_time")
+    private Date planReturnTime;
+
+    @TableField(value = "true_return_time")
+    private Date trueReturnTime;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -301,34 +298,6 @@ public class DailyUseRecord implements Serializable {
     }
 
     /**
-     *
-     */
-    public Date getReturnTime() {
-        return returnTime;
-    }
-
-    /**
-     *
-     */
-    public void setReturnTime(Date returnTime) {
-        this.returnTime = returnTime;
-    }
-
-    /**
-     *
-     */
-    public Date gettReturnTime() {
-        return tReturnTime;
-    }
-
-    /**
-     *
-     */
-    public void settReturnTime(Date tReturnTime) {
-        this.tReturnTime = tReturnTime;
-    }
-
-    /**
      * 1个人 2项目
      */
     public Integer getPurposeId() {
@@ -367,8 +336,6 @@ public class DailyUseRecord implements Serializable {
                 && (this.getRecordStatus() == null ? other.getRecordStatus() == null : this.getRecordStatus().equals(other.getRecordStatus()))
                 && (this.getToolId() == null ? other.getToolId() == null : this.getToolId().equals(other.getToolId()))
                 && (this.getDailyuseId() == null ? other.getDailyuseId() == null : this.getDailyuseId().equals(other.getDailyuseId()))
-                && (this.getReturnTime() == null ? other.getReturnTime() == null : this.getReturnTime().equals(other.getReturnTime()))
-                && (this.gettReturnTime() == null ? other.gettReturnTime() == null : this.gettReturnTime().equals(other.gettReturnTime()))
                 && (this.getPurposeId() == null ? other.getPurposeId() == null : this.getPurposeId().equals(other.getPurposeId()));
     }
 
@@ -389,8 +356,6 @@ public class DailyUseRecord implements Serializable {
         result = prime * result + ((getRecordStatus() == null) ? 0 : getRecordStatus().hashCode());
         result = prime * result + ((getToolId() == null) ? 0 : getToolId().hashCode());
         result = prime * result + ((getDailyuseId() == null) ? 0 : getDailyuseId().hashCode());
-        result = prime * result + ((getReturnTime() == null) ? 0 : getReturnTime().hashCode());
-        result = prime * result + ((gettReturnTime() == null) ? 0 : gettReturnTime().hashCode());
         result = prime * result + ((getPurposeId() == null) ? 0 : getPurposeId().hashCode());
         return result;
     }
@@ -414,8 +379,6 @@ public class DailyUseRecord implements Serializable {
         sb.append(", recordStatus=").append(recordStatus);
         sb.append(", toolId=").append(toolId);
         sb.append(", dailyuseId=").append(dailyuseId);
-        sb.append(", returnTime=").append(returnTime);
-        sb.append(", tReturnTime=").append(tReturnTime);
         sb.append(", purposeId=").append(purposeId);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
@@ -430,4 +393,27 @@ public class DailyUseRecord implements Serializable {
         this.toolName = toolName;
     }
 
+    public String getToolUnit() {
+        return toolUnit;
+    }
+
+    public void setToolUnit(String toolUnit) {
+        this.toolUnit = toolUnit;
+    }
+
+    public Date getPlanReturnTime() {
+        return planReturnTime;
+    }
+
+    public void setPlanReturnTime(Date planReturnTime) {
+        this.planReturnTime = planReturnTime;
+    }
+
+    public Date getTrueReturnTime() {
+        return trueReturnTime;
+    }
+
+    public void setTrueReturnTime(Date trueReturnTime) {
+        this.trueReturnTime = trueReturnTime;
+    }
 }

@@ -6,9 +6,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.annotation.autoLog;
 import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.DailyUse;
+import com.gdproj.entity.DailyUseRecord;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
+import com.gdproj.service.DailyUseRecordService;
 import com.gdproj.service.DailyUseService;
 import com.gdproj.service.ToolCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
@@ -32,6 +34,9 @@ public class dailyuseController {
 
     @Autowired
     ToolCategoryService categoryService;
+
+    @Autowired
+    DailyUseRecordService recordService;
 
     @GetMapping("/getDailyUseList")
     @autoLog
@@ -148,8 +153,48 @@ public class dailyuseController {
     }
 
 
+    @PostMapping("/insertDailyUseRecord")
+    @autoLog
+    @ApiOperation(value = "新增记录")
+    public ResponseResult insertDailyUseRecord(@RequestBody DailyUseRecordVo vo){
 
+        DailyUseRecord record = BeanCopyUtils.copyBean(vo, DailyUseRecord.class);
 
+        boolean b = recordService.save(record);
+        if(b){
+            return ResponseResult.okResult(b);
+        }else{
+            throw new SystemException(AppHttpCodeEnum.INSERT_ERROR);
+        }
+
+    }
+
+    @PutMapping("/updateDailyUseRecord")
+    @autoLog
+    @ApiOperation(value = "更新记录")
+    public ResponseResult updateDailyUseRecord(@RequestBody DailyUseRecordVo vo){
+
+        DailyUseRecord record = BeanCopyUtils.copyBean(vo, DailyUseRecord.class);
+        boolean b = recordService.updateById(record);
+        if(b){
+            return ResponseResult.okResult(b);
+        }else{
+            throw  new SystemException(AppHttpCodeEnum.UPDATE_ERROR);
+        }
+
+    }
+
+    @DeleteMapping("/deleteDailyUseRecord")
+    @autoLog
+    @ApiOperation(value = "删除")
+    public ResponseResult deleteDailyUseRecord(@RequestParam("recordId") Integer recordId){
+        boolean b = recordService.removeById(recordId);
+        if(b){
+            return ResponseResult.okResult(b);
+        }else{
+            throw new SystemException(AppHttpCodeEnum.DELETE_ERROR);
+        }
+    }
 
 
 

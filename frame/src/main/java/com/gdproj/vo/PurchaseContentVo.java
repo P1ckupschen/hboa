@@ -10,10 +10,15 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PurchaseContentVo {
-    // TODO 修改
-    private Integer productId;
-    private String productName;
+
+    private Integer stockId;
+    private String stockName;
+    //库存
+    private Integer stockNum;
+    //数量
     private Integer count;
+    //单位
+    private String unit;
+
     private BigDecimal money;
-    private String description;
 }

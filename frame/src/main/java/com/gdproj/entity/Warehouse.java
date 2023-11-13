@@ -3,7 +3,7 @@ package com.gdproj.entity;
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.gdproj.vo.FileVo;
-import com.gdproj.vo.warehouseSelectVo;
+import com.gdproj.vo.WarehouseContentVo;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -31,7 +31,7 @@ public class Warehouse implements Serializable {
      *
      */
     @TableField(value = "warehouse_content",typeHandler = JacksonTypeHandler.class)
-    private List<warehouseSelectVo> warehouseContent;
+    private List<WarehouseContentVo> warehouseContent;
 
     /**
      *
@@ -106,6 +106,9 @@ public class Warehouse implements Serializable {
     @TableField(value = "project_id")
     private Integer projectId;
 
+    @TableField(value = "record_time")
+    private Date recordTime;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
@@ -140,14 +143,14 @@ public class Warehouse implements Serializable {
     /**
      *
      */
-    public List<warehouseSelectVo> getWarehouseContent() {
+    public List<WarehouseContentVo> getWarehouseContent() {
         return warehouseContent;
     }
 
     /**
      *
      */
-    public void setWarehouseContent(List<warehouseSelectVo> warehouseContent) {
+    public void setWarehouseContent(List<WarehouseContentVo> warehouseContent) {
         this.warehouseContent = warehouseContent;
     }
 
@@ -394,5 +397,13 @@ public class Warehouse implements Serializable {
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
+    }
+
+    public Date getRecordTime() {
+        return recordTime;
+    }
+
+    public void setRecordTime(Date recordTime) {
+        this.recordTime = recordTime;
     }
 }

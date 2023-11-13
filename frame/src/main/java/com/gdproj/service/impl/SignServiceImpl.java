@@ -167,7 +167,8 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
         if (vo.getIsSignIn() == 1) {
             one.setEndTime(calendar.getTime());
             //早上签到时间-下午签退时间；
-            one.settWorkTime(Math.round(one.getEndTime().getTime() - one.getInTime().getTime()));
+            long tWorKHour = (one.getEndTime().getTime() - one.getInTime().getTime()) / 1000 / 3600;
+            one.settWorkTime(Math.round(tWorKHour));
             if (hour < 17) {
                 one.setIsEarly(1);
             }

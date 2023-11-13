@@ -19,7 +19,7 @@ import com.gdproj.service.*;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.ProductVo;
 import com.gdproj.vo.RecordVo;
-import com.gdproj.vo.warehouseSelectVo;
+import com.gdproj.vo.WarehouseContentVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -128,7 +128,6 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
                 vo.setProductName(productService.getById(item.getProductId()).getProductName());
                 vo.setProductBrand(productService.getById(item.getProductId()).getProductBrand());
                 vo.setProductUnit(productService.getById(item.getProductId()).getProductUnit());
-
 
                 //产品类型
                 if (vo.getCategoryId() == 1) {
@@ -307,14 +306,14 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
 
     @Override
     public List<Record> transferWarehouseContentToRecord(Warehouse warehouse) {
-        List<warehouseSelectVo> warehouseContent = warehouse.getWarehouseContent();
         String s = JSONUtil.toJsonStr(warehouse.getWarehouseContent());
-        List<warehouseSelectVo> warehouseSelectVos = JSONUtil.toList(s, warehouseSelectVo.class);
+        List<WarehouseContentVo> warehouseSelectVos = JSONUtil.toList(s, WarehouseContentVo.class);
         List<Record> collect = warehouseSelectVos.stream().map((item) -> {
             // 所以List 需要一个实体类声明 不能用泛型
-            Integer productId = item.getId();
+            Integer productId = item.getStockId();
             Integer count = item.getCount();
             Record record = new Record();
+            record.setProductName(item.getStockName());
             record.setCategoryId(1);
             //需要有projectId contractId;
             record.setIsDeleted(0);
@@ -322,7 +321,7 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
             record.setProjectId(warehouse.getProjectId());
             record.setProductId(productId);
             record.setCount(count);
-            record.setProductUnit(productService.getById(productId).getProductUnit());
+            record.setProductUnit(item.getUnit());
             record.setRecordAttachments(warehouse.getWarehouseAttachments());
             record.setRecordDescription(warehouse.getWarehouseDescription());
             record.setRecordTime(warehouse.getCreatedTime());

@@ -39,11 +39,23 @@ public class DailyUseRecordVo {
 
     private Integer dailyuseId;
 
-    private ToolVo Tool;
+//    private ToolVo Tool;
 
     private String toolName;
 
+    private String toolUnit;
+
+    private Integer purposeId;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date dailyuseTime;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    private Date trueReturnTime;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    private Date planReturnTime;
+
+    private Integer returnStatus;
 
     private String Username;
     private String Department;

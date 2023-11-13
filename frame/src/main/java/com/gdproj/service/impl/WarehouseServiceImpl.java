@@ -1,6 +1,7 @@
 package com.gdproj.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -16,6 +17,7 @@ import com.gdproj.service.FlowService;
 import com.gdproj.service.RecordService;
 import com.gdproj.service.WarehouseService;
 import com.gdproj.utils.BeanCopyUtils;
+import com.gdproj.vo.WarehouseContentVo;
 import com.gdproj.vo.WarehouseVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -120,6 +122,9 @@ public class WarehouseServiceImpl extends ServiceImpl<WarehouseMapper, Warehouse
 
                 WarehouseVo vo = BeanCopyUtils.copyBean(item, WarehouseVo.class);
 
+                String content = JSONUtil.toJsonStr(item.getWarehouseContent());
+                List<WarehouseContentVo> warehouseContentVos = JSONUtil.toList(content, WarehouseContentVo.class);
+                vo.setWarehouseContent(warehouseContentVos);
                 if(item.getCategoryId() == 1){
                     vo.setCategory("入库");
                 }else if(item.getCategoryId() == 2){
