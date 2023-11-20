@@ -4,12 +4,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.annotation.autoLog;
 import com.gdproj.dto.PageQueryDto;
-import com.gdproj.entity.Deployee;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.DeployeeService;
-import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.DeployeeVo;
 import com.gdproj.vo.PageVo;
 import com.gdproj.vo.UserVo;
@@ -45,8 +43,6 @@ public class deployeeController {
         }catch (Exception e){
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
         }
-
-
     }
 
     @GetMapping("/getDeployeeList")
@@ -83,86 +79,28 @@ public class deployeeController {
 
     @PutMapping("updateDeployee")
     @autoLog
-    @ApiOperation(value = "更新员工")
+    @ApiOperation(value = "更新员工" , notes = "如果涉及密码修改 也要同时修改front-account表")
     public ResponseResult updateDeployee(@RequestBody DeployeeVo vo){
 
-
-        Deployee updateInfo = BeanCopyUtils.copyBean(vo, Deployee.class);
-//        vo中的 发布人  类型 部门
-        System.out.println(updateInfo);
-
-        boolean b = false;
-
-        try {
-
-            b = deployeeService.updateById(updateInfo);
-
-            if(b){
-                return ResponseResult.okResult(b);
-            }else{
-                return ResponseResult.errorResult(AppHttpCodeEnum.UPDATE_ERROR);
-            }
-
-        }catch (Exception e){
-
-            return ResponseResult.errorResult(AppHttpCodeEnum.UPDATE_ERROR);
-
-        }
-
+        return deployeeService.updateDeployee(vo);
 
     }
 
     @PostMapping("insertDeployee")
     @autoLog
-    @ApiOperation(value = "新增员工")
+    @ApiOperation(value = "新增员工", notes = "新增的同时front-account表中 新增一条用户名密码账号数据")
     public ResponseResult insertDeployee(@RequestBody DeployeeVo vo){
 
-        Deployee insertInfo = BeanCopyUtils.copyBean(vo, Deployee.class);
-
-        boolean b = false;
-
-        try {
-
-            b = deployeeService.save(insertInfo);
-
-            if(b){
-                return ResponseResult.okResult(b);
-            }else{
-                return ResponseResult.errorResult(AppHttpCodeEnum.INSERT_ERROR);
-            }
-
-        }catch (Exception e){
-
-            return ResponseResult.errorResult(AppHttpCodeEnum.INSERT_ERROR);
-
-        }
+        return deployeeService.inserDeployee(vo);
 
     }
 
     @DeleteMapping("deleteDeployee")
     @autoLog
-    @ApiOperation(value = "删除员工")
+    @ApiOperation(value = "删除员工",notes = "不彻底删除 只修改用户状态 deployee_status")
     public ResponseResult deleteDeployee(@RequestParam("deployeeId") Integer id){
 
-        System.out.println(id);
-
-        boolean b = false;
-
-        try {
-
-            b = deployeeService.removeById(id);
-
-            if(b){
-                return ResponseResult.okResult(b);
-            }else{
-                return ResponseResult.errorResult(AppHttpCodeEnum.DELETE_ERROR);
-            }
-
-        }catch (Exception e){
-
-            return ResponseResult.errorResult(AppHttpCodeEnum.DELETE_ERROR);
-
-        }
+        return deployeeService.deleteDeployee(id);
 
     }
 }

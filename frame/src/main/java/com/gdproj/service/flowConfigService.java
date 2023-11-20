@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.FlowConfig;
+import com.gdproj.result.ResponseResult;
 import com.gdproj.vo.FlowConfigVo;
 
 /**
@@ -14,4 +15,6 @@ import com.gdproj.vo.FlowConfigVo;
 public interface flowConfigService extends IService<FlowConfig> {
 
     IPage<FlowConfigVo> getFlowConfigList(PageQueryDto pageDto);
+
+    ResponseResult getListForSelect();
 }

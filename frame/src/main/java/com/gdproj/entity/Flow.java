@@ -84,6 +84,9 @@ public class Flow implements Serializable {
     @TableField(value = "flow_feedback")
     private String flowFeedback;
 
+    @TableField(value = "created_user_id")
+    private Integer createdUserId;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
@@ -321,5 +324,13 @@ public class Flow implements Serializable {
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
+    }
+
+    public Integer getCreatedUserId() {
+        return createdUserId;
+    }
+
+    public void setCreatedUserId(Integer createdUserId) {
+        this.createdUserId = createdUserId;
     }
 }

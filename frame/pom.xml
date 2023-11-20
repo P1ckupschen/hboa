@@ -114,5 +114,11 @@
       <groupId>org.gavaghan</groupId>
       <artifactId>geodesy</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>com.github.binarywang</groupId>
+      <artifactId>weixin-java-miniapp</artifactId>
+    </dependency>
+
   </dependencies>
 </project>

@@ -10,10 +10,12 @@ import com.gdproj.entity.Log;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.LogMapper;
+import com.gdproj.result.ResponseResult;
 import com.gdproj.service.DeployeeService;
 import com.gdproj.service.LogService;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.LogVo;
+import com.gdproj.vo.PageVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +36,7 @@ public class LogServiceImpl extends ServiceImpl<LogMapper, Log>
     DeployeeService deployeeService;
 
     @Override
-    public IPage<LogVo> getLogList(PageQueryDto pageDto) {
+    public ResponseResult getLogList(PageQueryDto pageDto) {
 
         //类型
         Integer type = pageDto.getType();
@@ -67,7 +69,7 @@ public class LogServiceImpl extends ServiceImpl<LogMapper, Log>
 
         IPage<Log> recordPage = page(page, queryWrapper);
 
-        Page<LogVo> resultPage = new Page<>();
+        PageVo<List<LogVo>> result = new PageVo<>();
 
         List<LogVo> resultList = new ArrayList<>();
         try {
@@ -80,12 +82,14 @@ public class LogServiceImpl extends ServiceImpl<LogMapper, Log>
                 }
                 return vo;
             }).collect(Collectors.toList());
+
+            result.setData(resultList);
+            result.setTotal((int) recordPage.getTotal());
+            return ResponseResult.okResult(result);
         }catch (Exception e){
             throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
         }
-        resultPage.setRecords(resultList);
-        resultPage.setTotal(recordPage.getTotal());
-        return resultPage;
+
     }
 
     @Override

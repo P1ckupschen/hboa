@@ -4,7 +4,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.*;
+import com.gdproj.result.ResponseResult;
 import com.gdproj.vo.FlowVo;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
 * @author Administrator
@@ -17,7 +20,7 @@ public interface FlowService extends IService<Flow> {
 
     boolean approveFlow(FlowVo vo);
 
-    IPage<FlowVo> getFlowList(PageQueryDto pageDto);
+    IPage<FlowVo> getFlowList(PageQueryDto pageDto, HttpServletRequest request);
 
     boolean insertFlow(Overtime insertOvertime);
     boolean insertFlow(Leave insertLeave);
@@ -30,4 +33,8 @@ public interface FlowService extends IService<Flow> {
     boolean insertFlow(DailyUse dailyUse);
 
     boolean insertFlow(Purchase purchase);
+
+    ResponseResult getFlowListByCurrentUser(PageQueryDto queryDto, HttpServletRequest request);
+
+    ResponseResult getFlowDetail(Integer typeId, Integer runId);
 }

@@ -1,8 +1,6 @@
 server:
-  port: 7777
+  port: 7799
 spring:
-  profiles:
-    active: prod
   main:
     allow-circular-references: true
   datasource:

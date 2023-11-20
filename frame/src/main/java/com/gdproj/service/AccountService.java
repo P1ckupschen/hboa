@@ -2,6 +2,7 @@ package com.gdproj.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdproj.entity.Account;
+import com.gdproj.result.ResponseResult;
 import com.gdproj.vo.AccountVo;
 
 /**
@@ -13,4 +14,5 @@ public interface AccountService extends IService<Account> {
 
     AccountVo getAccountInfo(String token) throws Exception;
 
+    ResponseResult updateAccount(String pw , Integer id);
 }

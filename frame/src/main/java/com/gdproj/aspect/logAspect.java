@@ -44,13 +44,13 @@ public class logAspect {
         MethodSignature ms = (MethodSignature) point.getSignature();
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         Method method = ms.getMethod();
-        logger.info("===============请求内容===============");
+        logger.info("===============请求===============");
         logger.info("请求方式:" + request.getMethod());
         logger.info("请求地址:" + point.getTarget().getClass().getName());
         logger.info("方法名称:" + method.getAnnotation(ApiOperation.class).value());
         logger.info("请求类方法:" + point.getSignature().getName());
         logger.info("请求类方法参数:" + JSONUtil.toJsonStr(point.getArgs()));
-        logger.info("===============请求内容===============");
+        logger.info("===============请求===============");
         String token = request.getHeader("Authorization");
         if(!"GET".equals(request.getMethod())){
             Log log = new Log();
@@ -71,7 +71,7 @@ public class logAspect {
         Object result = point.proceed();
         //执行时长(毫秒)
         long time = System.currentTimeMillis() - beginTime;
-        logger.info("===============返回内容===============");
+        logger.info("===============返回===============");
         if(!ObjectUtil.isEmpty(result) ){
             String jsonString = JSONUtil.toJsonStr(result);
             if (jsonString.length() > 10000) {
@@ -81,13 +81,14 @@ public class logAspect {
             }
         }
         logger.info("请求响应时间:" + time + "ms");
-        logger.info("===============返回内容===============");
+        logger.info("===============返回===============");
         return result;
     }
     @After("pt()")
     public void afterAdvice(JoinPoint joinPoint){
         Long endtime = System.currentTimeMillis();
         Long  runtime = endtime - starttime ;
+
         System.out.println("运行时间：{}"+runtime);
 
     }

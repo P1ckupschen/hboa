@@ -1,10 +1,9 @@
 package com.gdproj.service;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Log;
-import com.gdproj.vo.LogVo;
+import com.gdproj.result.ResponseResult;
 
 /**
 * @author Administrator
@@ -13,7 +12,8 @@ import com.gdproj.vo.LogVo;
 */
 public interface LogService extends IService<Log> {
 
-    IPage<LogVo> getLogList(PageQueryDto pageDto);
 
     void insertLogWhenOperating(Log log);
+
+    ResponseResult getLogList(PageQueryDto queryDto);
 }

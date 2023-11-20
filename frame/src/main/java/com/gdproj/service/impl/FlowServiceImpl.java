@@ -11,12 +11,15 @@ import com.gdproj.entity.*;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.FlowMapper;
+import com.gdproj.result.ResponseResult;
 import com.gdproj.service.*;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.vo.FlowVo;
+import com.gdproj.utils.JwtUtils;
+import com.gdproj.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -74,53 +77,8 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
 
     @Override
     public boolean approveFlow(FlowVo vo) {
-        //判断是否通过 通过增加一条记录 不通过也增加一条记录
-        //1. 同一张表  TODO  查询sql？？？
-//        Flow flow = BeanCopyUtils.copyBean(vo, Flow.class);
-//        flow.setFlowId(null);
-//        Flow dataInSql = getById(flow.getFlowId());
-//        flowConfig config = configService.getById(flow.getTypeId());
-//        List<Integer> approvalFlow = config.getApprovalFlow();
-//        boolean isSuccess = false;
-//        if(!ObjectUtil.isEmpty(approvalFlow)){
-//            //如果前端修改的是flow_status 1通过或2不通过
-//            if (vo.getFlowStatus() == 1) {
-//                //通过 保存一条 通过的记录
-//                save(flow);
-//                //再保存一条到下一级的新的数据
-//                Flow newFlow = BeanCopyUtils.copyBean(flow, Flow.class);
-//                newFlow.setFlowId(null);
-//                newFlow.setFlowStatus(0);
-//                newFlow.setCurrentStepId(newFlow.getCurrentStepId()+1);
-//                if(newFlow.getTotalLevel() >= newFlow.getCurrentStepId()) {
-//                    int index = approvalFlow.indexOf(newFlow.getCurrentUserId());
-//                    newFlow.setCurrentUserId(approvalFlow.get(index + 1));
-//                }else{
-//                    //说明最后一级也通过了
-//                    newFlow.setCurrentUserId(0);
-//                    newFlow.setFlowStatus(1);
-//                    //并且把所有
-//                    boolean isPass = setPassStatus(newFlow.getTypeId(),newFlow.getRunId());
-//                    if(!isPass){
-//                        throw new SystemException(AppHttpCodeEnum.SET_PASS_ERROR);
-//                    }
-//                }
-//                return save(newFlow);
-//            } else {
-//                //不通过 保存一条 不通过的记录
-//                save(flow);
-//                //并且将各类表里的那条记录状态设为不通过；
-//                boolean isNoPass = setNoPassStatus(flow.getTypeId(),flow.getRunId());
-//                if(!isNoPass){
-//                    throw new SystemException(AppHttpCodeEnum.SET_NO_PASS_ERROR);
-//                }
-//                return isNoPass;
-//            }
-//        }else{
-//            throw new SystemException(AppHttpCodeEnum.FLOW_CONFIG_CONTENT_NULL);
-//        }
 
-        //2.不同表 分主表 从表  主表更新数据 从表插入历史
+        //不同表 分主表 从表  主表更新数据 从表插入历史
         Flow flow = BeanCopyUtils.copyBean(vo, Flow.class);
         Flow dataInSql = getById(flow.getFlowId());
         FlowConfig config = configService.getById(flow.getTypeId());
@@ -143,7 +101,6 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
                     flow.setFlowStatus(1);
                     //并且把所有
                     boolean isPass = setPassStatus(flow.getTypeId(), flow.getRunId());
-
                     if (flow.getTypeId() == 3) {
                         //如果typeId == 3 那么为出库申请，在最后一级都通过的情况下，出库申请为所有的材料生成record 插入record表
                         //warehouseId 就是 runId  遍历这条warehouse记录的warehouseContent，product_id 和 count
@@ -152,7 +109,8 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
                     if (flow.getTypeId() == 4) {
                         boolean w = dailyUseRecordService.insertRecordByDailyUseId(flow.getRunId());
                     }
-                    if (!isPass) {
+                    //  TODO 判断W
+                    if (!isPass ) {
                         throw new SystemException(AppHttpCodeEnum.SET_PASS_ERROR);
                     }
                 }
@@ -223,7 +181,8 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
             updateWrapper.set(Purchase::getPurchaseStatus, 1);
             return purchaseService.update(updateWrapper);
         } else {
-            return false;
+            throw new SystemException(AppHttpCodeEnum.FLOW_TYPE_ERROR);
+//            return false;
         }
     }
 
@@ -272,13 +231,14 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
             updateWrapper.set(Purchase::getPurchaseStatus, 2);
             return purchaseService.update(updateWrapper);
         } else {
-            return false;
+            throw new SystemException(AppHttpCodeEnum.FLOW_TYPE_ERROR);
         }
 
     }
 
     @Override
-    public IPage<FlowVo> getFlowList(PageQueryDto pageDto) {
+    public IPage<FlowVo> getFlowList(PageQueryDto pageDto, HttpServletRequest request) {
+
         //类型
         Integer type = pageDto.getType();
         //部门
@@ -314,6 +274,7 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
             //传过来的是productCategoryId,需要去产品表下找属于这个产品类型的产品 id数组
             queryWrapper.eq(Flow::getTypeId, type);
         }
+
 
         IPage<Flow> recordPage = page(page, queryWrapper);
         //相同的typeId 和runId的只显示最早的createdTime的数据
@@ -535,7 +496,7 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
         flow.setRunId(insertOvertime.getOvertimeId());
         flow.setCurrentStepId(1);
         flow.setTotalLevel(approvalFlow.size());
-
+        flow.setCreatedUserId(insertOvertime.getApplicantId());
         return save(flow);
 
     }
@@ -559,7 +520,7 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
         flow.setRunId(insertLeave.getLeaveId());
         flow.setCurrentStepId(1);
         flow.setTotalLevel(approvalFlow.size());
-
+        flow.setCreatedUserId(insertLeave.getUserId());
         return save(flow);
 
 
@@ -583,6 +544,7 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
             flow.setRunId(warehouse.getWarehouseId());
             flow.setCurrentStepId(1);
             flow.setTotalLevel(approvalFlow.size());
+            flow.setCreatedUserId(warehouse.getUserId());
             return save(flow);
         } else {
             return false;
@@ -608,7 +570,7 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
             flow.setRunId(dailyUse.getDailyuseId());
             flow.setCurrentStepId(1);
             flow.setTotalLevel(approvalFlow.size());
-
+            flow.setCreatedUserId(dailyUse.getUserId());
             return save(flow);
         } else {
             return false;
@@ -635,7 +597,7 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
         flow.setRunId(payment.getPaymentId());
         flow.setCurrentStepId(1);
         flow.setTotalLevel(approvalFlow.size());
-
+        flow.setCreatedUserId(payment.getUserId());
         return save(flow);
 
     }
@@ -658,7 +620,7 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
         flow.setRunId(reimbursement.getReimbursementId());
         flow.setCurrentStepId(1);
         flow.setTotalLevel(approvalFlow.size());
-
+        flow.setCreatedUserId(reimbursement.getUserId());
         return save(flow);
 
     }
@@ -682,8 +644,138 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
         flow.setRunId(purchase.getPurchaseId());
         flow.setCurrentStepId(1);
         flow.setTotalLevel(approvalFlow.size());
-
+        flow.setCreatedUserId(purchase.getUserId());
         return save(flow);
+    }
+
+    @Override
+    public ResponseResult getFlowListByCurrentUser(PageQueryDto queryDto, HttpServletRequest request) {
+
+        //类型
+        Integer type = queryDto.getType();
+        //部门
+        Integer departmentId = queryDto.getDepartmentId();
+        //时间
+        String time = queryDto.getTime();
+        //排序
+        String sort = queryDto.getSort();
+        //搜索框如果是产品搜索产品名称或者选择产品id
+        //如果是人 搜素人名或者人id
+        //如果是物 搜索id
+        String title = queryDto.getTitle();
+        Integer pageNum = queryDto.getPageNum();
+        Integer pageSize = queryDto.getPageSize();
+
+        Page<Flow> page = new Page<>(pageNum, pageSize);
+
+        LambdaQueryWrapper<Flow> queryWrapper = new LambdaQueryWrapper<>();
+        //排序
+        if (sort.equals("+id")) {
+            queryWrapper.orderByAsc(Flow::getFlowId);
+        } else {
+            queryWrapper.orderByDesc(Flow::getFlowId);
+        }
+
+        //查询名称？
+        if (!title.isEmpty()) {
+            queryWrapper.eq(Flow::getFlowId, title);
+        }
+
+        //如果有类型的话 类型
+        if (!ObjectUtil.isEmpty(type)) {
+            //传过来的是productCategoryId,需要去产品表下找属于这个产品类型的产品 id数组
+            queryWrapper.eq(Flow::getTypeId, type);
+        }
+
+        // TODO 根据当前操作用户是谁 只能查询属于关于自己的内容吗？
+        String authorization = request.getHeader("Authorization");
+        if(!ObjectUtil.isEmpty(authorization)){
+            System.out.println(authorization);
+            String token = authorization.split(" ")[1];
+
+            String id = JwtUtils.getMemberIdByJwtToken(token);
+            queryWrapper.eq(Flow::getCurrentUserId,id).or().eq(Flow::getCreatedUserId,id);
+
+        }else{
+            throw new SystemException(AppHttpCodeEnum.TOKEN_PARSE_ERRPE);
+        }
+
+        IPage<Flow> recordPage = page(page, queryWrapper);
+        //相同的typeId 和runId的只显示最早的createdTime的数据
+
+        PageVo<List<FlowVo>> result = new PageVo<>();
+
+        List<FlowVo> resultList = new ArrayList<>();
+        try {
+            resultList = recordPage.getRecords().stream().map((item) -> {
+                FlowVo vo = BeanCopyUtils.copyBean(item, FlowVo.class);
+                //类型名称?
+                setFlowVoProperty(vo, item);
+                return vo;
+            }).collect(Collectors.toList());
+            result.setData(resultList);
+            result.setTotal((int) recordPage.getTotal());
+            return ResponseResult.okResult(result);
+        } catch (Exception e) {
+            throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
+        }
+    }
+
+    @Override
+    public ResponseResult getFlowDetail(Integer typeId, Integer runId) {
+        if (typeId == 1) {
+            //加班申请
+            LambdaQueryWrapper<Overtime> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(Overtime::getOvertimeId, runId);
+            Overtime one = overtimeService.getOne(queryWrapper);
+            OvertimeVo vo = BeanCopyUtils.copyBean(one, OvertimeVo.class);
+//            OvertimeVo vo = overtimeService.setProperyToVo(one);
+            return ResponseResult.okResult(vo);
+        } else if (typeId == 2) {
+            //请假申请
+            LambdaQueryWrapper<Leave> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(Leave::getLeaveId, runId);
+            Leave one = leaveService.getOne(queryWrapper);
+            LeaveVo vo = BeanCopyUtils.copyBean(one, LeaveVo.class);
+            return ResponseResult.okResult(vo);
+        } else if (typeId == 3) {
+            //出库申请
+            LambdaQueryWrapper<Warehouse> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(Warehouse::getWarehouseId, runId);
+            Warehouse one = warehouseService.getOne(queryWrapper);
+            WarehouseVo vo = BeanCopyUtils.copyBean(one, WarehouseVo.class);
+            return ResponseResult.okResult(vo);
+        } else if (typeId == 4) {
+            //日常领用申请
+            LambdaQueryWrapper<DailyUse> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(DailyUse::getDailyuseId, runId);
+            DailyUse one = dailyUseService.getOne(queryWrapper);
+            DailyUseVo vo = BeanCopyUtils.copyBean(one, DailyUseVo.class);
+            return ResponseResult.okResult(vo);
+        } else if (typeId == 5) {
+            //付款申请
+            LambdaQueryWrapper<Payment> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(Payment::getPaymentId, runId);
+            Payment one = paymentService.getOne(queryWrapper);
+            PaymentVo vo = BeanCopyUtils.copyBean(one, PaymentVo.class);
+            return ResponseResult.okResult(vo);
+        } else if (typeId == 6) {
+            //报销申请
+            LambdaQueryWrapper<Reimbursement> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(Reimbursement::getReimbursementId, runId);
+            Reimbursement one = reimbursementService.getOne(queryWrapper);
+            ReimbursementVo vo = BeanCopyUtils.copyBean(one, ReimbursementVo.class);
+            return ResponseResult.okResult(vo);
+        } else if (typeId == 7) {
+            //采购申请
+            LambdaQueryWrapper<Purchase> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(Purchase::getPurchaseId, runId);
+            Purchase one = purchaseService.getOne(queryWrapper);
+            PurchaseVo vo = BeanCopyUtils.copyBean(one, PurchaseVo.class);
+            return ResponseResult.okResult(vo);
+        } else {
+            throw new SystemException(AppHttpCodeEnum.FLOW_TYPE_ERROR);
+        }
     }
 
 }

@@ -9,9 +9,11 @@ import com.gdproj.entity.FlowConfig;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.flowConfigMapper;
+import com.gdproj.result.ResponseResult;
 import com.gdproj.service.flowConfigService;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.FlowConfigVo;
+import com.gdproj.vo.SelectVo;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -79,6 +81,20 @@ public class flowConfigServiceImpl extends ServiceImpl<flowConfigMapper, FlowCon
         }
 
 
+    }
+
+    @Override
+    public ResponseResult getListForSelect() {
+
+        List<FlowConfig> list = list();
+
+        List<SelectVo> collect = list.stream().map((item) -> {
+            SelectVo vo = new SelectVo();
+            vo.setId(item.getTypeId());
+            vo.setName(item.getTypeName());
+            return vo;
+        }).collect(Collectors.toList());
+        return ResponseResult.okResult(collect);
     }
 }
 

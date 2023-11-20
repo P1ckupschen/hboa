@@ -2,18 +2,23 @@ package com.gdproj.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdproj.dto.PageQueryDto;
+import com.gdproj.entity.Account;
 import com.gdproj.entity.Department;
 import com.gdproj.entity.Deployee;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.DeployeeMapper;
+import com.gdproj.result.ResponseResult;
+import com.gdproj.service.AccountService;
 import com.gdproj.service.DepartmentService;
 import com.gdproj.service.DeployeeService;
 import com.gdproj.utils.BeanCopyUtils;
+import com.gdproj.utils.RSAUtil;
 import com.gdproj.vo.DeployeeVo;
 import com.gdproj.vo.UserVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +41,9 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
     @Autowired
     DepartmentService departmentService;
 
+    @Autowired
+    AccountService accountService;
+
     @Override
     public List<Integer> getIdsByTime(String time) {
 
@@ -52,9 +60,7 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
 
         List<Deployee> list = list(queryWrapper);
 
-        List<Integer> collect = list.stream().map(item -> item.getDeployeeId()).collect(Collectors.toList());
-
-        return collect;
+        return list.stream().map(item -> item.getDeployeeId()).collect(Collectors.toList());
     }
 
     @Override
@@ -66,9 +72,7 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
 
         List<Deployee> list = list(queryWrapper);
 
-        List<Integer> collect = list.stream().map(item -> item.getDeployeeId()).collect(Collectors.toList());
-
-        return collect;
+        return list.stream().map(Deployee::getDeployeeId).collect(Collectors.toList());
 
 
     }
@@ -119,15 +123,21 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
 
         List<Deployee> list = list();
 
-        List<UserVo> collect = list.stream().map((item) -> {
+        return list.stream().map((item) -> {
+            // 判断 deployee状态 为1 正常； 为2 则为离职
             UserVo userVo = new UserVo();
             userVo.setUserId(item.getDeployeeId());
-            userVo.setUsername(item.getDeployeeName());
+            if(item.getDeployeeStatus() == 0){
+                userVo.setUsername(item.getDeployeeName() + " [已离职]");
+            }else{
+                userVo.setUsername(item.getDeployeeName());
+            }
             userVo.setDepartmentId(item.getDepartmentId());
+            //
+            userVo.setDepartment(departmentService.getDepartmentNameByDepartmentId(item.getDepartmentId()));
+            //
             return userVo;
         }).collect(Collectors.toList());
-
-        return collect;
     }
 
     @Override
@@ -179,9 +189,8 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
 
             resultList = recordPage.getRecords().stream().map((item) -> {
 
-                DeployeeVo vo = BeanCopyUtils.copyBean(item, DeployeeVo.class);
                 //类型名称?
-                return vo;
+                return BeanCopyUtils.copyBean(item, DeployeeVo.class);
             }).collect(Collectors.toList());
         }catch (Exception e){
             throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
@@ -194,6 +203,50 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
         return resultPage;
     }
 
+    @Override
+    public ResponseResult inserDeployee(DeployeeVo vo) {
+
+        Deployee deployee = BeanCopyUtils.copyBean(vo,Deployee.class);
+        boolean isSave = save(deployee);
+        if(isSave){
+            Account account = new Account();
+            account.setDeployeeId(deployee.getDeployeeId());
+            account.setName(deployee.getDeployeeName());
+            account.setPassword(RSAUtil.decrypt(deployee.getPassword()));
+            account.setUsername(deployee.getUsername());
+            return ResponseResult.okResult(accountService.save(account));
+        }else{
+            throw new SystemException(AppHttpCodeEnum.INSERT_ERROR);
+        }
+
+    }
+
+    @Override
+    public ResponseResult updateDeployee(DeployeeVo vo) {
+
+        Deployee deployee = BeanCopyUtils.copyBean(vo,Deployee.class);
+        boolean isUpdate = updateById(deployee);
+        //如果账号密码不为空
+        if(isUpdate && !ObjectUtil.isEmpty(deployee.getPassword()) && !ObjectUtil.isEmpty(deployee.getUsername())){
+            LambdaUpdateWrapper<Account> updateWrapper = new LambdaUpdateWrapper<>();
+            updateWrapper.eq(Account::getDeployeeId,deployee.getDeployeeId())
+                    .set(Account::getName,deployee.getDeployeeName())
+                    .set(Account::getUsername,deployee.getUsername())
+                    .set(Account::getPassword,RSAUtil.decrypt(deployee.getPassword()));
+            return ResponseResult.okResult(accountService.update(updateWrapper));
+        }else{
+            throw new SystemException(AppHttpCodeEnum.UPDATE_ERROR);
+        }
+    }
+
+    @Override
+    public ResponseResult deleteDeployee(Integer id) {
+
+        LambdaUpdateWrapper<Deployee> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(Deployee::getDeployeeId,id).set(Deployee::getDeployeeStatus,0);
+        return ResponseResult.okResult(update(updateWrapper));
+
+    }
 
 }
 

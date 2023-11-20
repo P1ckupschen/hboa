@@ -64,7 +64,6 @@ public class warehouseController {
         } catch (Exception e) {
 
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
-
         }
 
     }

@@ -14,6 +14,8 @@ public enum AppHttpCodeEnum {
     DATE_FORMAT_ERROR(210,"时间转换失败"),
 
 
+    TOKEN_PARSE_ERRPE(211,"token解析失败"),
+
 
 
     LIST_ERROR(300,"列表数据获取失败"),
@@ -46,6 +48,7 @@ public enum AppHttpCodeEnum {
     DOWNLOAD_EXCEL_ERROR(10015,"excel下载失败"),
     SIGN_IN_ERROR(20001,"签到打卡失败"),
     FLOW_CONFIG_CONTENT_NULL(40001,"流程类配置审核级数为空"),
+    FLOW_TYPE_ERROR(40002,"流程申请类型id不明确"),
 
 
     SET_PASS_ERROR(40002, "设置通过失败"),

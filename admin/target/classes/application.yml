@@ -24,12 +24,44 @@ spring:
       # maxRequestSize 是总数据大小
       max-file-size: 20MB
       max-request-size: 100MB
+  profiles:
+    active:
+#      --spring.profiles.active=dev
 mybatis-plus:
   global-config:
     db-config:
       logic-delete-field: flag # 全局逻辑删除的实体字段名(since 3.3.0,配置后可以忽略不配置步骤2)
       logic-delete-value: 1 # 逻辑已删除值(默认为 1)
       logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
+
+logging:
+#  file:
+#    name: server.log
+  logback:
+    rollingpolicy:
+      max-file-size: 5MB
+  file:
+    path: log
+wx:
+  miniapp:
+    #上面拿到的很重要的那个模板ID
+    template-id: g19lTFku79jXC58CDzTnoIeazJC8HHvbW82apat_vgs
+    configs:
+      #微信小程序的appid 开发者工具拿到
+      appid: wx05e2612sfav212bddev12
+      #开发者工具拿到Secret
+      secret: 91b5a9e5645e8cf2123213safasfgwgf
+      #微信小程序消息服务器配置的token
+      token: 123
+      #微信小程序消息服务器配置的EncodingAESKey
+      aesKey:
+        msgDataFormat: JSON
+
+
+
+#  pattern:
+#    console: "%d %-5level %logger : %msg%n"
+#    file: "%d %-5level [%thread] %logger : %msg%n"
 
 #Windows下的路径配置
 ImagesFilePath: E:\\sch-work-space\\projects\\hbkj\\hboa\\admin\\src\\main\\resources\\images\\

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Deployee;
+import com.gdproj.result.ResponseResult;
 import com.gdproj.vo.DeployeeVo;
 import com.gdproj.vo.UserVo;
 
@@ -34,4 +35,10 @@ public interface DeployeeService extends IService<Deployee> {
     List<UserVo> getListForSelect();
 
     IPage<DeployeeVo> getDeployeeList(PageQueryDto pageDto);
+
+    ResponseResult inserDeployee(DeployeeVo vo);
+
+    ResponseResult updateDeployee(DeployeeVo vo);
+
+    ResponseResult deleteDeployee(Integer id);
 }

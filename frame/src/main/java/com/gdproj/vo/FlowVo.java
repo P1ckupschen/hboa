@@ -44,5 +44,7 @@ public class FlowVo {
 
     private String runStatus;
 
+    private Integer createdUserId;
+
 
 }

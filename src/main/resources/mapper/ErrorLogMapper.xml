@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="generator.mapper.ErrorLogMapper">
+
+    <resultMap id="BaseResultMap" type="generator.entity.ErrorLog">
+            <id property="errorId" column="error_id" jdbcType="INTEGER"/>
+            <result property="errorTime" column="error_time" jdbcType="TIMESTAMP"/>
+            <result property="userId" column="user_id" jdbcType="INTEGER"/>
+            <result property="ip" column="ip" jdbcType="VARCHAR"/>
+            <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+            <result property="errorUrl" column="error_url" jdbcType="VARCHAR"/>
+            <result property="errorMethod" column="error_method" jdbcType="VARCHAR"/>
+            <result property="errorName" column="error_name" jdbcType="VARCHAR"/>
+            <result property="methodParams" column="method_params" jdbcType="VARCHAR"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        error_id,error_time,user_id,
+        ip,user_name,error_url,
+        error_method,error_name,method_params,
+        is_deleted
+    </sql>
+</mapper>

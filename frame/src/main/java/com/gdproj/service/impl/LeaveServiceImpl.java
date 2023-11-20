@@ -120,7 +120,7 @@ public class LeaveServiceImpl extends ServiceImpl<LeaveMapper, Leave>
 
                 long btime = 0;
                 double v = 0;
-                //请假总时长
+                //请假总时长 TODO如果向上取整
                 if(ObjectUtil.isEmpty(item.getStartTime()) || ObjectUtil.isEmpty(item.getEndTime())){
                     btime = 0;
                 }else{

@@ -2,14 +2,17 @@ package com.gdproj.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdproj.entity.Account;
 import com.gdproj.entity.Deployee;
 import com.gdproj.mapper.AccountMapper;
+import com.gdproj.result.ResponseResult;
 import com.gdproj.service.AccountService;
 import com.gdproj.service.DeployeeService;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.utils.JwtUtils;
+import com.gdproj.utils.RSAUtil;
 import com.gdproj.vo.AccountVo;
 import com.gdproj.vo.DeployeeVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +49,13 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account>
         return vo;
     }
 
+    @Override
+    public ResponseResult updateAccount(String pw , Integer id) {
+
+        LambdaUpdateWrapper<Account> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(Account::getDeployeeId,id).set(Account::getPassword, RSAUtil.encrypt(pw));
+        return ResponseResult.okResult(update(updateWrapper));
+    }
 
 }
 

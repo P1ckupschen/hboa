@@ -122,9 +122,10 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
                     btime = 0;
                 }else{
                     btime = item.getEndTime().getTime() - item.getStartTime().getTime();
+                    System.out.println(btime);
                     v = btime / 1000 / 60 / 60 ;
                 }
-
+                System.out.println(v);
                 int round = (int) Math.round(v);
                 overtimevo.setOvertimeHours(round);
                 return overtimevo;
@@ -156,6 +157,7 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
         return o && f;
 
     }
+
 }
 
 

@@ -15,8 +15,10 @@ import com.gdproj.vo.PageVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -34,34 +36,42 @@ public class flowController {
     @autoLog
     @ApiOperation(value = "审批是否通过")
     public ResponseResult approveFlow(@RequestBody FlowVo vo){
-        boolean b = false;
-        b = flowService.approveFlow(vo);
-        return ResponseResult.okResult(b);
+
+        return ResponseResult.okResult(flowService.approveFlow(vo));
     }
 
+
+    @GetMapping("/getFlowDetail")
+    @autoLog
+    @ApiOperation(value = "获取审核详细信息")
+    public ResponseResult getFlowDetail(@RequestParam(defaultValue = "0") Integer typeId ,@RequestParam Integer runId){
+
+        return flowService.getFlowDetail(typeId,runId);
+    }
 
     @GetMapping("/getFlowList")
     @autoLog
     @ApiOperation(value = "获取审批流程列表")
     public ResponseResult getFlowList(@RequestParam Integer pageNum,
-                                          @RequestParam Integer pageSize,
-                                          @RequestParam(required = false,defaultValue = "+id")String sort,
-                                          @RequestParam(required = false,defaultValue = "") String title ,
-                                          @RequestParam(required = false) Integer departmentId,
-                                          @RequestParam(required = false) Integer type,
-                                          @RequestParam(required = false) String time){
+                                      @RequestParam Integer pageSize,
+                                      @RequestParam(required = false,defaultValue = "+id")String sort,
+                                      @RequestParam(required = false,defaultValue = "") String title ,
+                                      @RequestParam(required = false) Integer departmentId,
+                                      @RequestParam(required = false) Integer type,
+                                      @RequestParam(required = false) String time, HttpServletRequest request){
         PageQueryDto pageDto = new PageQueryDto(pageNum,pageSize,departmentId,type,title,time,sort);
 
+        //TODO 只能查到所有涉及到当前操作员工的流程内容
         IPage<FlowVo> flowList = new Page<FlowVo>();
 
         try {
-            flowList = flowService.getFlowList(pageDto);
+            flowList = flowService.getFlowList(pageDto,request);
 
             PageVo<List<FlowVo>> pageList = new PageVo<>();
             pageList.setData(flowList.getRecords());
             pageList.setTotal((int) flowList.getTotal());
-            return ResponseResult.okResult(pageList);
 
+            return ResponseResult.okResult(pageList);
         }catch (SystemException e) {
             return ResponseResult.okResult(e.getCode(), e.getMsg());
         }catch (Exception e){
@@ -70,6 +80,13 @@ public class flowController {
     }
 
 
+    @GetMapping("getFlowListByCurrentUser")
+    @autoLog
+    @ApiOperation(value = "我的待办事项" , notes = "只显示申请人是当前用户的 or 当前审批人是自己的 流程列表")
+    public ResponseResult getFlowListByCurrentUser(@Validated PageQueryDto queryDto ,HttpServletRequest request){
+
+        return flowService.getFlowListByCurrentUser(queryDto,request);
+    }
 
 
 
@@ -101,9 +118,21 @@ public class flowController {
 
 
 
+
+
+
+
+    @GetMapping("/getListForSelect")
+    @autoLog
+    @ApiOperation(value = "用于select流程配置列表")
+    public ResponseResult getListForSelect(){
+
+        return configService.getListForSelect();
+    }
 
 
     @GetMapping("/getFlowConfigList")
+    @autoLog
     @ApiOperation(value = "获取流程配置列表")
     public ResponseResult getFlowConfigList(@RequestParam Integer pageNum,
                                       @RequestParam Integer pageSize,
