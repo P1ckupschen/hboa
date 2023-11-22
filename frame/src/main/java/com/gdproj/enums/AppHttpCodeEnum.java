@@ -15,6 +15,7 @@ public enum AppHttpCodeEnum {
 
 
     TOKEN_PARSE_ERRPE(211,"token解析失败"),
+    ACCOUNT_NULL(212,"用户名或密码为空"),
 
 
 

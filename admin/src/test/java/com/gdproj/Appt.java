@@ -1,15 +1,22 @@
 package com.gdproj;
 
+import cn.binarywang.wx.miniapp.api.WxMaService;
+import cn.hutool.core.util.DesensitizedUtil;
+import cn.hutool.http.HttpUtil;
 import com.gdproj.entity.SignExcelEntity;
+import com.gdproj.utils.AesUtil;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
 public class Appt {
+
+    @Autowired
+    WxMaService wxMaService;
 
     @Test
     public void exportExcel(){
@@ -29,5 +36,21 @@ public class Appt {
 //        System.out.println(new Date());
 //        EasyExcel.write(fileName,excelEntity.class).sheet("用户信息").doWrite(userList);
 
+    }
+
+    @Test
+    public void aesTest(){
+        String pw = "123456";
+        System.out.println(DesensitizedUtil.mobilePhone("17395712681"));
+        String encrypt = AesUtil.encrypt(pw, AesUtil.key128);
+        String decrypt = AesUtil.decrypt(encrypt, AesUtil.key128);
+        System.out.println("原密码：" + pw);
+        System.out.println("加密后：" + encrypt);
+        System.out.println("解密后：" + decrypt);
+    }
+
+    @Test
+    public void wxSubscribeTest(){
+        System.out.println(HttpUtil.post("https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=ACCESS_TOKEN", "1tyty"));
     }
 }

@@ -111,13 +111,20 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product>
                 ProductVo vo = BeanCopyUtils.copyBean(item, ProductVo.class);
 
                 //类型名称
-                vo.setCategory(categoryService.getById(item.getCategoryId()).getCategoryName());
+                if(!ObjectUtil.isEmpty(item.getCategoryId())){
+                    vo.setCategory(categoryService.getById(item.getCategoryId()).getCategoryName());
+                }else{
+                    vo.setCategory("");
+                }
 
                 //total 计算
                 Integer count = recordService.getCountByProductId(vo.getProductId());
-                vo.setProductTotal(count);
+                vo.setCount(count);
 
                 //record 记录产品不需要  但是库存状态需要
+                vo.setRecordIn(recordService.getRecordInListByProductId(item.getProductId()));
+                //产品出库记录
+                vo.setRecordOut(recordService.getRecordOutListByProductId(item.getProductId()));
 
                 return vo;
 

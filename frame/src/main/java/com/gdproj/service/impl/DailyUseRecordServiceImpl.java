@@ -38,7 +38,8 @@ public class DailyUseRecordServiceImpl extends ServiceImpl<DailyUseRecordMapper,
         List<DailyUseRecord> list = list(queryWrapper);
         int count = 0;
         for ( DailyUseRecord item : list) {
-            if(item.getCategoryId() == 1){
+            //TODO 入库的 或者已归还的网上加
+            if(item.getCategoryId() == 1 || item.getIsReturn() == 1){
                 count += item.getCount();
             } else if (item.getCategoryId() == 2) {
                 count -= item.getCount();
@@ -75,6 +76,9 @@ public class DailyUseRecordServiceImpl extends ServiceImpl<DailyUseRecordMapper,
             record.setPurposeId(dailyUse.getPurposeId());
             record.setRecordTime(dailyUse.getDailyuseTime());
             record.setPlanReturnTime(dailyUse.getReturnTime());
+            //TODO reordStatus 用isreturn代替
+            //
+            
             record.setRecordStatus(1);
             record.setToolUnit(item.getUnit());
             return record;

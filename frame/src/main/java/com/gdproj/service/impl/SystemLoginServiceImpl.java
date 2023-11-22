@@ -15,6 +15,7 @@ import com.gdproj.vo.AccountVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.util.Date;
 
 
@@ -32,7 +33,7 @@ public class SystemLoginServiceImpl implements SystemLoginService {
     @Autowired
     AccountService accountService;
     @Override
-    public ResponseResult login(User user) {
+    public ResponseResult login(User user , HttpSession session) {
 
         User one = new User();
 
@@ -51,6 +52,16 @@ public class SystemLoginServiceImpl implements SystemLoginService {
             if(RSAUtil.decrypt(one.getPassword()).equals(RSAUtil.decrypt(user.getPassword()))){
 
                 String jwtToken = JwtUtils.getJwtToken(one.getId().toString());
+
+//                ServletContext holdContext = session.getServletContext();
+//                // 先判断密码是否正确  再看是否已有登录
+//                if(!ObjectUtil.isEmpty(session.getServletContext().getAttribute("用户"+one.getId()))){
+//                    // 说明已有登陆 刷新存的token值
+//                    holdContext.setAttribute("用户"+one.getId() ,jwtToken);
+//                }else{
+//                    // 如果没有 说明用户未先登录 往里面放值  TODO 以什么为主键 以什么为值
+//                    holdContext.setAttribute("用户"+one.getId(),one.getId());
+//                }
 
                 return ResponseResult.okResult(jwtToken);
 
@@ -73,10 +84,12 @@ public class SystemLoginServiceImpl implements SystemLoginService {
     }
 
     @Override
-    public ResponseResult frontLogin(AccountVo vo) {
+    public ResponseResult frontLogin(AccountVo vo , HttpSession session) {
         Account one = new Account();
 
         try {
+
+
             //找到数据库的对应
             LambdaQueryWrapper<Account> lambdaQueryWrapper =new LambdaQueryWrapper<>();
 
@@ -88,7 +101,7 @@ public class SystemLoginServiceImpl implements SystemLoginService {
 
             accountService.updateById(one);
 
-            //密码正确 登录信息 生成token
+            //如果 密码正确 登录信息 生成token
             if(RSAUtil.decrypt(one.getPassword()).equals(RSAUtil.decrypt(vo.getPassword()))){
 
                 String jwtToken = JwtUtils.getJwtToken(one.getId().toString());

@@ -25,6 +25,7 @@ public class wxSubscribeController {
     @autoLog
     @ApiOperation(value = "push测试")
     public ResponseResult pushTest(HttpServletRequest request){
+//        HttpUtil.post("")
         try {
             String accessToken = wxMaService.getAccessToken();
         }catch (Exception e){

@@ -100,14 +100,19 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
             resultList = taskPage.getRecords().stream().map((item) -> {
 
                 TaskVo taskVo = BeanCopyUtils.copyBean(item, TaskVo.class);
-                //创建人
-                taskVo.setUsername(deployeeService.getNameByUserId(item.getCreatedUser()));
+                if(!ObjectUtil.isEmpty(item.getCreatedUser())){
+                    taskVo.setUsername(deployeeService.getNameByUserId(item.getCreatedUser()));
+                }
 
                 //执行人
-                taskVo.setExecutorUsername(deployeeService.getNameByUserId(item.getExecutorId()));
+                if(!ObjectUtil.isEmpty(item.getExecutorId())){
+                    taskVo.setExecutorUsername(deployeeService.getNameByUserId(item.getExecutorId()));
+                }
 
-                //指派人
-                taskVo.setAssignedUsername(deployeeService.getNameByUserId(item.getApplicantId()));
+                //创建人
+                if(!ObjectUtil.isEmpty(item.getApplicantId())){
+                    taskVo.setAssignedUsername(deployeeService.getNameByUserId(item.getApplicantId()));
+                }
 
                 return taskVo;
 

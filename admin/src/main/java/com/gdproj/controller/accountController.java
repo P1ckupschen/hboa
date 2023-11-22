@@ -38,6 +38,9 @@ public class accountController {
     public ResponseResult createAccount(@RequestParam(value = "username") String username ,
                                         @RequestParam(value = "password") String password ,
                                         HttpServletRequest request ) {
-        return null;
+        String authorization = request.getHeader("Authorization");
+        String token = authorization.split(" ")[1];
+        String id = JwtUtils.getMemberIdByJwtToken(token);
+        return accountService.createAccount(username , password , id);
     }
 }

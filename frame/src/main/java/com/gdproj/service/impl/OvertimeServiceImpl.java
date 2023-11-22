@@ -104,15 +104,22 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
 
                 //人员
 //                if(!ObjectUtil.isEmpty( deployeeService.getById(item.getExecutorId())))
-                overtimevo.setUsername(deployeeService.getNameByUserId(item.getExecutorId()));
+                if(!ObjectUtil.isEmpty(item.getExecutorId())){
+                    overtimevo.setUsername(deployeeService.getNameByUserId(item.getExecutorId()));
+                    overtimevo.setDepartment(deployeeService.getDepartmentNameByUserId(item.getExecutorId()));
+                    overtimevo.setDepartmentId(deployeeService.getDepartmentIdByUserId(item.getExecutorId()));
+                }else{
+                    overtimevo.setUsername("");
+                    overtimevo.setDepartment("");
+                }
 
                 //加班类型
-                overtimevo.setCategory(overtimecategoryService.getById(item.getCategoryId()).getCategoryName());
+                if(!ObjectUtil.isEmpty(item.getCategoryId())){
+                    overtimevo.setCategory(overtimecategoryService.getById(item.getCategoryId()).getCategoryName());
 
-                //部门
-                overtimevo.setDepartment(deployeeService.getDepartmentNameByUserId(item.getExecutorId()));
-
-                overtimevo.setDepartmentId(deployeeService.getDepartmentIdByUserId(item.getExecutorId()));
+                }else{
+                    overtimevo.setCategory("");
+                }
 
                 long btime = 0;
 

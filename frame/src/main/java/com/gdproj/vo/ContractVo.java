@@ -37,6 +37,7 @@ public class ContractVo {
 
     private String aPhone;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date aSignTime;
 
     private String aUser;
@@ -47,6 +48,7 @@ public class ContractVo {
 
     private String bPhone;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date bSignTime;
 
     private String bUser;
@@ -71,7 +73,7 @@ public class ContractVo {
 
     private String contractContent;
 
-    private String parentId;
+    private Integer parentId;
 
     private Integer projectId;
 

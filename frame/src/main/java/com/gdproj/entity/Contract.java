@@ -9,31 +9,31 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 
+ *
  * @TableName sys_contract
  */
 @TableName(value ="sys_contract",autoResultMap = true)
 public class Contract implements Serializable {
     /**
-     * 
+     *
      */
     @TableId(value = "contract_id", type = IdType.AUTO)
     private Integer contractId;
 
     /**
-     * 
+     *
      */
     @TableField(value = "contract_title")
     private String contractTitle;
 
     /**
-     * 
+     *
      */
     @TableField(value = "contract_order_id")
     private Integer contractOrderId;
 
     /**
-     * 
+     *
      */
     @TableField(value = "category_id")
     private Integer categoryId;
@@ -58,85 +58,85 @@ public class Contract implements Serializable {
     private String contractAmountCp;
 
     /**
-     * 
+     *
      */
     @TableField(value = "a_address")
     private String aAddress;
 
     /**
-     * 
+     *
      */
     @TableField(value = "a_linkman")
     private String aLinkman;
 
     /**
-     * 
+     *
      */
     @TableField(value = "a_phone")
     private String aPhone;
 
     /**
-     * 
+     *
      */
     @TableField(value = "a_sign_time")
     private Date aSignTime;
 
     /**
-     * 
+     *
      */
     @TableField(value = "a_user")
     private String aUser;
 
     /**
-     * 
+     *
      */
     @TableField(value = "b_address")
     private String bAddress;
 
     /**
-     * 
+     *
      */
     @TableField(value = "b_linkman")
     private String bLinkman;
 
     /**
-     * 
+     *
      */
     @TableField(value = "b_phone")
     private String bPhone;
 
     /**
-     * 
+     *
      */
     @TableField(value = "b_sign_time")
     private Date bSignTime;
 
     /**
-     * 
+     *
      */
     @TableField(value = "b_user")
     private String bUser;
 
     /**
-     * 
+     *
      */
     @TableField(value = "contract_status")
     private Integer contractStatus;
 
     /**
-     * 
+     *
      */
     @TableField(value = "contract_remark")
     private String contractRemark;
 
     /**
-     * 
+     *
      */
-    @TableField(value = "created_time")
+    @TableField(value = "created_time",fill = FieldFill.INSERT)
     private Date createdTime;
 
     /**
-     * 
+     *
      */
     @TableField(value = "update_time",fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
@@ -156,11 +156,11 @@ public class Contract implements Serializable {
     /**
      * 附件
      */
-    @TableField(value = "contract_attachments",typeHandler = JacksonTypeHandler.class)
+    @TableField(value = "contract_attachments" , typeHandler = JacksonTypeHandler.class)
     private List<FileVo> contractAttachments;
 
     /**
-     * 
+     *
      */
     @TableField(value = "contract_content")
     private String contractContent;
@@ -169,40 +169,40 @@ public class Contract implements Serializable {
      * 父合同
      */
     @TableField(value = "parent_id")
-    private String parentId;
+    private Integer parentId;
 
     /**
-     * 
+     *
      */
     @TableField(value = "project_id")
     private Integer projectId;
 
     /**
-     * 
+     *
      */
     @TableField(value = "warranty_amount")
     private Long warrantyAmount;
 
     /**
-     * 
+     *
      */
     @TableField(value = "warranty_year")
     private Integer warrantyYear;
 
     /**
-     * 
+     *
      */
     @TableField(value = "warranty_start_time")
     private Date warrantyStartTime;
 
     /**
-     * 
+     *
      */
     @TableField(value = "warranty_end_time")
     private Date warrantyEndTime;
 
     /**
-     * 
+     *
      */
     @TableField(value = "is_deleted")
     @TableLogic
@@ -212,56 +212,56 @@ public class Contract implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 
+     *
      */
     public Integer getContractId() {
         return contractId;
     }
 
     /**
-     * 
+     *
      */
     public void setContractId(Integer contractId) {
         this.contractId = contractId;
     }
 
     /**
-     * 
+     *
      */
     public String getContractTitle() {
         return contractTitle;
     }
 
     /**
-     * 
+     *
      */
     public void setContractTitle(String contractTitle) {
         this.contractTitle = contractTitle;
     }
 
     /**
-     * 
+     *
      */
     public Integer getContractOrderId() {
         return contractOrderId;
     }
 
     /**
-     * 
+     *
      */
     public void setContractOrderId(Integer contractOrderId) {
         this.contractOrderId = contractOrderId;
     }
 
     /**
-     * 
+     *
      */
     public Integer getCategoryId() {
         return categoryId;
     }
 
     /**
-     * 
+     *
      */
     public void setCategoryId(Integer categoryId) {
         this.categoryId = categoryId;
@@ -312,196 +312,196 @@ public class Contract implements Serializable {
     }
 
     /**
-     * 
+     *
      */
     public String getaAddress() {
         return aAddress;
     }
 
     /**
-     * 
+     *
      */
     public void setaAddress(String aAddress) {
         this.aAddress = aAddress;
     }
 
     /**
-     * 
+     *
      */
     public String getaLinkman() {
         return aLinkman;
     }
 
     /**
-     * 
+     *
      */
     public void setaLinkman(String aLinkman) {
         this.aLinkman = aLinkman;
     }
 
     /**
-     * 
+     *
      */
     public String getaPhone() {
         return aPhone;
     }
 
     /**
-     * 
+     *
      */
     public void setaPhone(String aPhone) {
         this.aPhone = aPhone;
     }
 
     /**
-     * 
+     *
      */
     public Date getaSignTime() {
         return aSignTime;
     }
 
     /**
-     * 
+     *
      */
     public void setaSignTime(Date aSignTime) {
         this.aSignTime = aSignTime;
     }
 
     /**
-     * 
+     *
      */
     public String getaUser() {
         return aUser;
     }
 
     /**
-     * 
+     *
      */
     public void setaUser(String aUser) {
         this.aUser = aUser;
     }
 
     /**
-     * 
+     *
      */
     public String getbAddress() {
         return bAddress;
     }
 
     /**
-     * 
+     *
      */
     public void setbAddress(String bAddress) {
         this.bAddress = bAddress;
     }
 
     /**
-     * 
+     *
      */
     public String getbLinkman() {
         return bLinkman;
     }
 
     /**
-     * 
+     *
      */
     public void setbLinkman(String bLinkman) {
         this.bLinkman = bLinkman;
     }
 
     /**
-     * 
+     *
      */
     public String getbPhone() {
         return bPhone;
     }
 
     /**
-     * 
+     *
      */
     public void setbPhone(String bPhone) {
         this.bPhone = bPhone;
     }
 
     /**
-     * 
+     *
      */
     public Date getbSignTime() {
         return bSignTime;
     }
 
     /**
-     * 
+     *
      */
     public void setbSignTime(Date bSignTime) {
         this.bSignTime = bSignTime;
     }
 
     /**
-     * 
+     *
      */
     public String getbUser() {
         return bUser;
     }
 
     /**
-     * 
+     *
      */
     public void setbUser(String bUser) {
         this.bUser = bUser;
     }
 
     /**
-     * 
+     *
      */
     public Integer getContractStatus() {
         return contractStatus;
     }
 
     /**
-     * 
+     *
      */
     public void setContractStatus(Integer contractStatus) {
         this.contractStatus = contractStatus;
     }
 
     /**
-     * 
+     *
      */
     public String getContractRemark() {
         return contractRemark;
     }
 
     /**
-     * 
+     *
      */
     public void setContractRemark(String contractRemark) {
         this.contractRemark = contractRemark;
     }
 
     /**
-     * 
+     *
      */
     public Date getCreatedTime() {
         return createdTime;
     }
 
     /**
-     * 
+     *
      */
     public void setCreatedTime(Date createdTime) {
         this.createdTime = createdTime;
     }
 
     /**
-     * 
+     *
      */
     public Date getUpdateTime() {
         return updateTime;
     }
 
     /**
-     * 
+     *
      */
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
@@ -550,14 +550,14 @@ public class Contract implements Serializable {
     }
 
     /**
-     * 
+     *
      */
     public String getContractContent() {
         return contractContent;
     }
 
     /**
-     * 
+     *
      */
     public void setContractContent(String contractContent) {
         this.contractContent = contractContent;
@@ -566,96 +566,96 @@ public class Contract implements Serializable {
     /**
      * 父合同
      */
-    public String getParentId() {
+    public Integer getParentId() {
         return parentId;
     }
 
     /**
      * 父合同
      */
-    public void setParentId(String parentId) {
+    public void setParentId(Integer parentId) {
         this.parentId = parentId;
     }
 
     /**
-     * 
+     *
      */
     public Integer getProjectId() {
         return projectId;
     }
 
     /**
-     * 
+     *
      */
     public void setProjectId(Integer projectId) {
         this.projectId = projectId;
     }
 
     /**
-     * 
+     *
      */
     public Long getWarrantyAmount() {
         return warrantyAmount;
     }
 
     /**
-     * 
+     *
      */
     public void setWarrantyAmount(Long warrantyAmount) {
         this.warrantyAmount = warrantyAmount;
     }
 
     /**
-     * 
+     *
      */
     public Integer getWarrantyYear() {
         return warrantyYear;
     }
 
     /**
-     * 
+     *
      */
     public void setWarrantyYear(Integer warrantyYear) {
         this.warrantyYear = warrantyYear;
     }
 
     /**
-     * 
+     *
      */
     public Date getWarrantyStartTime() {
         return warrantyStartTime;
     }
 
     /**
-     * 
+     *
      */
     public void setWarrantyStartTime(Date warrantyStartTime) {
         this.warrantyStartTime = warrantyStartTime;
     }
 
     /**
-     * 
+     *
      */
     public Date getWarrantyEndTime() {
         return warrantyEndTime;
     }
 
     /**
-     * 
+     *
      */
     public void setWarrantyEndTime(Date warrantyEndTime) {
         this.warrantyEndTime = warrantyEndTime;
     }
 
     /**
-     * 
+     *
      */
     public Integer getIsDeleted() {
         return isDeleted;
     }
 
     /**
-     * 
+     *
      */
     public void setIsDeleted(Integer isDeleted) {
         this.isDeleted = isDeleted;
@@ -674,37 +674,37 @@ public class Contract implements Serializable {
         }
         Contract other = (Contract) that;
         return (this.getContractId() == null ? other.getContractId() == null : this.getContractId().equals(other.getContractId()))
-            && (this.getContractTitle() == null ? other.getContractTitle() == null : this.getContractTitle().equals(other.getContractTitle()))
-            && (this.getContractOrderId() == null ? other.getContractOrderId() == null : this.getContractOrderId().equals(other.getContractOrderId()))
-            && (this.getCategoryId() == null ? other.getCategoryId() == null : this.getCategoryId().equals(other.getCategoryId()))
-            && (this.getContractClient() == null ? other.getContractClient() == null : this.getContractClient().equals(other.getContractClient()))
-            && (this.getContractAmount() == null ? other.getContractAmount() == null : this.getContractAmount().equals(other.getContractAmount()))
-            && (this.getContractAmountCp() == null ? other.getContractAmountCp() == null : this.getContractAmountCp().equals(other.getContractAmountCp()))
-            && (this.getaAddress() == null ? other.getaAddress() == null : this.getaAddress().equals(other.getaAddress()))
-            && (this.getaLinkman() == null ? other.getaLinkman() == null : this.getaLinkman().equals(other.getaLinkman()))
-            && (this.getaPhone() == null ? other.getaPhone() == null : this.getaPhone().equals(other.getaPhone()))
-            && (this.getaSignTime() == null ? other.getaSignTime() == null : this.getaSignTime().equals(other.getaSignTime()))
-            && (this.getaUser() == null ? other.getaUser() == null : this.getaUser().equals(other.getaUser()))
-            && (this.getbAddress() == null ? other.getbAddress() == null : this.getbAddress().equals(other.getbAddress()))
-            && (this.getbLinkman() == null ? other.getbLinkman() == null : this.getbLinkman().equals(other.getbLinkman()))
-            && (this.getbPhone() == null ? other.getbPhone() == null : this.getbPhone().equals(other.getbPhone()))
-            && (this.getbSignTime() == null ? other.getbSignTime() == null : this.getbSignTime().equals(other.getbSignTime()))
-            && (this.getbUser() == null ? other.getbUser() == null : this.getbUser().equals(other.getbUser()))
-            && (this.getContractStatus() == null ? other.getContractStatus() == null : this.getContractStatus().equals(other.getContractStatus()))
-            && (this.getContractRemark() == null ? other.getContractRemark() == null : this.getContractRemark().equals(other.getContractRemark()))
-            && (this.getCreatedTime() == null ? other.getCreatedTime() == null : this.getCreatedTime().equals(other.getCreatedTime()))
-            && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()))
-            && (this.getCreatedUser() == null ? other.getCreatedUser() == null : this.getCreatedUser().equals(other.getCreatedUser()))
-            && (this.getFollowedUser() == null ? other.getFollowedUser() == null : this.getFollowedUser().equals(other.getFollowedUser()))
-            && (this.getContractAttachments() == null ? other.getContractAttachments() == null : this.getContractAttachments().equals(other.getContractAttachments()))
-            && (this.getContractContent() == null ? other.getContractContent() == null : this.getContractContent().equals(other.getContractContent()))
-            && (this.getParentId() == null ? other.getParentId() == null : this.getParentId().equals(other.getParentId()))
-            && (this.getProjectId() == null ? other.getProjectId() == null : this.getProjectId().equals(other.getProjectId()))
-            && (this.getWarrantyAmount() == null ? other.getWarrantyAmount() == null : this.getWarrantyAmount().equals(other.getWarrantyAmount()))
-            && (this.getWarrantyYear() == null ? other.getWarrantyYear() == null : this.getWarrantyYear().equals(other.getWarrantyYear()))
-            && (this.getWarrantyStartTime() == null ? other.getWarrantyStartTime() == null : this.getWarrantyStartTime().equals(other.getWarrantyStartTime()))
-            && (this.getWarrantyEndTime() == null ? other.getWarrantyEndTime() == null : this.getWarrantyEndTime().equals(other.getWarrantyEndTime()))
-            && (this.getIsDeleted() == null ? other.getIsDeleted() == null : this.getIsDeleted().equals(other.getIsDeleted()));
+                && (this.getContractTitle() == null ? other.getContractTitle() == null : this.getContractTitle().equals(other.getContractTitle()))
+                && (this.getContractOrderId() == null ? other.getContractOrderId() == null : this.getContractOrderId().equals(other.getContractOrderId()))
+                && (this.getCategoryId() == null ? other.getCategoryId() == null : this.getCategoryId().equals(other.getCategoryId()))
+                && (this.getContractClient() == null ? other.getContractClient() == null : this.getContractClient().equals(other.getContractClient()))
+                && (this.getContractAmount() == null ? other.getContractAmount() == null : this.getContractAmount().equals(other.getContractAmount()))
+                && (this.getContractAmountCp() == null ? other.getContractAmountCp() == null : this.getContractAmountCp().equals(other.getContractAmountCp()))
+                && (this.getaAddress() == null ? other.getaAddress() == null : this.getaAddress().equals(other.getaAddress()))
+                && (this.getaLinkman() == null ? other.getaLinkman() == null : this.getaLinkman().equals(other.getaLinkman()))
+                && (this.getaPhone() == null ? other.getaPhone() == null : this.getaPhone().equals(other.getaPhone()))
+                && (this.getaSignTime() == null ? other.getaSignTime() == null : this.getaSignTime().equals(other.getaSignTime()))
+                && (this.getaUser() == null ? other.getaUser() == null : this.getaUser().equals(other.getaUser()))
+                && (this.getbAddress() == null ? other.getbAddress() == null : this.getbAddress().equals(other.getbAddress()))
+                && (this.getbLinkman() == null ? other.getbLinkman() == null : this.getbLinkman().equals(other.getbLinkman()))
+                && (this.getbPhone() == null ? other.getbPhone() == null : this.getbPhone().equals(other.getbPhone()))
+                && (this.getbSignTime() == null ? other.getbSignTime() == null : this.getbSignTime().equals(other.getbSignTime()))
+                && (this.getbUser() == null ? other.getbUser() == null : this.getbUser().equals(other.getbUser()))
+                && (this.getContractStatus() == null ? other.getContractStatus() == null : this.getContractStatus().equals(other.getContractStatus()))
+                && (this.getContractRemark() == null ? other.getContractRemark() == null : this.getContractRemark().equals(other.getContractRemark()))
+                && (this.getCreatedTime() == null ? other.getCreatedTime() == null : this.getCreatedTime().equals(other.getCreatedTime()))
+                && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()))
+                && (this.getCreatedUser() == null ? other.getCreatedUser() == null : this.getCreatedUser().equals(other.getCreatedUser()))
+                && (this.getFollowedUser() == null ? other.getFollowedUser() == null : this.getFollowedUser().equals(other.getFollowedUser()))
+                && (this.getContractAttachments() == null ? other.getContractAttachments() == null : this.getContractAttachments().equals(other.getContractAttachments()))
+                && (this.getContractContent() == null ? other.getContractContent() == null : this.getContractContent().equals(other.getContractContent()))
+                && (this.getParentId() == null ? other.getParentId() == null : this.getParentId().equals(other.getParentId()))
+                && (this.getProjectId() == null ? other.getProjectId() == null : this.getProjectId().equals(other.getProjectId()))
+                && (this.getWarrantyAmount() == null ? other.getWarrantyAmount() == null : this.getWarrantyAmount().equals(other.getWarrantyAmount()))
+                && (this.getWarrantyYear() == null ? other.getWarrantyYear() == null : this.getWarrantyYear().equals(other.getWarrantyYear()))
+                && (this.getWarrantyStartTime() == null ? other.getWarrantyStartTime() == null : this.getWarrantyStartTime().equals(other.getWarrantyStartTime()))
+                && (this.getWarrantyEndTime() == null ? other.getWarrantyEndTime() == null : this.getWarrantyEndTime().equals(other.getWarrantyEndTime()))
+                && (this.getIsDeleted() == null ? other.getIsDeleted() == null : this.getIsDeleted().equals(other.getIsDeleted()));
     }
 
     @Override

@@ -15,4 +15,6 @@ public interface AccountService extends IService<Account> {
     AccountVo getAccountInfo(String token) throws Exception;
 
     ResponseResult updateAccount(String pw , Integer id);
+
+    ResponseResult createAccount(String username, String password, String id);
 }

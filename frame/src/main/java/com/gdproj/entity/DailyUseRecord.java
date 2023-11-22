@@ -112,6 +112,9 @@ public class DailyUseRecord implements Serializable {
     @TableField(value = "true_return_time")
     private Date trueReturnTime;
 
+    @TableField(value = "is_return")
+    private Integer isReturn;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
@@ -415,5 +418,13 @@ public class DailyUseRecord implements Serializable {
 
     public void setTrueReturnTime(Date trueReturnTime) {
         this.trueReturnTime = trueReturnTime;
+    }
+
+    public Integer getIsReturn() {
+        return isReturn;
+    }
+
+    public void setIsReturn(Integer isReturn) {
+        this.isReturn = isReturn;
     }
 }

@@ -107,8 +107,16 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project>
                 List<stockSelectVo> contentVoList = JSONUtil.toList(Content, stockSelectVo.class);
 
                 vo.setMaterialBill(contentVoList);
-                vo.setCategory(categoryService.getById(item.getCategoryId()).getCategoryName());
-                vo.setSupervisorName(deployeeService.getNameByUserId(item.getSupervisorId()));
+                if(!ObjectUtil.isEmpty(item.getCategoryId())){
+                    vo.setCategory(categoryService.getById(item.getCategoryId()).getCategoryName());
+                }else{
+                    vo.setCategory("");
+                }
+                if(!ObjectUtil.isEmpty(item.getSupervisorId())){
+                    vo.setSupervisorName(deployeeService.getNameByUserId(item.getSupervisorId()));
+                }else{
+                    vo.setSupervisorName("");
+                }
                 //设置是否延期
                 if( !ObjectUtil.isNull(item.getCompletedTime()) && item.getCompletedTime().getTime() < item.getEndTime().getTime()){
                     vo.setIsLate(1);

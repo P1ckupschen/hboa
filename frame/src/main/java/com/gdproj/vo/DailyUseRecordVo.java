@@ -31,7 +31,7 @@ public class DailyUseRecordVo {
 
     private List<FileVo> recordAttachments;
 
-    private Integer recordStatus;
+    private Integer isReturn;
 
     private Integer toolId;
 
@@ -55,9 +55,9 @@ public class DailyUseRecordVo {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date planReturnTime;
 
-    private Integer returnStatus;
-
     private String Username;
     private String Department;
     private String Category;
+
+
 }

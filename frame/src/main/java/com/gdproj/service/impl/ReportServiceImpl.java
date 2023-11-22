@@ -104,13 +104,21 @@ public class ReportServiceImpl extends ServiceImpl<ReportMapper, Report>
                 ReportVo reportvo = BeanCopyUtils.copyBean(item, ReportVo.class);
 
                 //人员
-                reportvo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
+                if(!ObjectUtil.isEmpty(item.getUserId())){
+                    reportvo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
+                    reportvo.setDepartment(deployeeService.getDepartmentNameByUserId(item.getUserId()));
+                }else{
+                    reportvo.setUsername("");
+                    reportvo.setDepartment("");
+                }
 
                 //类型
-                reportvo.setCategory(categoryService.getById(item.getCategoryId()).getCategoryName());
+                if(!ObjectUtil.isEmpty(item.getCategoryId())){
+                    reportvo.setCategory(categoryService.getById(item.getCategoryId()).getCategoryName());
+                }else{
+                    reportvo.setCategory("");
+                }
 
-                //部门
-                reportvo.setDepartment(deployeeService.getDepartmentNameByUserId(item.getUserId()));
 
                 return reportvo;
 

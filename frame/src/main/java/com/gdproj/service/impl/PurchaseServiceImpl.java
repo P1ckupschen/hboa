@@ -95,7 +95,11 @@ public class PurchaseServiceImpl extends ServiceImpl<PurchaseMapper, Purchase>
             if(ObjectUtil.isEmpty(item.getUserId())){
                 throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
             }
-            vo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
+            if(!ObjectUtil.isEmpty(item.getUserId())){
+                vo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
+            }else{
+                vo.setUsername("");
+            }
             return vo;
         }).collect(Collectors.toList());
 

@@ -165,7 +165,8 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
         } else {
             queryWrapper.orderByDesc(Deployee::getDeployeeId);
         }
-
+        //已离职的筛选掉
+//        queryWrapper.eq(Deployee::getDeployeeStatus,1);
         //查询名称？
         if (!title.isEmpty()) {
             queryWrapper.eq(Deployee::getDeployeeId,title);

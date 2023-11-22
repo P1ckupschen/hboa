@@ -114,8 +114,11 @@ public class DailyUseServiceImpl extends ServiceImpl<DailyUseMapper, DailyUse>
                 String Content = JSONUtil.toJsonStr(item.getDailyuseContent());
                 List<DailyUseContentVo> contentVoList = JSONUtil.toList(Content, DailyUseContentVo.class);
                 vo.setDailyuseContent(contentVoList);
-                vo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
-
+                if(!ObjectUtil.isEmpty(item.getUserId())){
+                    vo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
+                }else{
+                    vo.setUsername("");
+                }
                 return vo;
             }).collect(Collectors.toList());
 
@@ -132,7 +135,7 @@ public class DailyUseServiceImpl extends ServiceImpl<DailyUseMapper, DailyUse>
     @Override
     public boolean insertDailyUse(DailyUse dailyUse) {
         Integer categoryId = dailyUse.getCategoryId();
-        dailyUse.setDailyuseStatus(1);
+        dailyUse.setDailyuseStatus(0);
         boolean f = false;
         boolean o = save(dailyUse);
         //如果为入库申请则无需审批
@@ -212,19 +215,26 @@ public class DailyUseServiceImpl extends ServiceImpl<DailyUseMapper, DailyUse>
 
                 DailyUseRecordVo vo = BeanCopyUtils.copyBean(item, DailyUseRecordVo.class);
                 //创建人
-                vo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
-
+                if(!ObjectUtil.isEmpty(item.getUserId())){
+                    vo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
+                }else{
+                    vo.setUsername("");
+                }
                 //部门
-                vo.setDepartment(deployeeService.getDepartmentNameByUserId(item.getUserId()));
+                if(!ObjectUtil.isEmpty(item.getUserId())){
+                    vo.setDepartment(deployeeService.getDepartmentNameByUserId(item.getUserId()));
+                }else{
+                    vo.setDepartment("");
+                }
 
                 //产品名称 对应的产品类型
 //                vo.setTool(BeanCopyUtils.copyBean(toolService.getById(item.getToolId()), ToolVo.class));
 
-                if (!ObjectUtil.isEmpty(item.getTrueReturnTime()) ) {
-                    vo.setReturnStatus(1);
-                } else {
-                    vo.setReturnStatus(0);
-                }
+//                if (!ObjectUtil.isEmpty(item.getTrueReturnTime()) ) {
+//                    vo.setReturnStatus(1);
+//                } else {
+//                    vo.setReturnStatus(0);
+//                }
                 //产品类型
                 if (vo.getCategoryId() == 1) {
                     vo.setCategory("入库");

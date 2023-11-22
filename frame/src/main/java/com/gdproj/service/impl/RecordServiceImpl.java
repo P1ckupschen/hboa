@@ -119,15 +119,24 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
 
                 RecordVo vo = BeanCopyUtils.copyBean(item, RecordVo.class);
                 //创建人
-                vo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
-
-                //部门
-                vo.setDepartment(deployeeService.getDepartmentNameByUserId(item.getUserId()));
-
+                if(!ObjectUtil.isEmpty(item.getUserId())){
+                    vo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
+                    vo.setDepartment(deployeeService.getDepartmentNameByUserId(item.getUserId()));
+                }else{
+                    vo.setUsername("");
+                    vo.setDepartment("");
+                }
+                if(!ObjectUtil.isEmpty(item.getProductId())){
+                    vo.setProductName(productService.getById(item.getProductId()).getProductName());
+                    vo.setProductBrand(productService.getById(item.getProductId()).getProductBrand());
+                    vo.setProductUnit(productService.getById(item.getProductId()).getProductUnit());
+                }else{
+                    vo.setProductName("");
+                    vo.setProductBrand("");
+                    vo.setProductUnit("");
+                }
                 //产品名称 对应的产品类型
-                vo.setProductName(productService.getById(item.getProductId()).getProductName());
-                vo.setProductBrand(productService.getById(item.getProductId()).getProductBrand());
-                vo.setProductUnit(productService.getById(item.getProductId()).getProductUnit());
+
 
                 //产品类型
                 if (vo.getCategoryId() == 1) {
@@ -187,7 +196,7 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
         List<String> recordList = new ArrayList<>();
         for ( Record item : list) {
             if(item.getCategoryId() == 1){
-                recordList.add(simpleDateFormat.format(item.getRecordTime())+" "+"入库数量:  +"+item.getCount());
+                recordList.add(simpleDateFormat.format(item.getRecordTime())+" "+"入库数量:  "+item.getCount());
             }
         }
         return recordList;
@@ -205,7 +214,7 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
         List<String> recordList = new ArrayList<>();
         for ( Record item : list) {
             if(item.getCategoryId() == 2){
-                recordList.add(simpleDateFormat.format(item.getRecordTime())+" "+"出库数量:  -"+item.getCount());
+                recordList.add(simpleDateFormat.format(item.getRecordTime())+" "+"出库数量:  "+item.getCount());
             }
         }
         return recordList;

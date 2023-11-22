@@ -95,7 +95,11 @@ public class ContractServiceImpl extends ServiceImpl<ContractMapper, Contract>
 
                 vo.setCategory(categoryService.getById(item.getCategoryId()).getCategoryName());
 
-                vo.setFollowedName(deployeeService.getNameByUserId(item.getFollowedUser()));
+                if( !ObjectUtil.isEmpty(item.getFollowedUser())){
+                    vo.setFollowedName(deployeeService.getNameByUserId(item.getFollowedUser()));
+                }else{
+                    vo.setFollowedName("");
+                }
 
                 return vo;
             }).collect(Collectors.toList());

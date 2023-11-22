@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/adminLogin")
@@ -34,17 +35,17 @@ public class loginController {
     @PostMapping("/userlogin")
     @autoLog
     @ApiOperation(value = "后台登录请求")
-    public ResponseResult userLogin(@RequestBody User user, HttpServletRequest request){
+    public ResponseResult userLogin(@RequestBody User user,HttpSession session){
 
-        return  systemLoginService.login(user);
+        return  systemLoginService.login(user,session);
     }
 
     @PostMapping("/frontLogin")
     @autoLog
     @ApiOperation(value = "前台登录请求")
-    public ResponseResult frontLogin(@RequestBody AccountVo vo, HttpServletRequest request){
+    public ResponseResult frontLogin(@RequestBody AccountVo vo, HttpSession session){
 
-        return  systemLoginService.frontLogin(vo);
+        return  systemLoginService.frontLogin(vo,session);
     }
 
     @GetMapping("/Userinfo")

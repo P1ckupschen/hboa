@@ -110,19 +110,28 @@ public class NotifyServiceImpl extends ServiceImpl<NotifyMapper, Notify>
 
                 NotifyVo notifyVo = BeanCopyUtils.copyBean(item, NotifyVo.class);
                 //人员
-                notifyVo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
-
+                if(!ObjectUtil.isEmpty(item.getUserId())){
+                    notifyVo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
+                    notifyVo.setDepartment(deployeeService.getDepartmentNameByUserId(item.getUserId()));
+                    notifyVo.setDepartmentId(deployeeService.getDepartmentIdByUserId(item.getUserId()));
+                }else{
+                    notifyVo.setUsername("");
+                    notifyVo.setDepartment("");
+                }
+                if(!ObjectUtil.isEmpty(item.getCategoryId())){
+                    notifyVo.setCategory(notifyCategoryService.getById(item.getCategoryId()).getCategoryName());
+                }else{
+                    notifyVo.setCategory("");
+                }
                 //公告类型
-                notifyVo.setCategory(notifyCategoryService.getById(item.getCategoryId()).getCategoryName());
 
-                //如果没有对象没有部门id属性就找到对应id的部门所以的员工的userid
-                notifyVo.setDepartment(deployeeService.getDepartmentNameByUserId(item.getUserId()));
-
-                notifyVo.setDepartmentId(deployeeService.getDepartmentIdByUserId(item.getUserId()));
 
                 //公告审核人
-                notifyVo.setExaminerName(deployeeService.getNameByUserId(item.getExaminerId()));
-
+                if(!ObjectUtil.isEmpty(item.getExaminerId())){
+                    notifyVo.setExaminerName(deployeeService.getNameByUserId(item.getExaminerId()));
+                }else{
+                    notifyVo.setExaminerName("");
+                }
                 return notifyVo;
 
             }).collect(Collectors.toList());

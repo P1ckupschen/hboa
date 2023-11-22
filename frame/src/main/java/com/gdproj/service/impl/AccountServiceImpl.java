@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdproj.entity.Account;
 import com.gdproj.entity.Deployee;
+import com.gdproj.enums.AppHttpCodeEnum;
+import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.AccountMapper;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.AccountService;
@@ -55,6 +57,16 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account>
         LambdaUpdateWrapper<Account> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(Account::getDeployeeId,id).set(Account::getPassword, RSAUtil.encrypt(pw));
         return ResponseResult.okResult(update(updateWrapper));
+    }
+
+    @Override
+    public ResponseResult createAccount(String username, String password, String id) {
+
+        if(ObjectUtil.isEmpty(username) || ObjectUtil.isEmpty(password)){
+            throw new SystemException(AppHttpCodeEnum.ACCOUNT_NULL);
+        }
+        //save 查deployee表
+        return null;
     }
 
 }

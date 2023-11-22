@@ -37,11 +37,11 @@ public class ProductVo {
 
     private Integer productTotal;
 
-    private List recordIn;
+    private List<String> recordIn;
 
-    private List recordOut;
+    private List<String> recordOut;
 
-
+    private Integer count;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date updateTime;
 

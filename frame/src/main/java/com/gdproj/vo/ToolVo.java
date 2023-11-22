@@ -33,7 +33,7 @@ public class ToolVo {
 
     private List<FileVo> toolPic;
 
-    private Integer toolTotal;
+    private Integer count;
 
     private List recordIn;
 

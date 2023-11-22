@@ -104,11 +104,13 @@ public class ToolServiceImpl extends ServiceImpl<ToolMapper, Tool>
                 ToolVo vo = BeanCopyUtils.copyBean(item, ToolVo.class);
 
                 //类型名称
-                vo.setCategory(categoryService.getById(item.getCategoryId()).getCategoryName());
+                if(!ObjectUtil.isEmpty(item.getCategoryId())){
+                    vo.setCategory(categoryService.getById(item.getCategoryId()).getCategoryName());
+                }
 //
 //                //total 计算
                 Integer count = recordService.getCountByToolId(vo.getToolId());
-                vo.setToolTotal(count);
+                vo.setCount(count);
                 //record 记录产品不需要  但是库存状态需要
                 return vo;
 

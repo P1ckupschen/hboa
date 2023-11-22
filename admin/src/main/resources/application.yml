@@ -34,14 +34,14 @@ mybatis-plus:
       logic-delete-value: 1 # 逻辑已删除值(默认为 1)
       logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
 
-logging:
+#logging:
+##  file:
+##    name: server.log
+#  logback:
+#    rollingpolicy:
+#      max-file-size: 5MB
 #  file:
-#    name: server.log
-  logback:
-    rollingpolicy:
-      max-file-size: 5MB
-  file:
-    path: log
+#    path: log
 wx:
   miniapp:
     #上面拿到的很重要的那个模板ID

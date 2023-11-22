@@ -72,7 +72,6 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
             queryWrapper.orderByDesc(Sign::getSignId);
         }
 
-
         //如果根据部门分类，有一定几率会与模糊人民冲突
         if (!ObjectUtil.isEmpty(pagedto.getDepartmentId()) && title.isEmpty()) {
             List<Integer> ids = deployeeService.getIdsByDepartmentId(pagedto.getDepartmentId());
@@ -83,10 +82,8 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
             }
 //            queryWrapper.in(Sign::getDepartmentId,pagedto.getDepartmentId());
         }
-
         //设置时间 年 月 日
         //模糊查询时间
-
         if (time != null) {
             queryWrapper.like(Sign::getInTime, time);
         }
@@ -100,9 +97,7 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
             }else{
                 queryWrapper.in(Sign::getUserId,0);
             }
-            //通过ids去找所有符合ids的对象 sign;
         }
-
 
         IPage<Sign> signPage = signMapper.selectPage(page, queryWrapper);
 
@@ -110,10 +105,16 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
         //结果里的部门 和用户都返回成string；
         List<SignVo> resultList = signPage.getRecords().stream().map((item) -> {
             SignVo signvo = BeanCopyUtils.copyBean(item, SignVo.class);
-            signvo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
-            //部门
-            signvo.setDepartment(departmentService.getDepartmentNameByDepartmentId(deployeeService.getById(item.getUserId()).getDepartmentId()));
-            signvo.setDepartmentId(deployeeService.getDepartmentIdByUserId(item.getUserId()));
+            if(!ObjectUtil.isEmpty(item.getUserId())){
+                signvo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
+                //部门
+                signvo.setDepartment(departmentService.getDepartmentNameByDepartmentId(deployeeService.getById(item.getUserId()).getDepartmentId()));
+                signvo.setDepartmentId(deployeeService.getDepartmentIdByUserId(item.getUserId()));
+            }else{
+                signvo.setUsername("");
+                signvo.setDepartment("");
+            }
+
             long workTime = 0L;
             if (!ObjectUtil.isEmpty(signvo.getEndTime())) {
                 workTime = (signvo.getEndTime().getTime() - signvo.getInTime().getTime()) / 1000 / 60 / 60;
@@ -203,6 +204,7 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
         IsSignVo vo = new IsSignVo();
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+            //TODO 每日考勤时间设置 8:30 - 17:30
 
             Date shouldInTime = sdf.parse("8:30");
             Date shouldOutTime = sdf.parse("17:30");
@@ -211,8 +213,6 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
         } catch (Exception e) {
             throw new SystemException(AppHttpCodeEnum.DATE_FORMAT_ERROR);
         }
-
-
         if (!ObjectUtil.isEmpty(one)) {
 //            有打卡记录 并且签到时间不为空
             if (!ObjectUtil.isEmpty(one.getInTime())) {
@@ -271,6 +271,7 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
             //首先获取员工列表，根据分页数据d
             IPage<DeployeeVo> deployeeListPage = deployeeService.getDeployeeList(pageDto);
             List<DeployeeVo> deployeeList = deployeeListPage.getRecords();
+            deployeeList = deployeeList.stream().filter(item -> item.getDeployeeStatus() == 1 ).collect(Collectors.toList());
             List<MonthSignVo> resultList = deployeeList.stream().map((item) -> countMonthDataByDeployee(item, year, month, day)).collect(Collectors.toList());
             resultPage.setRecords(resultList);
             resultPage.setTotal(deployeeListPage.getTotal());

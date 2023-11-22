@@ -106,17 +106,27 @@ public class LeaveServiceImpl extends ServiceImpl<LeaveMapper, Leave>
                 LeaveVo leavevo = BeanCopyUtils.copyBean(item, LeaveVo.class);
 
                 //人员
-                leavevo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
+                if(!ObjectUtil.isEmpty(item.getUserId())){
+                    leavevo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
+                    leavevo.setDepartment(deployeeService.getDepartmentNameByUserId(item.getUserId()));
+                    leavevo.setDepartmentId(deployeeService.getDepartmentIdByUserId(item.getUserId()));
+                }else{
+                    leavevo.setUsername("");
+                    leavevo.setDepartment("");
+                }
 
                 //请假类型
-                leavevo.setCategory(leaveCategoryService.getById(item.getCategoryId()).getCategoryName());
+                if(!ObjectUtil.isEmpty(item.getCategoryId())){
+                    leavevo.setCategory(leaveCategoryService.getById(item.getCategoryId()).getCategoryName());
+                }else{
+                    leavevo.setCategory("");
+                }
 
                 //部门
 //            leavevo.setDepartment(departmentService.getDepartmentNameByDepartmentId(item.getDepartmentId()));
 
-                leavevo.setDepartment(deployeeService.getDepartmentNameByUserId(item.getUserId()));
 
-                leavevo.setDepartmentId(deployeeService.getDepartmentIdByUserId(item.getUserId()));
+
 
                 long btime = 0;
                 double v = 0;
