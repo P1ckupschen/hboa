@@ -1,56 +1,56 @@
 package com.gdproj.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import java.io.Serializable;
 
 /**
- * 
+ * 角色和菜单关联表
  * @TableName sys_role_menu
  */
 @TableName(value ="sys_role_menu")
 public class RoleMenu implements Serializable {
     /**
-     * 
+     * 角色ID
      */
-    @TableId(type = IdType.AUTO)
-    private Integer roleId;
+    @TableField(value = "role_id")
+    private Long roleId;
 
     /**
-     * 
+     * 菜单ID
      */
-    private Integer menuId;
+    @TableField(value = "menu_id")
+    private Long menuId;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
     /**
-     * 
+     * 角色ID
      */
-    public Integer getRoleId() {
+    public Long getRoleId() {
         return roleId;
     }
 
     /**
-     * 
+     * 角色ID
      */
-    public void setRoleId(Integer roleId) {
+    public void setRoleId(Long roleId) {
         this.roleId = roleId;
     }
 
     /**
-     * 
+     * 菜单ID
      */
-    public Integer getMenuId() {
+    public Long getMenuId() {
         return menuId;
     }
 
     /**
-     * 
+     * 菜单ID
      */
-    public void setMenuId(Integer menuId) {
+    public void setMenuId(Long menuId) {
         this.menuId = menuId;
     }
 

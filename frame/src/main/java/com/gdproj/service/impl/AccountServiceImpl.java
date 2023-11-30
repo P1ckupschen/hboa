@@ -12,11 +12,14 @@ import com.gdproj.mapper.AccountMapper;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.AccountService;
 import com.gdproj.service.DeployeeService;
+import com.gdproj.service.MenuService;
+import com.gdproj.service.RoleService;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.utils.JwtUtils;
 import com.gdproj.utils.RSAUtil;
 import com.gdproj.vo.AccountVo;
 import com.gdproj.vo.DeployeeVo;
+import com.gdproj.vo.PwVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +34,13 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account>
 
     @Autowired
     DeployeeService deployeeService;
+
+    @Autowired
+    MenuService menuService;
+
+    @Autowired
+    RoleService roleService;
+
     @Override
     public AccountVo getAccountInfo(String token) throws Exception {
         String subToken = token.substring(7);
@@ -48,6 +58,10 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account>
             Deployee deployee = deployeeService.getById(one.getDeployeeId());
             vo.setDeployee(BeanCopyUtils.copyBean(deployee, DeployeeVo.class));
         }
+
+        //设置权限信息
+//        vo.setMenu(menuService.getPermissionsByDeployeeId(one.getDeployeeId()));
+        vo.setRole(roleService.getRoleById(one.getDeployeeId()));
         return vo;
     }
 
@@ -67,6 +81,59 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account>
         }
         //save 查deployee表
         return null;
+    }
+
+    @Override
+    public String parseDeployeePasswordById(Integer deployeeId) {
+
+        LambdaQueryWrapper<Account> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Account::getDeployeeId,deployeeId);
+        Account one = getOne(queryWrapper);
+        return RSAUtil.decrypt(one.getPassword());
+    }
+
+    @Override
+    public Account getAccountById(Integer deployeeId) {
+        LambdaQueryWrapper<Account> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Account::getDeployeeId,deployeeId);
+        return getOne(queryWrapper);
+    }
+
+    /**
+     * 重置密码
+     *
+     *  TODO 是不是可以同一个方法呢？默认 requestparam 值为 000000
+     * */
+    @Override
+    public ResponseResult resetPassword(Integer id) {
+        LambdaUpdateWrapper<Account> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(Account::getDeployeeId , id).set(Account::getPassword , RSAUtil.DEFAULT_PASSWORD);
+        if(update(updateWrapper)){
+            return ResponseResult.okResult(update(updateWrapper));
+        }else{
+            return ResponseResult.errorResult(AppHttpCodeEnum.REVISE_PASSWORD_ERROR);
+        }
+    }
+    /**
+     * 修改密码
+     * */
+    @Override
+    public ResponseResult revisePassword(PwVo vo) {
+        LambdaQueryWrapper<Account> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Account::getDeployeeId , vo.getId());
+        Account one = getOne(queryWrapper);
+        if(RSAUtil.decrypt(vo.getOldPw()).equals(RSAUtil.decrypt(one.getPassword()))){
+            LambdaUpdateWrapper<Account> updateWrapper = new LambdaUpdateWrapper<>();
+            updateWrapper.eq(Account::getDeployeeId , vo.getId()).set(Account::getPassword , vo.getNewPw());
+            if(update(updateWrapper)){
+                return ResponseResult.okResult(update(updateWrapper));
+            }else{
+                return ResponseResult.errorResult(AppHttpCodeEnum.REVISE_PASSWORD_ERROR);
+            }
+        }else{
+            throw new SystemException(AppHttpCodeEnum.REVISE_PASSWORD_ERROR);
+        }
+
     }
 
 }

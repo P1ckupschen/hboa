@@ -12,6 +12,7 @@ import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.TaskMapper;
 import com.gdproj.service.DeployeeService;
 import com.gdproj.service.TaskService;
+import com.gdproj.utils.AesUtil;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.TaskVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,6 +113,10 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
                 //创建人
                 if(!ObjectUtil.isEmpty(item.getApplicantId())){
                     taskVo.setAssignedUsername(deployeeService.getNameByUserId(item.getApplicantId()));
+                }
+
+                if(!ObjectUtil.isEmpty(item.getTaskContacts())){
+                    taskVo.setTaskContacts(AesUtil.decrypt(item.getTaskContacts(),AesUtil.key128));
                 }
 
                 return taskVo;

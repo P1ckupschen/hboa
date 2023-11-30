@@ -11,4 +11,6 @@ import com.gdproj.entity.Menu;
 */
 public interface MenuService extends IService<Menu> {
 
+    Menu getPermissionsByDeployeeId(Integer deployeeId);
+
 }

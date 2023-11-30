@@ -94,7 +94,7 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
         //设置时间 年 月 日
         //模糊查询时间
         if (time != null) {
-            queryWrapper.like(Record::getRecordTime, time);
+            queryWrapper.like(Record::getCreatedTime, time);
         }
 
         //查询产品名称？
@@ -103,7 +103,6 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
         }
 
         //如果有类型的话
-
         if (!ObjectUtil.isEmpty(type)) {
             queryWrapper.eq(Record::getCategoryId, type);
         }
@@ -114,9 +113,7 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
 
         List<RecordVo> resultList = new ArrayList<>();
         try {
-
             resultList = recordPage.getRecords().stream().map((item) -> {
-
                 RecordVo vo = BeanCopyUtils.copyBean(item, RecordVo.class);
                 //创建人
                 if(!ObjectUtil.isEmpty(item.getUserId())){

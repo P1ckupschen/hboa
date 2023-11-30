@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -46,9 +47,10 @@ public class notifyController {
                                         @RequestParam(required = false,defaultValue = "") String title ,
                                         @RequestParam(required = false) Integer departmentId,
                                         @RequestParam(required = false) Integer type,
-                                        @RequestParam(required = false) String time){
+                                        @RequestParam(required = false) String time,
+                                        @RequestParam(required = false) Integer status){
         PageQueryDto pageDto = new PageQueryDto(pageNum,pageSize,departmentId,type,title,time,sort);
-
+        pageDto.setStatus(status);
         IPage<NotifyVo> notifyList = new Page<>();
 
         try {
@@ -106,7 +108,9 @@ public class notifyController {
         Notify updateNotify = BeanCopyUtils.copyBean(notifyVo, Notify.class);
 //        vo中的 发布人  类型 部门
         System.out.println(updateNotify);
-
+        if(updateNotify.getNotifyStatus() == 1){
+            updateNotify.setEffectiveDate(new Date());
+        }
         boolean b = false;
 
         try {
@@ -182,6 +186,15 @@ public class notifyController {
 
     }
 
+    @PutMapping("/updateReadListById")
+    @autoLog
+    @ApiOperation(value = "更新已读列表")
+    public ResponseResult updateReadListById(@RequestParam("notifyId") Integer notifyid,
+                                             @RequestParam("userId")Integer userId){
+        return notifyService.updateReadListById(notifyid,userId);
+    }
+
+
     @DeleteMapping("deleteNotifyList")
     @autoLog
     //批量删除
@@ -210,13 +223,7 @@ public class notifyController {
 
     }
 
-
-
-
-
-
     //类型的增删改查
-
     @GetMapping("/getCategoryList")
     @autoLog
     @ApiOperation(value = "查询类型列表")

@@ -16,7 +16,8 @@ public enum AppHttpCodeEnum {
 
     TOKEN_PARSE_ERRPE(211,"token解析失败"),
     ACCOUNT_NULL(212,"用户名或密码为空"),
-
+    REVISE_PASSWORD_ERROR(213, "修改密码失败"),
+    ROLE_NULL(214 , "权限为空"),
 
 
     LIST_ERROR(300,"列表数据获取失败"),
@@ -54,8 +55,7 @@ public enum AppHttpCodeEnum {
 
     SET_PASS_ERROR(40002, "设置通过失败"),
 
-    SET_NO_PASS_ERROR(40003,"设置不通过失败")
-    ;
+    SET_NO_PASS_ERROR(40003,"设置不通过失败");
 
 
 

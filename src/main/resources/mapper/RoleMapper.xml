@@ -5,15 +5,23 @@
 <mapper namespace="generator.mapper.RoleMapper">
 
     <resultMap id="BaseResultMap" type="generator.entity.Role">
-            <id property="roleId" column="role_id" jdbcType="INTEGER"/>
+            <id property="roleId" column="role_id" jdbcType="BIGINT"/>
             <result property="roleName" column="role_name" jdbcType="VARCHAR"/>
-            <result property="roleStatus" column="role_status" jdbcType="VARCHAR"/>
+            <result property="roleKey" column="role_key" jdbcType="VARCHAR"/>
+            <result property="roleSort" column="role_sort" jdbcType="INTEGER"/>
+            <result property="status" column="status" jdbcType="INTEGER"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+            <result property="createUser" column="create_user" jdbcType="VARCHAR"/>
             <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="updateUser" column="update_user" jdbcType="VARCHAR"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        role_id,role_name,role_status,
-        created_time,update_time
+        role_id,role_name,role_key,
+        role_sort,status,is_deleted,
+        create_user,created_time,update_user,
+        update_time,remark
     </sql>
 </mapper>

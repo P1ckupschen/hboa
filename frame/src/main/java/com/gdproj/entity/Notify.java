@@ -1,6 +1,7 @@
 package com.gdproj.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.gdproj.handler.jsonAndListTypeHandler;
 import com.gdproj.vo.FileVo;
 
@@ -92,6 +93,9 @@ public class Notify implements Serializable {
      */
     @TableField(value = "examiner_id")
     private Integer examinerId;
+
+    @TableField(value = "read_list" , typeHandler = JacksonTypeHandler.class)
+    private List<String> readList;
 
     /**
      * 
@@ -370,5 +374,13 @@ public class Notify implements Serializable {
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
+    }
+
+    public List<String> getReadList() {
+        return readList;
+    }
+
+    public void setReadList(List<String> readList) {
+        this.readList = readList;
     }
 }

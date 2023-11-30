@@ -50,7 +50,7 @@ public class loginController {
 
     @GetMapping("/Userinfo")
     @autoLog
-    @ApiOperation(value = "获取后台用户信息")
+    @ApiOperation(value = "获取用户信息")
     public ResponseResult getUserInfo(HttpServletRequest request){
 
         String token = request.getHeader("Authorization");

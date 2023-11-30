@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @Api(tags = "付款申请功能")
 public class paymentController {
 
-
+    // TODO payment_account 手机号也需要 加密
     @Autowired
     PaymentService paymentService;
 
@@ -26,7 +26,6 @@ public class paymentController {
     @autoLog
     @ApiOperation(value = "查询支付申请列表")
     public ResponseResult getPaymentList( @Validated PageQueryDto queryDto){
-
         return paymentService.getPaymentList(queryDto);
     }
     @PostMapping("/insertPayment")

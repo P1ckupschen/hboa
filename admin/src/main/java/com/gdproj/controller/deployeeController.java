@@ -10,6 +10,7 @@ import com.gdproj.result.ResponseResult;
 import com.gdproj.service.DeployeeService;
 import com.gdproj.vo.DeployeeVo;
 import com.gdproj.vo.PageVo;
+import com.gdproj.vo.RoleSetVo;
 import com.gdproj.vo.UserVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -77,6 +78,7 @@ public class deployeeController {
     }
 
 
+
     @PutMapping("updateDeployee")
     @autoLog
     @ApiOperation(value = "更新员工" , notes = "如果涉及密码修改 也要同时修改front-account表")
@@ -84,6 +86,13 @@ public class deployeeController {
 
         return deployeeService.updateDeployee(vo);
 
+    }
+
+    @PostMapping("setDeployeeRole")
+    @autoLog
+    @ApiOperation(value = "设置员工角色")
+    public  ResponseResult setDeployeeRole(@RequestBody RoleSetVo vo){
+        return deployeeService.setDeployeeRole(vo);
     }
 
     @PostMapping("insertDeployee")
@@ -103,4 +112,7 @@ public class deployeeController {
         return deployeeService.deleteDeployee(id);
 
     }
+
+
+
 }

@@ -80,11 +80,17 @@ public class flowController {
     }
 
 
+    @DeleteMapping("/deleteFlow")
+    @autoLog
+    @ApiOperation(value = "删除流程")
+    public ResponseResult deleteFlow(@RequestParam("flowId") Integer id){
+        return flowService.deleteFlow(id);
+    }
+
     @GetMapping("getFlowListByCurrentUser")
     @autoLog
     @ApiOperation(value = "我的待办事项" , notes = "只显示申请人是当前用户的 or 当前审批人是自己的 流程列表")
     public ResponseResult getFlowListByCurrentUser(@Validated PageQueryDto queryDto ,HttpServletRequest request){
-
         return flowService.getFlowListByCurrentUser(queryDto,request);
     }
 

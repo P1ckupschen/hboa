@@ -1,5 +1,8 @@
 package com.gdproj.utils;
 
+import cn.hutool.core.util.ObjectUtil;
+import com.gdproj.enums.AppHttpCodeEnum;
+import com.gdproj.exception.SystemException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -90,7 +93,7 @@ public class JwtUtils {
 
     /**
      * 根据token获取会员id
-     * @param request
+     * @param
      * @return
      */
     public static String getMemberIdByJwtToken(String jwtToken) {
@@ -114,5 +117,23 @@ public class JwtUtils {
                 .setSigningKey(APP_SECRET)
                 .parseClaimsJws(jwt)
                 .getBody();
+    }
+
+    /**
+     * 解析 bear token
+     * @param
+     * @return
+     * @throws Exception
+     */
+    public static Integer parseBearerJWT(HttpServletRequest request) throws Exception {
+        String jwtToken = request.getHeader("Authorization");
+        if(!ObjectUtil.isEmpty(jwtToken)){
+            String token = jwtToken.split(" ")[1];
+            String id = getMemberIdByJwtToken(token);
+            return Integer.parseInt(id);
+        }else{
+            throw new SystemException(AppHttpCodeEnum.TOKEN_PARSE_ERRPE);
+        }
+
     }
 }

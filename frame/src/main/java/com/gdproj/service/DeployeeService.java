@@ -7,6 +7,7 @@ import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Deployee;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.vo.DeployeeVo;
+import com.gdproj.vo.RoleSetVo;
 import com.gdproj.vo.UserVo;
 
 import java.util.List;
@@ -41,4 +42,6 @@ public interface DeployeeService extends IService<Deployee> {
     ResponseResult updateDeployee(DeployeeVo vo);
 
     ResponseResult deleteDeployee(Integer id);
+
+    ResponseResult setDeployeeRole(RoleSetVo vo);
 }

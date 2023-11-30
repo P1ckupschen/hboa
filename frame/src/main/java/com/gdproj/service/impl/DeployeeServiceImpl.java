@@ -10,6 +10,7 @@ import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Account;
 import com.gdproj.entity.Department;
 import com.gdproj.entity.Deployee;
+import com.gdproj.entity.UserRole;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.DeployeeMapper;
@@ -17,9 +18,12 @@ import com.gdproj.result.ResponseResult;
 import com.gdproj.service.AccountService;
 import com.gdproj.service.DepartmentService;
 import com.gdproj.service.DeployeeService;
+import com.gdproj.service.UserRoleService;
+import com.gdproj.utils.AesUtil;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.utils.RSAUtil;
 import com.gdproj.vo.DeployeeVo;
+import com.gdproj.vo.RoleSetVo;
 import com.gdproj.vo.UserVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,6 +47,9 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
 
     @Autowired
     AccountService accountService;
+
+    @Autowired
+    UserRoleService userRoleService;
 
     @Override
     public List<Integer> getIdsByTime(String time) {
@@ -167,6 +174,7 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
         }
         //已离职的筛选掉
 //        queryWrapper.eq(Deployee::getDeployeeStatus,1);
+
         //查询名称？
         if (!title.isEmpty()) {
             queryWrapper.eq(Deployee::getDeployeeId,title);
@@ -178,7 +186,7 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
 
         //如果有类型的话 类型
         if (!ObjectUtil.isEmpty(type)) {
-            queryWrapper.eq(Deployee::getDeployeeRole,type);
+            queryWrapper.eq(Deployee::getDeployeeStatus,type);
         }
 
         IPage<Deployee> recordPage = page(page, queryWrapper);
@@ -189,8 +197,16 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
         try {
 
             resultList = recordPage.getRecords().stream().map((item) -> {
-
-                //类型名称?
+                //手机号解密
+                if(!ObjectUtil.isEmpty(item.getDeployeePhone())){
+                    item.setDeployeePhone(AesUtil.decrypt(item.getDeployeePhone(),AesUtil.key128));
+                }
+                if(item.getDeployeeStatus() == 0){
+                    item.setDeployeeName(item.getDeployeeName() + " 已离职") ;
+                }
+                //role
+                List<Integer> ids = userRoleService.getRoleIdsById(item.getDeployeeId());
+                item.setDeployeeRole(ids);
                 return BeanCopyUtils.copyBean(item, DeployeeVo.class);
             }).collect(Collectors.toList());
         }catch (Exception e){
@@ -208,16 +224,27 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
     public ResponseResult inserDeployee(DeployeeVo vo) {
 
         Deployee deployee = BeanCopyUtils.copyBean(vo,Deployee.class);
+        if(!ObjectUtil.isEmpty(deployee.getDeployeePhone())){
+            deployee.setDeployeePhone(AesUtil.encrypt(deployee.getDeployeePhone(),AesUtil.key128));
+        }
         boolean isSave = save(deployee);
-        if(isSave){
-            Account account = new Account();
-            account.setDeployeeId(deployee.getDeployeeId());
-            account.setName(deployee.getDeployeeName());
-            account.setPassword(RSAUtil.decrypt(deployee.getPassword()));
-            account.setUsername(deployee.getUsername());
-            return ResponseResult.okResult(accountService.save(account));
+        
+
+        //insert默认员工权限为普通员工 6
+        UserRole userRole = new UserRole();
+        userRole.setDeployeeId(deployee.getDeployeeId());
+        userRole.setRoleId(6);
+        userRoleService.save(userRole);
+        if(isSave && !ObjectUtil.isEmpty(deployee.getUsername())){
+            //如果有账号密码就新建account
+                Account account = new Account();
+                account.setDeployeeId(deployee.getDeployeeId());
+                account.setName(deployee.getDeployeeName());
+                account.setUsername(deployee.getUsername());
+                account.setPassword(RSAUtil.DEFAULT_PASSWORD);
+                return ResponseResult.okResult(accountService.save(account));
         }else{
-            throw new SystemException(AppHttpCodeEnum.INSERT_ERROR);
+            return ResponseResult.okResult(isSave);
         }
 
     }
@@ -226,14 +253,17 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
     public ResponseResult updateDeployee(DeployeeVo vo) {
 
         Deployee deployee = BeanCopyUtils.copyBean(vo,Deployee.class);
+        if(!ObjectUtil.isEmpty(deployee.getDeployeePhone())){
+            deployee.setDeployeePhone(AesUtil.encrypt(deployee.getDeployeePhone(),AesUtil.key128));
+        }
         boolean isUpdate = updateById(deployee);
         //如果账号密码不为空
-        if(isUpdate && !ObjectUtil.isEmpty(deployee.getPassword()) && !ObjectUtil.isEmpty(deployee.getUsername())){
+        if(isUpdate){
+            //如果密码修改了就更新account
             LambdaUpdateWrapper<Account> updateWrapper = new LambdaUpdateWrapper<>();
             updateWrapper.eq(Account::getDeployeeId,deployee.getDeployeeId())
                     .set(Account::getName,deployee.getDeployeeName())
-                    .set(Account::getUsername,deployee.getUsername())
-                    .set(Account::getPassword,RSAUtil.decrypt(deployee.getPassword()));
+                    .set(Account::getUsername,deployee.getUsername());
             return ResponseResult.okResult(accountService.update(updateWrapper));
         }else{
             throw new SystemException(AppHttpCodeEnum.UPDATE_ERROR);
@@ -249,6 +279,44 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
 
     }
 
+    @Override
+    public ResponseResult setDeployeeRole(RoleSetVo vo) {
+        Integer currentId = vo.getDeployeeId();
+        List<Integer> roleList = vo.getList();
+        List<UserRole> batch = new ArrayList<>();
+        //找到user-role表所有对应的deployeeid 先删除
+        LambdaQueryWrapper<UserRole> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserRole::getDeployeeId,currentId);
+        List<UserRole> list = userRoleService.list(queryWrapper);
+        boolean remove = false;
+        if(!ObjectUtil.isEmpty(list)){
+            remove = userRoleService.remove(queryWrapper);
+        }else{
+            remove = true;
+        }
+        //如果删除成功 就把所有role信息保存
+        if(remove){
+            if(!ObjectUtil.isEmpty(roleList)){
+                roleList.stream().forEach((item)->{
+                    UserRole ur = new UserRole();
+                    ur.setRoleId(item);
+                    ur.setDeployeeId(currentId);
+                    batch.add(ur);
+                });
+            }else{
+                throw new SystemException(AppHttpCodeEnum.ROLE_NULL);
+            }
+        }else{
+            throw new SystemException(AppHttpCodeEnum.DELETE_ERROR);
+        }
+        //再保存
+        boolean b = userRoleService.saveBatch(batch);
+        if(b){
+            return ResponseResult.okResult(b);
+        }else{
+            return ResponseResult.errorResult(AppHttpCodeEnum.UPDATE_ERROR);
+        }
+    }
 }
 
 

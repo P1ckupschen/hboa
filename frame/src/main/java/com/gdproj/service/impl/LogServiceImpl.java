@@ -62,6 +62,10 @@ public class LogServiceImpl extends ServiceImpl<LogMapper, Log>
             queryWrapper.orderByDesc(Log::getLogId);
         }
 
+        if(!ObjectUtil.isEmpty(time)){
+            queryWrapper.like(Log::getCreatedTime,time);
+        }
+
         //查询名称？ 应该是用户
         if (!title.isEmpty()) {
             queryWrapper.eq(Log::getUserId,title);

@@ -62,7 +62,7 @@ public class logAspect {
                 log.setUserId(Integer.valueOf(id));
             }
             //    TODO  新增log日志
-//                 logService.insertLogWhenOperating(log);
+                 logService.insertLogWhenOperating(log);
 
         }
 

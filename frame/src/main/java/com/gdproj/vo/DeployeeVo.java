@@ -27,7 +27,7 @@ public class DeployeeVo {
 
     private Integer deployeeStatus;
 
-    private Integer deployeeRole;
+    private List<Integer> deployeeRole;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date entryTime;
 
@@ -48,4 +48,5 @@ public class DeployeeVo {
     private Date updateTime;
 
     private List<FileVo> ensurance;
+
 }

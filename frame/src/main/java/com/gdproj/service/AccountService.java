@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdproj.entity.Account;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.vo.AccountVo;
+import com.gdproj.vo.PwVo;
 
 /**
 * @author Administrator
@@ -17,4 +18,12 @@ public interface AccountService extends IService<Account> {
     ResponseResult updateAccount(String pw , Integer id);
 
     ResponseResult createAccount(String username, String password, String id);
+
+    String parseDeployeePasswordById(Integer deployeeId);
+
+    Account getAccountById(Integer deployeeId);
+
+    ResponseResult resetPassword(Integer id);
+
+    ResponseResult revisePassword(PwVo vo);
 }

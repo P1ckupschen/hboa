@@ -59,8 +59,8 @@ public class Deployee implements Serializable {
     /**
      *
      */
-    @TableField(value = "deployee_role")
-    private Integer deployeeRole;
+    @TableField(value = "deployee_role",typeHandler = JacksonTypeHandler.class)
+    private List<Integer> deployeeRole;
 
     /**
      *
@@ -233,14 +233,14 @@ public class Deployee implements Serializable {
     /**
      *
      */
-    public Integer getDeployeeRole() {
+    public List<Integer>  getDeployeeRole() {
         return deployeeRole;
     }
 
     /**
      *
      */
-    public void setDeployeeRole(Integer deployeeRole) {
+    public void setDeployeeRole(List<Integer>  deployeeRole) {
         this.deployeeRole = deployeeRole;
     }
 

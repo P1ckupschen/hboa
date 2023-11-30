@@ -7,14 +7,15 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.annotation.autoLog;
 import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Contract;
-import com.gdproj.entity.Template;
 import com.gdproj.entity.ContractCategory;
+import com.gdproj.entity.Template;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.ContractService;
 import com.gdproj.service.TemplateService;
 import com.gdproj.service.contractCategoryService;
+import com.gdproj.utils.AesUtil;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.CategoryVo;
 import com.gdproj.vo.ContractVo;
@@ -101,6 +102,12 @@ public class contractController {
         Contract updateInfo = BeanCopyUtils.copyBean(vo, Contract.class);
 //        vo中的 发布人  类型 部门
 
+        if(!ObjectUtil.isEmpty(updateInfo.getaPhone())){
+            updateInfo.setaPhone(AesUtil.encrypt(updateInfo.getaPhone(),AesUtil.key128));
+        }
+        if(!ObjectUtil.isEmpty(updateInfo.getbPhone())){
+            updateInfo.setbPhone(AesUtil.encrypt(updateInfo.getbPhone(),AesUtil.key128));
+        }
         boolean b = false;
 
         try {
@@ -129,6 +136,12 @@ public class contractController {
 
         Contract insertInfo = BeanCopyUtils.copyBean(vo, Contract.class);
 
+        if(!ObjectUtil.isEmpty(insertInfo.getaPhone())){
+            insertInfo.setaPhone(AesUtil.encrypt(insertInfo.getaPhone(),AesUtil.key128));
+        }
+        if(!ObjectUtil.isEmpty(insertInfo.getbPhone())) {
+            insertInfo.setbPhone(AesUtil.encrypt(insertInfo.getbPhone(), AesUtil.key128));
+        }
         boolean b = false;
 
         try {

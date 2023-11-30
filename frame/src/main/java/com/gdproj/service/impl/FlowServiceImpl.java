@@ -778,6 +778,17 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
         }
     }
 
+    @Override
+    public ResponseResult deleteFlow(Integer id) {
+
+        boolean b = removeById(id);
+        if(b){
+            return ResponseResult.okResult(b);
+        }else{
+            return ResponseResult.errorResult(AppHttpCodeEnum.DELETE_ERROR);
+        }
+    }
+
 }
 
 

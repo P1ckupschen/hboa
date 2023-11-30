@@ -12,6 +12,7 @@ import com.gdproj.entity.Sign;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.SignMapper;
+import com.gdproj.result.ResponseResult;
 import com.gdproj.service.DepartmentService;
 import com.gdproj.service.DeployeeService;
 import com.gdproj.service.SignService;
@@ -321,6 +322,80 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
         }).collect(Collectors.toList());
         EasyExcel.write(fileName, MonthSignExcelEntity.class).sheet("月度考勤统计").doWrite(collect);
         downloadExcel(fileName,response);
+    }
+
+    @Override
+    public ResponseResult getTodayList(PageQueryDto queryDto) {
+
+        //类型
+        Integer type = queryDto.getType();
+        //部门
+        Integer departmentId = queryDto.getDepartmentId();
+        //时间
+        String time = queryDto.getTime();
+        //排序
+        String sort = queryDto.getSort();
+        //搜索框如果是产品搜索产品名称或者选择产品id
+        //如果是人 搜素人名或者人id
+        //如果是物 搜索id
+        String title = queryDto.getTitle();
+        Integer pageNum = queryDto.getPageNum();
+        Integer pageSize = queryDto.getPageSize();
+
+        Calendar cal = Calendar.getInstance();
+        Date date = transferStringToDate(time);
+        cal.setTime(date);
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH) + 1;
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+
+        LambdaQueryWrapper<Sign> queryWrapper = new LambdaQueryWrapper<>();
+
+        if(ObjectUtil.isEmpty(time)){
+            queryWrapper.like(Sign::getInTime,year + "-" + month + "-" + day);
+        }else{
+            queryWrapper.like(Sign::getInTime,time);
+        }
+        Page<SignVo> resultPage = new Page<>();
+
+        //并且筛选出离职员工
+        IPage<DeployeeVo> deployeeListPage = deployeeService.getDeployeeList(queryDto);
+        List<DeployeeVo> deployeeList = deployeeListPage.getRecords();
+        List<Integer> collect = deployeeList.stream().filter(item -> item.getDeployeeStatus() == 1).map(DeployeeVo::getDeployeeId).collect(Collectors.toList());
+        queryWrapper.in(Sign::getUserId,collect);
+        Page<Sign> page = page(new Page<>(queryDto.getPageNum(), queryDto.getPageSize()), queryWrapper);
+
+        List<SignVo> collect1 = page.getRecords().stream().map((item) -> {
+            SignVo signvo = BeanCopyUtils.copyBean(item, SignVo.class);
+            if (!ObjectUtil.isEmpty(item.getUserId())) {
+                signvo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
+                //部门
+                signvo.setDepartment(departmentService.getDepartmentNameByDepartmentId(deployeeService.getById(item.getUserId()).getDepartmentId()));
+                signvo.setDepartmentId(deployeeService.getDepartmentIdByUserId(item.getUserId()));
+            }
+
+            long workTime = 0L;
+            if (!ObjectUtil.isEmpty(signvo.getEndTime())) {
+                workTime = (signvo.getEndTime().getTime() - signvo.getInTime().getTime()) / 1000 / 60 / 60;
+            }
+
+            signvo.setTWorkTime((int) workTime);
+            if (signvo.getTWorkTime() < item.getWorkTime()) {
+                signvo.setSignStatus(0);
+            }
+
+            //判断电脑打卡
+            if (workTime >= signvo.getWorkTime() && signvo.getSignAddr() == "XXXX附近") {
+                signvo.setSignStatus(1);
+            } else {
+                signvo.setSignStatus(0);
+            }
+            return signvo;
+        }).collect(Collectors.toList());
+
+            resultPage.setRecords(collect1);
+            resultPage.setTotal(page.getTotal());
+            return ResponseResult.okResult(resultPage);
     }
 
     private void downloadExcel(String fileName, HttpServletResponse response) {

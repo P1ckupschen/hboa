@@ -1,22 +1,20 @@
 package com.gdproj;
 
-import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.hutool.core.util.DesensitizedUtil;
 import cn.hutool.http.HttpUtil;
+import com.gdproj.entity.Deployee;
 import com.gdproj.entity.SignExcelEntity;
 import com.gdproj.utils.AesUtil;
+import com.gdproj.utils.RSAUtil;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @SpringBootTest
 public class Appt {
-
-    @Autowired
-    WxMaService wxMaService;
 
     @Test
     public void exportExcel(){
@@ -52,5 +50,11 @@ public class Appt {
     @Test
     public void wxSubscribeTest(){
         System.out.println(HttpUtil.post("https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=ACCESS_TOKEN", "1tyty"));
+
+        Deployee deployee = new Deployee();
+        deployee.setDeployeePhone("17395712681");
+        System.out.println(AesUtil.encrypt(deployee.getDeployeePhone(),AesUtil.key128));
+        System.out.println(RSAUtil.decrypt("hzIaztKQMS51FwRJKCogCEIerHW+rK721x4ys1lrY7WouJZjxjTY98/VuU27MJGGLI0pyisB3PYzWKImgegKj2SIL68zeVtOxAUXU+u10mwHMDl+5s9Q+XZpq+DlnAtvPFnS+jYOEW8dAzRq6tQVvFYtooAOezrJLQyzswS8bI5UeEVqQEl1cZc6q6dfCy/ZZ0A5jWU2oCMW5ZrWbK0TD1T8Ji1aDEa14Htu9k70dXK4kHpIfAeNaLn2Xzw5DmBqt9huRwapIMkcips9m/g3ZKoqaMnYSxd4tQKv43bzw65Bmh+8drhHpCzQJLYnERrfrdGpxu1oeXk1DsuJVKTKmw=="));
+        System.out.println(new Date());
     }
 }

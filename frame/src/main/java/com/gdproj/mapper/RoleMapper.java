@@ -6,9 +6,9 @@ import org.apache.ibatis.annotations.Mapper;
 
 /**
 * @author Administrator
-* @description 针对表【sys_role】的数据库操作Mapper
-* @createDate 2023-09-11 14:04:31
-* @Entity generator.domain.Role
+* @description 针对表【sys_role(角色信息表)】的数据库操作Mapper
+* @createDate 2023-11-24 14:19:44
+* @Entity generator.entity.Role
 */
 @Mapper
 public interface RoleMapper extends BaseMapper<Role> {

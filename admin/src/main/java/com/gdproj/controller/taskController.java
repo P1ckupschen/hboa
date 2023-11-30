@@ -1,6 +1,7 @@
 package com.gdproj.controller;
 
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.annotation.autoLog;
@@ -10,6 +11,7 @@ import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.TaskService;
+import com.gdproj.utils.AesUtil;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.PageVo;
 import com.gdproj.vo.TaskVo;
@@ -73,7 +75,9 @@ public class taskController {
     public ResponseResult updateTask(@RequestBody TaskVo taskVo){
 
         Task updateTask = BeanCopyUtils.copyBean(taskVo, Task.class);
-
+        if(!ObjectUtil.isEmpty(updateTask.getTaskContacts())){
+            updateTask.setTaskContacts(AesUtil.encrypt(updateTask.getTaskContacts(),AesUtil.key128));
+        }
         boolean b = false;
 
         try {
@@ -102,13 +106,15 @@ public class taskController {
     @ApiOperation(value = "新增任务")
     public ResponseResult insertTask(@RequestBody TaskVo taskVo){
 
-        Task updateTask = BeanCopyUtils.copyBean(taskVo, Task.class);
-
+        Task insertTask = BeanCopyUtils.copyBean(taskVo, Task.class);
+        if(!ObjectUtil.isEmpty(insertTask.getTaskContacts())){
+            insertTask.setTaskContacts(AesUtil.encrypt(insertTask.getTaskContacts(),AesUtil.key128));
+        }
         boolean b = false;
 
         try {
 
-            b = taskService.save(updateTask);
+            b = taskService.save(insertTask);
 
             if(b == true){
                 return ResponseResult.okResult(b);

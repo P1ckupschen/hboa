@@ -15,6 +15,7 @@ import com.gdproj.result.ResponseResult;
 import com.gdproj.service.DeployeeService;
 import com.gdproj.service.FlowService;
 import com.gdproj.service.PaymentService;
+import com.gdproj.utils.AesUtil;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.PageVo;
 import com.gdproj.vo.PaymentVo;
@@ -43,6 +44,9 @@ public class PaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment>
     @Override
     public boolean insertPayment(Payment payment) {
 
+        if(!ObjectUtil.isEmpty(payment.getPaymentAccount())){
+            payment.setPaymentAccount(AesUtil.encrypt(payment.getPaymentAccount(),AesUtil.key128));
+        }
         //插入overtime数据
         boolean f =false;
         payment.setUserName(deployeeService.getNameByUserId(payment.getUserId()));
@@ -112,6 +116,10 @@ public class PaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment>
             if(ObjectUtil.isEmpty(item.getPaymentAmount())){
                 throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
             }
+            //账号解密
+            if(!ObjectUtil.isEmpty(item.getPaymentAccount())){
+                vo.setPaymentAccount(AesUtil.decrypt(item.getPaymentAccount(),AesUtil.key128));
+            }
             vo.setPaymentAmountCap(NumberChineseFormatter.format(item.getPaymentAmount().doubleValue(),true,true));
             return vo;
         }).collect(Collectors.toList());
@@ -130,6 +138,9 @@ public class PaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment>
     public ResponseResult updatePayment(PaymentVo vo) {
 
         Payment payment = BeanCopyUtils.copyBean(vo, Payment.class);
+        if(!ObjectUtil.isEmpty(payment.getPaymentAccount())){
+            payment.setPaymentAccount(AesUtil.encrypt(payment.getPaymentAccount(),AesUtil.key128));
+        }
         boolean b = updateById(payment);
         if(b){
             return ResponseResult.okResult(b);

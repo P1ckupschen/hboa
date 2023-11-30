@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Sign;
+import com.gdproj.result.ResponseResult;
 import com.gdproj.vo.IsSignVo;
 import com.gdproj.vo.MonthSignVo;
 import com.gdproj.vo.SignVo;
@@ -28,4 +29,6 @@ public interface SignService extends IService<Sign> {
     IPage<MonthSignVo> getMonthSignList(PageQueryDto pageDto);
 
     void exportMonthSignExcel(PageQueryDto pageDto, HttpServletResponse response);
+
+    ResponseResult getTodayList(PageQueryDto queryDto);
 }

@@ -37,4 +37,6 @@ public interface FlowService extends IService<Flow> {
     ResponseResult getFlowListByCurrentUser(PageQueryDto queryDto, HttpServletRequest request);
 
     ResponseResult getFlowDetail(Integer typeId, Integer runId);
+
+    ResponseResult deleteFlow(Integer id);
 }

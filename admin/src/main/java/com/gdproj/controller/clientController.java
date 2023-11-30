@@ -88,7 +88,6 @@ public class clientController {
         Client updateInfo = BeanCopyUtils.copyBean(vo, Client.class);
 //        vo中的 发布人  类型 部门
         System.out.println(updateInfo);
-
         boolean b = false;
 
         try {

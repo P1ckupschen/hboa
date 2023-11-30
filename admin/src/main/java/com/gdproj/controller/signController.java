@@ -19,6 +19,7 @@ import com.gdproj.vo.SignVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -67,6 +68,15 @@ public class signController {
 
         }
 
+    }
+
+    //TODO
+    @GetMapping("/getTodayList")
+    @autoLog
+    @ApiOperation(value = "查询今日考勤列表")
+    public ResponseResult getTodayList(@Validated PageQueryDto queryDto){
+
+        return signService.getTodayList(queryDto);
     }
 
     @GetMapping("/getMonthSignList")
