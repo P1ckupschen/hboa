@@ -6,6 +6,10 @@ import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Overtime;
 import com.gdproj.vo.OvertimeVo;
 
+import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
+import java.util.List;
+
 /**
 * @author Administrator
 * @description 针对表【sys_overtime】的数据库操作Service
@@ -17,4 +21,5 @@ public interface OvertimeService extends IService<Overtime> {
 
     boolean insertOvertime(Overtime insertOvertime);
 
+    void exportOvertimeExcel(List<Date> interval, HttpServletResponse response);
 }

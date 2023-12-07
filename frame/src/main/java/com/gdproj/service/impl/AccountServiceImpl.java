@@ -136,6 +136,22 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account>
 
     }
 
+    @Override
+    public Integer getDeployeeIdByOpenId(String openId) {
+        if(!ObjectUtil.isEmpty(openId)){
+            LambdaQueryWrapper<Account> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(Account::getOpenId,openId);
+            Account one = getOne(queryWrapper);
+            if(!ObjectUtil.isEmpty(one)){
+                return one.getDeployeeId();
+            }else{
+                return 0;
+            }
+        }else{
+            throw new SystemException(AppHttpCodeEnum.OPEN_ID_NULL);
+        }
+    }
+
 }
 
 

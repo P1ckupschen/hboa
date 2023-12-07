@@ -1,5 +1,5 @@
 server:
-  port: 7778
+  port: 7777
 spring:
   main:
     allow-circular-references: true
@@ -8,28 +8,63 @@ spring:
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
-
-#  用来把数据库对象的字段变为下划线
+  #    swagger 配置
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+  #  用来把数据库对象的字段变为下划线
   jackson:
     property-naming-strategy: SNAKE_CASE
 
-#  configuration:
-#    map-underscore-to-camel-case: true
+  #  configuration:
+  #    map-underscore-to-camel-case: true
   servlet:
     multipart:
       # maxFileSize 单个数据大小
       # maxRequestSize 是总数据大小
       max-file-size: 20MB
       max-request-size: 100MB
+#      --spring.profiles.active=prod
 mybatis-plus:
   global-config:
     db-config:
       logic-delete-field: flag # 全局逻辑删除的实体字段名(since 3.3.0,配置后可以忽略不配置步骤2)
       logic-delete-value: 1 # 逻辑已删除值(默认为 1)
       logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
+wx:
+  mp:
+    templateId: WBzrHnLayQoPvvh1LV9M4-TmiqddsRBdSiZG8a_1Y-g
+    useRedis: false
+    redisConfig:
+      host: 127.0.0.1
+      port: 6379
+    configs:
+      - appId: wxad89a06b6524c854 # 第一个公众号的appid
+        secret: 1c89fd7aa6c07de55ef0ea8f5c8484b9 # 公众号的appsecret
+        token: hboatoken # 接口配置里的Token值
+        aesKey: 111 # 接口配置里的EncodingAESKey值
+
+#      - appId: 2222 # 第二个公众号的appid，以下同上
+#        secret: 1111
+#        token: 111
+#        aesKey: 111
+#logging:
+##  file:
+##    name: server.log
+#  logback:
+#    rollingpolicy:
+#      max-file-size: 5MB
+#  file:
+#    path: log
+
+
+#  pattern:
+#    console: "%d %-5level %logger : %msg%n"
+#    file: "%d %-5level [%thread] %logger : %msg%n"
 
 #Windows下的路径配置
 ImagesFilePath: E:\\sch-work-space\\projects\\hbkj\\hboa\\admin\\src\\main\\resources\\images\\
-
+ExcelFilePath: E:\\sch-work-space\\projects\\hbkj\\hboa\\admin\\src\\main\\resources\\excel\\
+ProjectUrl: ""
 #linux下的路径配置
 #ImagesFilePath: /usr/local/images/

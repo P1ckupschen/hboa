@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.gdproj.vo.FileVo;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -181,7 +182,7 @@ public class Contract implements Serializable {
      *
      */
     @TableField(value = "warranty_amount")
-    private Long warrantyAmount;
+    private BigDecimal warrantyAmount;
 
     /**
      *
@@ -594,14 +595,14 @@ public class Contract implements Serializable {
     /**
      *
      */
-    public Long getWarrantyAmount() {
+    public BigDecimal getWarrantyAmount() {
         return warrantyAmount;
     }
 
     /**
      *
      */
-    public void setWarrantyAmount(Long warrantyAmount) {
+    public void setWarrantyAmount(BigDecimal warrantyAmount) {
         this.warrantyAmount = warrantyAmount;
     }
 

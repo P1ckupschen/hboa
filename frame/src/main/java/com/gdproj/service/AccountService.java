@@ -26,4 +26,6 @@ public interface AccountService extends IService<Account> {
     ResponseResult resetPassword(Integer id);
 
     ResponseResult revisePassword(PwVo vo);
+
+    Integer getDeployeeIdByOpenId(String openId);
 }

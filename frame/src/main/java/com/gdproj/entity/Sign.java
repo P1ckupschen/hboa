@@ -98,6 +98,12 @@ public class Sign implements Serializable {
     private Integer isDeleted;
 
     @TableField(exist = false)
+    private Double longitude;
+
+    @TableField(exist = false)
+    private Double latitude;
+
+    @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
     /**
@@ -368,5 +374,21 @@ public class Sign implements Serializable {
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
     }
 }

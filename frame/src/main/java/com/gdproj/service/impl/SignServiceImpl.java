@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdproj.dto.PageQueryDto;
+import com.gdproj.entity.Deployee;
 import com.gdproj.entity.MonthSignExcelEntity;
 import com.gdproj.entity.Sign;
 import com.gdproj.enums.AppHttpCodeEnum;
@@ -16,17 +17,22 @@ import com.gdproj.result.ResponseResult;
 import com.gdproj.service.DepartmentService;
 import com.gdproj.service.DeployeeService;
 import com.gdproj.service.SignService;
-import com.gdproj.utils.BaiduMapUtil;
+import com.gdproj.utils.BMapApi;
 import com.gdproj.utils.BeanCopyUtils;
+import com.gdproj.utils.GenUtil;
 import com.gdproj.vo.DeployeeVo;
 import com.gdproj.vo.IsSignVo;
 import com.gdproj.vo.MonthSignVo;
 import com.gdproj.vo.SignVo;
+import org.gavaghan.geodesy.Ellipsoid;
+import org.gavaghan.geodesy.GlobalCoordinates;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -54,6 +60,9 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
 
     @Autowired
     DepartmentService departmentService;
+
+    @Value("${ExcelFilePath}")
+    String filePath;
 
 
     @Override
@@ -183,8 +192,20 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
             } else {
                 sign.setIsLate(0);
             }
-            //只有用户和签到时间
-            sign.setSignAddr(BaiduMapUtil.getAddress("221.136.212.195"));
+            BMapApi bMapApi = new BMapApi();
+            if(!ObjectUtil.isEmpty(sign.getLatitude()) && !ObjectUtil.isEmpty(sign.getLatitude())){
+                GlobalCoordinates source = new GlobalCoordinates(sign.getLatitude(),sign.getLongitude());
+                double distanceMeter = GenUtil.getDistanceMeter(source, GenUtil.target, Ellipsoid.Sphere);
+                sign.setSignAddr((String) bMapApi.reverseGeocoding(BigDecimal.valueOf(sign.getLongitude()), BigDecimal.valueOf(sign.getLatitude())));
+//                if(distanceMeter >= 50.0){
+////                如果打卡距离大于50米
+//                    sign.setSignStatus(0);
+//
+//                    sign.setSignAddr("离公司附近50米外:"+ distanceMeter);
+//                }else{
+//                    sign.setSignAddr("公司附近" + distanceMeter);
+//                }
+            }
             return save(sign);
         }
 
@@ -301,6 +322,7 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
 
     @Override
     public void exportMonthSignExcel(PageQueryDto pageDto, HttpServletResponse response) {
+        //TODO 变量导入
         String fileName = "admin/src/main/resources/signExcel/" + System.currentTimeMillis() + ".xlsx";
         IPage<MonthSignVo> monthSignList = getMonthSignList(pageDto);
         String time = pageDto.getTime();
@@ -398,6 +420,8 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
             return ResponseResult.okResult(resultPage);
     }
 
+
+
     private void downloadExcel(String fileName, HttpServletResponse response) {
         try {
             File file = new File(fileName);
@@ -477,12 +501,12 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
         vo.setDeployee(deployee);
         vo.setUserId(deployee.getUserId());
         //固定上班时间 一个月27天; TODO  固定上班时间 设置为 27 天
-        vo.setShouldAttendanceDays(27);
+//        vo.setShouldAttendanceDays(27);
         //统计上班status == 1的list的size();
         //实际上班天数
         vo.setAttendanceDays((int) list.stream().filter((item) -> item.getSignStatus() == 1).count());
         //出勤率 百分比  实际上班天数 / 固定上班时间  算出百分比
-        vo.setAttendanceRate((double) Math.round(vo.getAttendanceDays() / (double)vo.getShouldAttendanceDays() *100.0) / 100.0);
+//        vo.setAttendanceRate((double) Math.round(vo.getAttendanceDays() / (double)vo.getShouldAttendanceDays() *100.0) / 100.0);
         //迟到天数
         vo.setLateDays(getLateHistoryByMonthList(list).size());
         //迟到记录
@@ -504,6 +528,70 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
         return BeanCopyUtils.copyBeanList(collect, SignVo.class);
     }
 
+    @Override
+    //TODO 如何设置 考勤记录导出？
+    public void exportSignExcel(List<Date> interval, HttpServletResponse response) {
+        String fileName = filePath + System.currentTimeMillis() + ".xlsx";
+        List<MonthSignVo> records = getMonthSignList(interval);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        List<MonthSignExcelEntity> collect = records.stream().map((item) -> {
+            MonthSignExcelEntity excelEntity = BeanCopyUtils.copyBean(item, MonthSignExcelEntity.class);
+            excelEntity.setUserId(item.getDeployee().getDeployeeId());
+            excelEntity.setUsername(item.getDeployee().getDeployeeName());
+            //设置早退记录
+            excelEntity.setEarlyHistory(transferEarlyHistoryToString(item.getEarlyHistory()));
+            //设置迟到记录
+            excelEntity.setLateHistory(transferLateHistoryToString(item.getLateHistory()));
+            //设置考勤时期
+            excelEntity.setStage(sdf.format(interval.get(0))+ "至" +sdf.format(interval.get(1)));
+            return excelEntity;
+        }).collect(Collectors.toList());
+        EasyExcel.write(fileName, MonthSignExcelEntity.class).sheet("月度考勤统计").doWrite(collect);
+        downloadExcel(fileName,response);
+    }
+
+    public  List<MonthSignVo> getMonthSignList(List<Date> interval) {
+
+        if(ObjectUtil.isEmpty(interval)){
+           throw new SystemException(AppHttpCodeEnum.ARRAY_NULL_ERROR);
+        }
+        LambdaQueryWrapper<Deployee> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Deployee::getDeployeeStatus , 1);
+        List<Deployee> list = deployeeService.list(queryWrapper);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return list.stream().map((item) -> {
+            MonthSignVo vo = new MonthSignVo();
+            //从查询的当天 day开始 到一个月后的day；
+            LambdaQueryWrapper<Sign> queryWrapper1 = new LambdaQueryWrapper<>();
+            queryWrapper1.between(Sign::getInTime, sdf.format(interval.get(0)), sdf.format(interval.get(1)));
+            queryWrapper1.eq(Sign::getUserId, item.getDeployeeId());
+            //获得这一个月内的这个用户的签到记录
+            List<Sign> signList = list(queryWrapper1);
+
+            DeployeeVo deployeeVo = BeanCopyUtils.copyBean(item, DeployeeVo.class);
+            //设置考勤人
+            vo.setDeployee(deployeeVo);
+            vo.setUserId(item.getUserId());
+            //TODO  固定上班时间 设置为 27 天
+//        vo.setShouldAttendanceDays(27);
+            //统计上班status == 1的list的size();
+            //实际上班天数
+            vo.setAttendanceDays((int) signList.stream().filter((i) -> i.getSignStatus() == 1).count());
+            //出勤率 百分比  实际上班天数 / 固定上班时间  算出百分比
+//        vo.setAttendanceRate((double) Math.round(vo.getAttendanceDays() / (double)vo.getShouldAttendanceDays() *100.0) / 100.0);
+            //迟到天数
+            vo.setLateDays(getLateHistoryByMonthList(signList).size());
+            //迟到记录
+            vo.setLateHistory(getLateHistoryByMonthList(signList));
+            //早退天数
+            vo.setEarlyDays(getEarlyHistoryByMonthList(signList).size());
+            //早退记录
+            vo.setEarlyHistory(getEarlyHistoryByMonthList(signList));
+            return vo;
+        }).collect(Collectors.toList());
+
+
+    }
 
 }
 

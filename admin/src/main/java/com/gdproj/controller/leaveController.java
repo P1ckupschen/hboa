@@ -22,6 +22,8 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -178,6 +180,15 @@ public class leaveController {
         }
 
 
+    }
+
+
+    //请假月统计 请假人数 请假记录
+    @PostMapping("/exportLeaveExcel")
+    @autoLog
+    @ApiOperation(value = "请假记录统计")
+    public void exportLeaveExcel(@RequestBody List<Date> Interval , HttpServletResponse response){
+        leaveService.exportLeaveExcel(Interval, response);
     }
 
 

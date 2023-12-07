@@ -54,7 +54,7 @@ public class ProjectVo {
 
     private Integer projectProcess;
 
-    private String contractIds;
+    private Integer contractId;
 
     private Integer projectClient;
     @JsonFormat(shape = JsonFormat.Shape.STRING)

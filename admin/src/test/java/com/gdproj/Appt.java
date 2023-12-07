@@ -5,16 +5,20 @@ import cn.hutool.http.HttpUtil;
 import com.gdproj.entity.Deployee;
 import com.gdproj.entity.SignExcelEntity;
 import com.gdproj.utils.AesUtil;
+import com.gdproj.utils.BMapApi;
 import com.gdproj.utils.RSAUtil;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import redis.clients.jedis.Jedis;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @SpringBootTest
 public class Appt {
+
 
     @Test
     public void exportExcel(){
@@ -45,6 +49,9 @@ public class Appt {
         System.out.println("原密码：" + pw);
         System.out.println("加密后：" + encrypt);
         System.out.println("解密后：" + decrypt);
+
+
+
     }
 
     @Test
@@ -56,5 +63,25 @@ public class Appt {
         System.out.println(AesUtil.encrypt(deployee.getDeployeePhone(),AesUtil.key128));
         System.out.println(RSAUtil.decrypt("hzIaztKQMS51FwRJKCogCEIerHW+rK721x4ys1lrY7WouJZjxjTY98/VuU27MJGGLI0pyisB3PYzWKImgegKj2SIL68zeVtOxAUXU+u10mwHMDl+5s9Q+XZpq+DlnAtvPFnS+jYOEW8dAzRq6tQVvFYtooAOezrJLQyzswS8bI5UeEVqQEl1cZc6q6dfCy/ZZ0A5jWU2oCMW5ZrWbK0TD1T8Ji1aDEa14Htu9k70dXK4kHpIfAeNaLn2Xzw5DmBqt9huRwapIMkcips9m/g3ZKoqaMnYSxd4tQKv43bzw65Bmh+8drhHpCzQJLYnERrfrdGpxu1oeXk1DsuJVKTKmw=="));
         System.out.println(new Date());
+    }
+    @Test
+    public void jedisTest(){
+        /*创建Jedis对象，参数为Redis服务的ip和端口*/
+        Jedis jedis = new Jedis("127.0.0.1",6379);
+        /*通过输出jedis.ping() 若输出PONG 则可以成功连接Redis服务*/
+        System.out.println(jedis.ping());
+        /**
+         * 通过jedis的set方法存储值、get方法获取值
+         * */
+        jedis.set("a","999");
+        System.out.println(jedis.get("a"));
+
+    }
+    @Test
+    public void BaiduTest(){
+//        "lng":121.26294815548036,"lat":30.186127111198787
+        BMapApi bMapApi = new BMapApi();
+        Object o = bMapApi.reverseGeocoding(BigDecimal.valueOf(121.26294815548036), BigDecimal.valueOf(30.186127111198787));
+        System.out.println(o);
     }
 }

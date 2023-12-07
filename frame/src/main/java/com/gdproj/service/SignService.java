@@ -11,6 +11,8 @@ import com.gdproj.vo.MonthSignVo;
 import com.gdproj.vo.SignVo;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
+import java.util.List;
 
 /**
 * @author Administrator
@@ -31,4 +33,6 @@ public interface SignService extends IService<Sign> {
     void exportMonthSignExcel(PageQueryDto pageDto, HttpServletResponse response);
 
     ResponseResult getTodayList(PageQueryDto queryDto);
+
+    void exportSignExcel(List<Date> interval, HttpServletResponse response);
 }

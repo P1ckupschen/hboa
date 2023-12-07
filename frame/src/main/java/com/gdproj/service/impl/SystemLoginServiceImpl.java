@@ -1,7 +1,9 @@
 package com.gdproj.service.impl;
 
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.gdproj.entity.Account;
 import com.gdproj.entity.User;
 import com.gdproj.enums.AppHttpCodeEnum;
@@ -99,8 +101,15 @@ public class SystemLoginServiceImpl implements SystemLoginService {
 
             one.setLoginTime(new Date());
 
-            accountService.updateById(one);
+            LambdaUpdateWrapper<Account> updateWrapper = new LambdaUpdateWrapper<>();
 
+            updateWrapper.set(Account::getLoginTime , new Date());
+
+            if(!ObjectUtil.isEmpty(vo.getOpenid())){
+                updateWrapper.eq(Account::getDeployeeId,one.getDeployeeId());
+                updateWrapper.set(Account::getOpenId,vo.getOpenid());
+            }
+            accountService.update(updateWrapper);
             //如果 密码正确 登录信息 生成token
             if(RSAUtil.decrypt(one.getPassword()).equals(RSAUtil.decrypt(vo.getPassword()))){
 

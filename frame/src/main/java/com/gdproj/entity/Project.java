@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @TableName sys_project
  */
-@TableName(value ="sys_project",autoResultMap = true)
+@TableName(value ="sys_project" ,autoResultMap = true)
 public class Project implements Serializable {
     /**
      *
@@ -67,7 +67,7 @@ public class Project implements Serializable {
     /**
      * json人员
      */
-    @TableField(value = "project_team", typeHandler = JacksonTypeHandler.class)
+    @TableField(value = "project_team" , typeHandler = JacksonTypeHandler.class)
     private List<Integer> projectTeam;
 
     /**
@@ -85,7 +85,7 @@ public class Project implements Serializable {
     /**
      *
      */
-    @TableField(value = "created_time")
+    @TableField(value = "created_time" , fill = FieldFill.INSERT)
     private Date createdTime;
 
     /**
@@ -115,8 +115,8 @@ public class Project implements Serializable {
     /**
      *
      */
-    @TableField(value = "contract_ids")
-    private String contractIds;
+    @TableField(value = "contract_id")
+    private Integer contractId;
 
     /**
      * json存客户信息
@@ -151,7 +151,7 @@ public class Project implements Serializable {
     /**
      *
      */
-    @TableField(value = "project_pic", typeHandler = JacksonTypeHandler.class)
+    @TableField(value = "project_pic" ,typeHandler = JacksonTypeHandler.class)
     private List<FileVo> projectPic;
 
     /**
@@ -163,7 +163,7 @@ public class Project implements Serializable {
     /**
      * 完成的凭证
      */
-    @TableField(value = "completed_voucher", typeHandler = JacksonTypeHandler.class)
+    @TableField(value = "completed_voucher" ,typeHandler = JacksonTypeHandler.class)
     private List<FileVo> completedVoucher;
 
     /**
@@ -176,8 +176,8 @@ public class Project implements Serializable {
     /**
      * 项目安排
      */
-    @TableField(value = "project_arrangement", typeHandler = JacksonTypeHandler.class)
-    private List projectArrangement;
+    @TableField(value = "project_arrangement")
+    private String projectArrangement;
 
     /**
      *
@@ -188,15 +188,14 @@ public class Project implements Serializable {
     /**
      *
      */
-    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
+    @TableField(value = "update_time" , fill =  FieldFill.INSERT_UPDATE)
     private Date updateTime;
 
     /**
      * 物料清单
      */
-    @TableField(value = "material_bill", typeHandler = JacksonTypeHandler.class)
+    @TableField(value = "material_bill" , typeHandler = JacksonTypeHandler.class)
     private List<stockSelectVo> materialBill;
-
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
@@ -427,15 +426,15 @@ public class Project implements Serializable {
     /**
      *
      */
-    public String getContractIds() {
-        return contractIds;
+    public Integer getContractId() {
+        return contractId;
     }
 
     /**
      *
      */
-    public void setContractIds(String contractIds) {
-        this.contractIds = contractIds;
+    public void setContractId(Integer contractId) {
+        this.contractId = contractId;
     }
 
     /**
@@ -567,14 +566,14 @@ public class Project implements Serializable {
     /**
      * 项目安排
      */
-    public List getProjectArrangement() {
+    public String getProjectArrangement() {
         return projectArrangement;
     }
 
     /**
      * 项目安排
      */
-    public void setProjectArrangement(List projectArrangement) {
+    public void setProjectArrangement(String projectArrangement) {
         this.projectArrangement = projectArrangement;
     }
 
@@ -648,7 +647,7 @@ public class Project implements Serializable {
                 && (this.getProjectStatus() == null ? other.getProjectStatus() == null : this.getProjectStatus().equals(other.getProjectStatus()))
                 && (this.getEndTime() == null ? other.getEndTime() == null : this.getEndTime().equals(other.getEndTime()))
                 && (this.getProjectProcess() == null ? other.getProjectProcess() == null : this.getProjectProcess().equals(other.getProjectProcess()))
-                && (this.getContractIds() == null ? other.getContractIds() == null : this.getContractIds().equals(other.getContractIds()))
+                && (this.getContractId() == null ? other.getContractId() == null : this.getContractId().equals(other.getContractId()))
                 && (this.getProjectClient() == null ? other.getProjectClient() == null : this.getProjectClient().equals(other.getProjectClient()))
                 && (this.getProjectAmount() == null ? other.getProjectAmount() == null : this.getProjectAmount().equals(other.getProjectAmount()))
                 && (this.getIsCompleted() == null ? other.getIsCompleted() == null : this.getIsCompleted().equals(other.getIsCompleted()))
@@ -684,7 +683,7 @@ public class Project implements Serializable {
         result = prime * result + ((getProjectStatus() == null) ? 0 : getProjectStatus().hashCode());
         result = prime * result + ((getEndTime() == null) ? 0 : getEndTime().hashCode());
         result = prime * result + ((getProjectProcess() == null) ? 0 : getProjectProcess().hashCode());
-        result = prime * result + ((getContractIds() == null) ? 0 : getContractIds().hashCode());
+        result = prime * result + ((getContractId() == null) ? 0 : getContractId().hashCode());
         result = prime * result + ((getProjectClient() == null) ? 0 : getProjectClient().hashCode());
         result = prime * result + ((getProjectAmount() == null) ? 0 : getProjectAmount().hashCode());
         result = prime * result + ((getIsCompleted() == null) ? 0 : getIsCompleted().hashCode());
@@ -723,7 +722,7 @@ public class Project implements Serializable {
         sb.append(", projectStatus=").append(projectStatus);
         sb.append(", endTime=").append(endTime);
         sb.append(", projectProcess=").append(projectProcess);
-        sb.append(", contractIds=").append(contractIds);
+        sb.append(", contractId=").append(contractId);
         sb.append(", projectClient=").append(projectClient);
         sb.append(", projectAmount=").append(projectAmount);
         sb.append(", isCompleted=").append(isCompleted);

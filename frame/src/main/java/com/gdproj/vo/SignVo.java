@@ -54,4 +54,8 @@ public class SignVo {
 
     private String Username;
 
+    private Double longitude;
+
+    private Double latitude;
+
 }

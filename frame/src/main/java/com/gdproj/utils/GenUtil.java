@@ -7,6 +7,10 @@ import org.gavaghan.geodesy.GlobalCoordinates;
 
 public class GenUtil {
 
+
+    //121.274079,30.189219
+    //121.262927,30.186148
+    public static final GlobalCoordinates target = new GlobalCoordinates(121.262927,30.186148);
     public static void main(String[] args)
     {
          //121.717594,31.12055    121.817629,31.090867

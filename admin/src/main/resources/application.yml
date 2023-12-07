@@ -25,8 +25,8 @@ spring:
       max-file-size: 20MB
       max-request-size: 100MB
   profiles:
-    active:
-#      --spring.profiles.active=dev
+    active: dev
+#      --spring.profiles.active=prod
 mybatis-plus:
   global-config:
     db-config:
@@ -42,21 +42,6 @@ mybatis-plus:
 #      max-file-size: 5MB
 #  file:
 #    path: log
-wx:
-  miniapp:
-    #上面拿到的很重要的那个模板ID
-    template-id: g19lTFku79jXC58CDzTnoIeazJC8HHvbW82apat_vgs
-    configs:
-      #微信小程序的appid 开发者工具拿到
-      appid: wx05e2612sfav212bddev12
-      #开发者工具拿到Secret
-      secret: 91b5a9e5645e8cf2123213safasfgwgf
-      #微信小程序消息服务器配置的token
-      token: 123
-      #微信小程序消息服务器配置的EncodingAESKey
-      aesKey:
-        msgDataFormat: JSON
-
 
 
 #  pattern:
@@ -65,6 +50,6 @@ wx:
 
 #Windows下的路径配置
 ImagesFilePath: E:\\sch-work-space\\projects\\hbkj\\hboa\\admin\\src\\main\\resources\\images\\
-
+ExcelFilePath: E:\\sch-work-space\\projects\\hbkj\\hboa\\admin\\src\\main\\resources\\excel\\
 #linux下的路径配置
 #ImagesFilePath: /usr/local/images/

@@ -69,6 +69,9 @@ public class Account implements Serializable {
     @TableField(value = "name")
     private String name;
 
+    @TableField(value = "open_id")
+    private String openId;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
@@ -255,5 +258,13 @@ public class Account implements Serializable {
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
+    }
+
+    public String getOpenId() {
+        return openId;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId;
     }
 }

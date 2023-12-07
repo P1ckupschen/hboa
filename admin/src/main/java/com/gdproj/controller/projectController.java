@@ -5,12 +5,14 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.annotation.autoLog;
 import com.gdproj.dto.PageQueryDto;
+import com.gdproj.entity.Contract;
 import com.gdproj.entity.Project;
 import com.gdproj.entity.ProjectCategory;
 import com.gdproj.entity.ReportCategory;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
+import com.gdproj.service.ContractService;
 import com.gdproj.service.ProjectService;
 import com.gdproj.service.projectCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
@@ -23,7 +25,10 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,6 +36,9 @@ import java.util.stream.Collectors;
 @RequestMapping("/adminProject")
 @Api(tags = "项目功能")
 public class projectController {
+
+    @Autowired
+    ContractService contractService;
 
     @Autowired
     ProjectService projectService;
@@ -95,7 +103,21 @@ public class projectController {
 
         Project updateInfo = BeanCopyUtils.copyBean(vo, Project.class);
 //        vo中的 发布人  类型 部门
-
+        // 如果有了质保时间和质保年限
+        if(!ObjectUtil.isEmpty(updateInfo.getCompletedTime()) && !ObjectUtil.isEmpty(updateInfo.getWarrantyYear())){
+            Contract one = contractService.getById(updateInfo.getContractId());
+            one.setWarrantyAmount(updateInfo.getWarrantyAmount());
+            //TODO +4年
+            Calendar instance = Calendar.getInstance();
+            instance.setTime(updateInfo.getCompletedTime());
+            instance.add(Calendar.YEAR,Integer.valueOf(updateInfo.getWarrantyYear()));
+            Date time = instance.getTime();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            one.setWarrantyEndTime(time);
+            one.setWarrantyStartTime(updateInfo.getCompletedTime());
+            one.setWarrantyYear(Integer.valueOf(updateInfo.getWarrantyYear()));
+            contractService.updateById(one);
+        }
         boolean b = false;
 
         try {

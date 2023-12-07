@@ -7,6 +7,10 @@ import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Leave;
 import com.gdproj.vo.LeaveVo;
 
+import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
+import java.util.List;
+
 /**
 * @author Administrator
 * @description 针对表【sys_leave】的数据库操作Service
@@ -17,4 +21,6 @@ public interface LeaveService extends IService<Leave> {
     IPage<LeaveVo> getLeaveList(PageQueryDto pageDto);
 
     boolean insertLeave(Leave insertLeave);
+
+    void exportLeaveExcel(List<Date> interval , HttpServletResponse response);
 }

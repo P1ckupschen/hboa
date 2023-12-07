@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -102,20 +103,12 @@ public class signController {
             pageList.setData(signList.getRecords());
             pageList.setTotal((int) signList.getTotal());
             return ResponseResult.okResult(pageList);
-
         }catch (SystemException e){
-
             return ResponseResult.errorResult(e.getCode(),e.getMsg());
-
         } catch (Exception e){
-
             return ResponseResult.errorResult(AppHttpCodeEnum.LIST_ERROR);
-
         }
-
     }
-
-
 
     @PostMapping("insertSign")
     @autoLog
@@ -172,5 +165,12 @@ public class signController {
             e.printStackTrace();
 //            return ResponseResult.errorResult(AppHttpCodeEnum.EXCEL_EXPORT_ERROR);
         }
+    }
+
+    @PostMapping("exportSignExcel")
+    @autoLog
+    @ApiOperation(value = "考勤数据导出")
+    public void exportSignExcel(@RequestBody List<Date> Interval , HttpServletResponse response){
+            signService.exportSignExcel(Interval,response);
     }
 }

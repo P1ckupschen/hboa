@@ -34,5 +34,6 @@ public class AccountVo {
     private List<String> role;
     //权限信息
     private Menu menu;
+    private String openid;
 
 }

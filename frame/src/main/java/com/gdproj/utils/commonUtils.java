@@ -1,5 +1,7 @@
 package com.gdproj.utils;
 
+import java.util.Date;
+
 public class commonUtils {
 
     public static void main(String[] args) {
@@ -23,5 +25,15 @@ public class commonUtils {
             asterisks.append("*");
         }
         return prefix + asterisks.toString() + suffix;
+    }
+
+    /**
+     * 时间间隔
+     *
+     * */
+    public static Long getIntervalDays(Date start , Date end){
+        final long ONE_DAY_MILLIS = 1000L * 60 * 60 * 24;
+        // 此处要注意，去掉时分秒的差值影响，此处采用先换算为天再相减的方式
+        return Math.abs(end.getTime()/ONE_DAY_MILLIS - start.getTime()/ONE_DAY_MILLIS);
     }
 }

@@ -17,12 +17,12 @@ public class MonthSignVo {
     private Integer Year;
     //当前月份
     private Integer month;
-    //应出勤
+    //实际出
     private Integer attendanceDays;
-    //实际出勤
-    private Integer shouldAttendanceDays;
+    //应出勤
+//    private Integer shouldAttendanceDays;
     //出勤率
-    private Double attendanceRate;
+//    private Double attendanceRate;
     //迟到天数
     private Integer lateDays;
     //迟到记录

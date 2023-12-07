@@ -22,6 +22,8 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -185,6 +187,13 @@ public class overtimeController {
     }
 
 
+    //加班月统计 加班人数 加班记录
+    @PostMapping("/exportOvertimeExcel")
+    @autoLog
+    @ApiOperation(value = "上班记录统计")
+    public void exportOvertimeExcel(@RequestBody List<Date> Interval , HttpServletResponse response){
+        overtimeService.exportOvertimeExcel(Interval, response);
+    }
 
     //类型的增删改查
 

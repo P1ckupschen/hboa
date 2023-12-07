@@ -33,6 +33,7 @@ public class webConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/adminLogin/userlogin")             //后台
                 .excludePathPatterns("/adminLogin/frontLogin")             //前台
                 .excludePathPatterns("/api/loginBackend")
+                .excludePathPatterns("/wx/**")
                 .excludePathPatterns("/swagger-resources")
                 .excludePathPatterns("/swagger-resources/**")
                 .excludePathPatterns("/swagger-ui.html/**")
@@ -45,6 +46,7 @@ public class webConfig implements WebMvcConfigurer {
     public LoginInterceptors loginInterceptor(){
         return new LoginInterceptors();
     }
+
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {

@@ -1,12 +1,12 @@
 server:
-  port: 7799
+  port: 7777
 spring:
   main:
     allow-circular-references: true
   datasource:
-    url: jdbc:mysql://localhost:3306/hb_sql
-    username: root
-    password: 123456
+    url: jdbc:mysql://39.105.102.72:3306/lvzy
+    username: lvzy
+    password: Fez4gjDUvf8zj86j.
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 #  用来把数据库对象的字段变为下划线
@@ -29,7 +29,7 @@ mybatis-plus:
       logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
 
 #Windows下的路径配置
-ImagesFilePath: E:\\sch-work-space\\projects\\hbkj\\hboa\\admin\\src\\main\\resources\\images\\
+#ImagesFilePath: E:\\sch-work-space\\projects\\hbkj\\hboa\\admin\\src\\main\\resources\\images\\
 
 #linux下的路径配置
-#ImagesFilePath: /usr/local/images/
+ImagesFilePath: /mnt/data/project/hboa/statics/images/

@@ -19,11 +19,21 @@ public enum AppHttpCodeEnum {
     REVISE_PASSWORD_ERROR(213, "修改密码失败"),
     ROLE_NULL(214 , "权限为空"),
 
+    ENCODE_ERROR(215,"编码失败"),
+
 
     LIST_ERROR(300,"列表数据获取失败"),
     DEPARTMENT_NULL(301,"无此部门"),
 
     DEPARTMENT_LIST_ERROR(302,"部门类型获取失败"),
+
+
+
+    WX_AUTH_ERROR(410,"微信授权错误"),
+    OPEN_ID_NULL(411,"openId为空"),
+    CANT_FIND_ERROR(412,"openid未绑定"),
+    BINDING_FAILED(413,"绑定失败"),
+    JSAPITICKET_EXPIRE(414,"ticket过期"),
 
 
     UPDATE_ERROR(10001,"数据修改失败"),
@@ -32,6 +42,7 @@ public enum AppHttpCodeEnum {
     DELETE_ERROR(10003,"数据删除失败"),
 
     MYSQL_FIELD_ERROR(10004,"数据字段为空或错误"),
+    ARRAY_NULL_ERROR(10005,"数组为空"),
     FILE_STREAM_NULL(101,"文件流为空"),
     NO_OPERATOR_AUTH(403,"无权限操作"),
     SYSTEM_ERROR(500,"出现错误"),
