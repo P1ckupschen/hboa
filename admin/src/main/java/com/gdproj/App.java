@@ -1,5 +1,6 @@
 package com.gdproj;
 
+import cn.hutool.crypto.SecureUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -16,6 +17,7 @@ public class App
 
     {
         SpringApplication.run(App.class,args);
+        SecureUtil.disableBouncyCastle();
         System.out.println( "Hello World!" );
     }
 }

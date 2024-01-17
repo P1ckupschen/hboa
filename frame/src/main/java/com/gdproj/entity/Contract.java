@@ -209,6 +209,18 @@ public class Contract implements Serializable {
     @TableLogic
     private Integer isDeleted;
 
+    public Integer getCanSee() {
+        return canSee;
+    }
+
+    public void setCanSee(Integer canSee) {
+        this.canSee = canSee;
+    }
+
+    @TableField(value = "can_see")
+    private Integer canSee;
+
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

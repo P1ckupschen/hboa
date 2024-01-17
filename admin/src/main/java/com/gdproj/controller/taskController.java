@@ -6,10 +6,12 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.annotation.autoLog;
 import com.gdproj.dto.PageQueryDto;
+import com.gdproj.entity.Account;
 import com.gdproj.entity.Task;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
+import com.gdproj.service.AccountService;
 import com.gdproj.service.TaskService;
 import com.gdproj.utils.AesUtil;
 import com.gdproj.utils.BeanCopyUtils;
@@ -17,18 +19,36 @@ import com.gdproj.vo.PageVo;
 import com.gdproj.vo.TaskVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @RestController
 @RequestMapping("/adminTask")
 @Api(tags = "任务功能")
+@Slf4j
 public class taskController {
 
     @Autowired
     TaskService taskService;
+
+    @Autowired
+    wxSubscribeController wxSubscribeController;
+
+    @Autowired
+    AccountService accountService;
+
+    @GetMapping("/getTaskListByCurrentId")
+    @autoLog
+    @ApiOperation(value = "查询当前用户的任务")
+    public ResponseResult getTaskListByCurrentId(@Validated PageQueryDto queryDto , HttpServletRequest request){
+        return taskService.getTaskListByCurrentId(queryDto,request);
+    }
 
 
     //公告的增删改查
@@ -64,7 +84,6 @@ public class taskController {
         catch (Exception e){
 
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
-
         }
 
     }
@@ -117,6 +136,18 @@ public class taskController {
             b = taskService.save(insertTask);
 
             if(b == true){
+                if(ObjectUtil.isEmpty(insertTask.getExecutorId()) || ObjectUtil.isEmpty(insertTask.getTaskName())){
+
+                }else{
+                    Account one = accountService.getById(insertTask.getExecutorId());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    if(ObjectUtil.isEmpty(insertTask.getTaskName())){
+                        insertTask.setTaskName("新任务");
+                    }
+                    if(!ObjectUtil.isEmpty(one.getOpenId())){
+                        wxSubscribeController.sendTaskMessage(insertTask.getTaskName(),sdf.format(insertTask.getTaskTime()),"新任务提醒",one.getOpenId());
+                    }
+                }
                 return ResponseResult.okResult(b);
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.INSERT_ERROR);

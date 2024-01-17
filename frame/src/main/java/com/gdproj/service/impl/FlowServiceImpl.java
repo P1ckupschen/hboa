@@ -692,7 +692,6 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
         if(!ObjectUtil.isEmpty(authorization)){
             System.out.println(authorization);
             String token = authorization.split(" ")[1];
-
             String id = JwtUtils.getMemberIdByJwtToken(token);
             queryWrapper.eq(Flow::getCurrentUserId,id).or().eq(Flow::getCreatedUserId,id);
 

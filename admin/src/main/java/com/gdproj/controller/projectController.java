@@ -23,8 +23,10 @@ import com.gdproj.vo.SelectVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -92,6 +94,15 @@ public class projectController {
         }catch (Exception e){
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
         }
+
+    }
+
+    @GetMapping("/getProjectListByCurrentId")
+    @autoLog
+    @ApiOperation(value = "查询我的项目列表")
+    public ResponseResult getProjectListByCurrentId(@Validated PageQueryDto queryDto , HttpServletRequest request){
+
+        return projectService.getProjectListByCurrentId(queryDto,request);
 
     }
 

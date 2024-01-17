@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Project;
+import com.gdproj.result.ResponseResult;
 import com.gdproj.vo.ProjectVo;
 import com.gdproj.vo.SelectVo;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -21,4 +23,8 @@ public interface ProjectService extends IService<Project> {
     IPage<ProjectVo> getProjectList(PageQueryDto pageDto);
 
     List<ProjectVo> getProjectListByClientId(Integer clientId);
+
+    List<Integer> getIdsByName(String title);
+
+    ResponseResult getProjectListByCurrentId(PageQueryDto queryDto, HttpServletRequest request);
 }

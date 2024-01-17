@@ -32,7 +32,6 @@ public class deployeeController {
     @autoLog
     @ApiOperation(value = "查询用于选择的员工列表")
     public ResponseResult getListForSelect(){
-
         List<UserVo> selectList = new ArrayList<>();
 
         try {

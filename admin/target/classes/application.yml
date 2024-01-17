@@ -2,6 +2,7 @@ server:
   port: 7777
 spring:
   main:
+#    //循环依赖
     allow-circular-references: true
   datasource:
     url: jdbc:mysql://localhost:3306/hb_sql
@@ -25,7 +26,7 @@ spring:
       max-file-size: 20MB
       max-request-size: 100MB
   profiles:
-    active: dev
+    active: prod
 #      --spring.profiles.active=prod
 mybatis-plus:
   global-config:

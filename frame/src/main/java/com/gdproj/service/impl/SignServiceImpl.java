@@ -1,7 +1,9 @@
 package com.gdproj.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.json.JSONUtil;
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -19,12 +21,10 @@ import com.gdproj.service.DeployeeService;
 import com.gdproj.service.SignService;
 import com.gdproj.utils.BMapApi;
 import com.gdproj.utils.BeanCopyUtils;
-import com.gdproj.utils.GenUtil;
 import com.gdproj.vo.DeployeeVo;
 import com.gdproj.vo.IsSignVo;
 import com.gdproj.vo.MonthSignVo;
 import com.gdproj.vo.SignVo;
-import org.gavaghan.geodesy.Ellipsoid;
 import org.gavaghan.geodesy.GlobalCoordinates;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -139,7 +139,7 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
 
             DateFormat timeInstance = DateFormat.getTimeInstance();
 
-            if (workTime >= signvo.getWorkTime() && signvo.getSignAddr() == "XXXX附近") {
+            if (workTime >= signvo.getWorkTime()) {
                 signvo.setSignStatus(1);
             } else {
                 signvo.setSignStatus(0);
@@ -174,6 +174,7 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
         Sign one = getOne(queryWrapper);
         //先判断是否今天已打过卡
         IsSignVo vo = getSignInfoByUserIdAndDate(sign.getUserId());
+        BMapApi bMapApi = new BMapApi();
         //如果早上签过到
         if (vo.getIsSignIn() == 1) {
             one.setEndTime(calendar.getTime());
@@ -182,6 +183,16 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
             one.settWorkTime(Math.round(tWorKHour));
             if (hour < 17) {
                 one.setIsEarly(1);
+            }
+            if(!ObjectUtil.isEmpty(sign.getLatitude()) && !ObjectUtil.isEmpty(sign.getLatitude())){
+                GlobalCoordinates source = new GlobalCoordinates(sign.getLatitude(),sign.getLongitude());
+//                double distanceMeter = GenUtil.getDistanceMeter(source, GenUtil.target, Ellipsoid.Sphere);
+                JSONObject o = (JSONObject) bMapApi.reverseGeocoding(BigDecimal.valueOf(sign.getLongitude()), BigDecimal.valueOf(sign.getLatitude()));
+                if(!ObjectUtil.isEmpty(o) && !ObjectUtil.isEmpty(o.get("result"))){
+                    one.setEndAddr((String) JSONUtil.parseObj(o.get("result")).get("formatted_address"));
+                }else{
+                    one.setEndAddr("获取地址信息失败");
+                }
             }
             return updateById(one);
         } else {
@@ -192,19 +203,16 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
             } else {
                 sign.setIsLate(0);
             }
-            BMapApi bMapApi = new BMapApi();
+
             if(!ObjectUtil.isEmpty(sign.getLatitude()) && !ObjectUtil.isEmpty(sign.getLatitude())){
                 GlobalCoordinates source = new GlobalCoordinates(sign.getLatitude(),sign.getLongitude());
-                double distanceMeter = GenUtil.getDistanceMeter(source, GenUtil.target, Ellipsoid.Sphere);
-                sign.setSignAddr((String) bMapApi.reverseGeocoding(BigDecimal.valueOf(sign.getLongitude()), BigDecimal.valueOf(sign.getLatitude())));
-//                if(distanceMeter >= 50.0){
-////                如果打卡距离大于50米
-//                    sign.setSignStatus(0);
-//
-//                    sign.setSignAddr("离公司附近50米外:"+ distanceMeter);
-//                }else{
-//                    sign.setSignAddr("公司附近" + distanceMeter);
-//                }
+//                double distanceMeter = GenUtil.getDistanceMeter(source, GenUtil.target, Ellipsoid.Sphere);
+                JSONObject o = (JSONObject) bMapApi.reverseGeocoding(BigDecimal.valueOf(sign.getLongitude()), BigDecimal.valueOf(sign.getLatitude()));
+                if(!ObjectUtil.isEmpty(o) && !ObjectUtil.isEmpty(o.get("result"))){
+                    sign.setSignAddr((String) JSONUtil.parseObj(o.get("result")).get("formatted_address"));
+                }else{
+                    sign.setSignAddr("获取地址信息失败");
+                }
             }
             return save(sign);
         }
@@ -548,6 +556,20 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
         }).collect(Collectors.toList());
         EasyExcel.write(fileName, MonthSignExcelEntity.class).sheet("月度考勤统计").doWrite(collect);
         downloadExcel(fileName,response);
+    }
+
+    @Override
+    public ResponseResult deleteSign(Integer id) {
+        if(!ObjectUtil.isEmpty(id)){
+            boolean b = removeById(id);
+            if(b){
+                return ResponseResult.okResult();
+            }else{
+                throw new SystemException(AppHttpCodeEnum.DELETE_ERROR);
+            }
+        }else{
+            throw new SystemException(AppHttpCodeEnum.PRARM_NULL);
+        }
     }
 
     public  List<MonthSignVo> getMonthSignList(List<Date> interval) {

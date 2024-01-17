@@ -27,7 +27,7 @@ public class Deployee implements Serializable {
     private String deployeeName;
 
     /**
-     *
+     getDeployeeName
      */
     @TableField(value = "deployee_job")
     private String deployeeJob;

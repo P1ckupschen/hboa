@@ -135,11 +135,12 @@ public class DailyUseServiceImpl extends ServiceImpl<DailyUseMapper, DailyUse>
     @Override
     public boolean insertDailyUse(DailyUse dailyUse) {
         Integer categoryId = dailyUse.getCategoryId();
-        dailyUse.setDailyuseStatus(0);
         boolean f = false;
-        boolean o = save(dailyUse);
+
         //如果为入库申请则无需审批
         if(dailyUse.getCategoryId() == 1){
+            dailyUse.setDailyuseStatus(1);
+            save(dailyUse);
             if(!ObjectUtil.isEmpty(dailyUse.getDailyuseContent())){
                 List<DailyUseRecord> recordList = recordService.transferDailyUseContentToRecord(dailyUse);
                 return recordService.saveBatch(recordList);
@@ -147,6 +148,8 @@ public class DailyUseServiceImpl extends ServiceImpl<DailyUseMapper, DailyUse>
                 return true;
             }
         }else{
+            dailyUse.setDailyuseStatus(0);
+            boolean o = save(dailyUse);
             if (o) {
                 f = flowService.insertFlow(dailyUse);
             }else{

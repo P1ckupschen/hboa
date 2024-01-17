@@ -5,9 +5,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Epiboly;
+import com.gdproj.result.ResponseResult;
 import com.gdproj.vo.EpibolyVo;
 import com.gdproj.vo.SelectVo;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -20,4 +22,6 @@ public interface EpibolyService extends IService<Epiboly> {
     IPage<EpibolyVo> getEpibolyList(PageQueryDto pageDto);
 
     List<SelectVo> getListForSelect();
+
+    ResponseResult getEpibolyListByCurrentId(PageQueryDto queryDto, HttpServletRequest request);
 }

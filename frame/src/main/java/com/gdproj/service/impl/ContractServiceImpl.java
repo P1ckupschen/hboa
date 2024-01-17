@@ -80,6 +80,7 @@ public class ContractServiceImpl extends ServiceImpl<ContractMapper, Contract>
             //传过来的是合同类型id
             queryWrapper.eq(Contract::getCategoryId,type);
         }
+        queryWrapper.eq(Contract::getCanSee,0);
 
         IPage<Contract> recordPage = contractMapper.selectPage(page, queryWrapper);
 
@@ -126,7 +127,10 @@ public class ContractServiceImpl extends ServiceImpl<ContractMapper, Contract>
     @Override
     public List<SelectVo> getListForSelect() {
 
-        List<Contract> list = list();
+        LambdaQueryWrapper<Contract> queryWrapper =new LambdaQueryWrapper<>();
+        queryWrapper.eq(Contract::getCanSee,0);
+
+        List<Contract> list = list(queryWrapper);
 
         List<SelectVo> collect = list.stream().map((item) -> {
             SelectVo vo = new SelectVo();
@@ -145,6 +149,88 @@ public class ContractServiceImpl extends ServiceImpl<ContractMapper, Contract>
         queryWrapper.eq(Contract::getContractClient,clientId);
         List<Contract> list = list(queryWrapper);
         return list;
+    }
+
+
+    @Override
+    public IPage<ContractVo> getContractListForAdmin(PageQueryDto pageDto) {
+
+        //类型
+        Integer type = pageDto.getType();
+        //部门
+        Integer departmentId = pageDto.getDepartmentId();
+        //时间
+        String time = pageDto.getTime();
+        //排序
+        String sort = pageDto.getSort();
+        //搜索框如果是产品搜索产品名称或者选择产品id
+        //如果是人 搜素人名或者人id
+        //如果是物 搜索id
+        String title = pageDto.getTitle();
+        Integer pageNum = pageDto.getPageNum();
+        Integer pageSize = pageDto.getPageSize();
+
+        Page<Contract> page = new Page<>(pageNum, pageSize);
+
+        LambdaQueryWrapper<Contract> queryWrapper = new LambdaQueryWrapper<>();
+
+        queryWrapper.eq(Contract::getIsDeleted, 0);
+        //排序
+        if (sort.equals("+id")) {
+            queryWrapper.orderByAsc(Contract::getContractId);
+        } else {
+            queryWrapper.orderByDesc(Contract::getContractId);
+        }
+        //查询产品名称？
+        if (!title.isEmpty()) {
+            queryWrapper.like(Contract::getContractTitle,title);
+        }
+//        如果有类型的话
+        if (!ObjectUtil.isEmpty(type)) {
+            //传过来的是合同类型id
+            queryWrapper.eq(Contract::getCategoryId,type);
+        }
+
+        IPage<Contract> recordPage = contractMapper.selectPage(page, queryWrapper);
+
+        Page<ContractVo> resultPage = new Page<>();
+
+        List<ContractVo> resultList = new ArrayList<>();
+        try {
+
+            resultList = recordPage.getRecords().stream().map((item) -> {
+
+                ContractVo vo = BeanCopyUtils.copyBean(item, ContractVo.class);
+                //类型id
+                if(!ObjectUtil.isEmpty(item.getCategoryId())){
+                    vo.setCategory(categoryService.getById(item.getCategoryId()).getCategoryName());
+                }
+                //跟进人
+                if(!ObjectUtil.isEmpty(item.getFollowedUser())){
+                    vo.setFollowedName(deployeeService.getNameByUserId(item.getFollowedUser()));
+                }else{
+                    vo.setFollowedName("");
+                }
+                //甲方手机号解密
+                if(!ObjectUtil.isEmpty(item.getaPhone())){
+                    vo.setAPhone(AesUtil.decrypt(item.getaPhone(),AesUtil.key128));
+                }
+                //乙方手机号解密
+                if(!ObjectUtil.isEmpty(item.getbPhone())) {
+                    vo.setBPhone(AesUtil.decrypt(item.getbPhone(), AesUtil.key128));
+                }
+                return vo;
+            }).collect(Collectors.toList());
+        }catch (Exception e){
+            throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
+        }
+
+        resultPage.setRecords(resultList);
+
+        resultPage.setTotal(recordPage.getTotal());
+
+        return resultPage;
+
     }
 }
 

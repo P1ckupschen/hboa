@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="generator.mapper.ScheduleMapper">
+
+    <resultMap id="BaseResultMap" type="generator.entity.Schedule">
+            <id property="scheduleId" column="schedule_id" jdbcType="INTEGER"/>
+            <result property="projectId" column="project_id" jdbcType="INTEGER"/>
+            <result property="scheduleContent" column="schedule_content" jdbcType="VARCHAR"/>
+            <result property="isCompleted" column="is_completed" jdbcType="INTEGER"/>
+            <result property="isLate" column="is_late" jdbcType="INTEGER"/>
+            <result property="planStartTime" column="plan_start_time" jdbcType="TIMESTAMP"/>
+            <result property="planEndTime" column="plan_end_time" jdbcType="TIMESTAMP"/>
+            <result property="trueEndTime" column="true_end_time" jdbcType="TIMESTAMP"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+            <result property="toolList" column="tool_list" jdbcType="VARCHAR"/>
+            <result property="scheduleReport" column="schedule_report" jdbcType="VARCHAR"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        schedule_id,project_id,schedule_content,
+        is_completed,is_late,plan_start_time,
+        plan_end_time,true_end_time,is_deleted,
+        tool_list,schedule_report,created_time,
+        update_time
+    </sql>
+</mapper>

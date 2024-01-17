@@ -23,6 +23,8 @@ public class SignVo {
     private Integer departmentId;
 
     private String signAddr;
+
+    private String endAddr;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date endTime;
 

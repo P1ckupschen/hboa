@@ -2,6 +2,8 @@ package com.gdproj;
 
 import cn.hutool.core.util.DesensitizedUtil;
 import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.gdproj.entity.Deployee;
 import com.gdproj.entity.SignExcelEntity;
 import com.gdproj.utils.AesUtil;
@@ -12,6 +14,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import redis.clients.jedis.Jedis;
 
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -78,10 +83,13 @@ public class Appt {
 
     }
     @Test
-    public void BaiduTest(){
+    public void BaiduTest() throws SQLException {
 //        "lng":121.26294815548036,"lat":30.186127111198787
         BMapApi bMapApi = new BMapApi();
-        Object o = bMapApi.reverseGeocoding(BigDecimal.valueOf(121.26294815548036), BigDecimal.valueOf(30.186127111198787));
-        System.out.println(o);
+        JSONObject o = (JSONObject) bMapApi.reverseGeocoding(BigDecimal.valueOf(121.26294815548036), BigDecimal.valueOf(30.186127111198787));
+        System.out.println(o.get("result"));
+        System.out.println(JSONUtil.parseObj(o.get("result")).get("formatted_address"));
+        Connection connection = DriverManager.getConnection("jdbc:mysql://39.105.102.72:3306/lvzy?" + "user=lvzy&password=Fez4gjDUvf8zj86j."+ "&serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true");
+        System.out.println(connection);
     }
 }

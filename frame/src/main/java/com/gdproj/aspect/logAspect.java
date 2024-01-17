@@ -4,6 +4,8 @@ package com.gdproj.aspect;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONUtil;
 import com.gdproj.entity.Log;
+import com.gdproj.enums.AppHttpCodeEnum;
+import com.gdproj.exception.SystemException;
 import com.gdproj.service.LogService;
 import com.gdproj.utils.JwtUtils;
 import io.swagger.annotations.ApiOperation;
@@ -56,14 +58,18 @@ public class logAspect {
             Log log = new Log();
             log.setLogContent(method.getAnnotation(ApiOperation.class).value());
             log.setUserIp(getIpAddress(request));
-            if(!ObjectUtil.isEmpty(token) &&  JwtUtils.checkToken(token)){
+            if(!ObjectUtil.isEmpty(token)){
+                System.out.println(token);
                 String subToken = token.substring(7);
-                String id = (String) JwtUtils.parseJWT(subToken).get("id");
-                log.setUserId(Integer.valueOf(id));
+                if(ObjectUtil.isEmpty(subToken)){
+                    throw new SystemException(AppHttpCodeEnum.TOKEN_PARSE_ERRPE);
+                }else{
+                    String id = (String) JwtUtils.parseJWT(subToken).get("id");
+                    log.setUserId(Integer.valueOf(id));
+                }
             }
             //    TODO  新增log日志
                  logService.insertLogWhenOperating(log);
-
         }
 
         long beginTime = System.currentTimeMillis();

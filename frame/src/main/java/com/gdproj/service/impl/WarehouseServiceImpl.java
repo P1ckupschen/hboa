@@ -47,16 +47,19 @@ public class WarehouseServiceImpl extends ServiceImpl<WarehouseMapper, Warehouse
     @Override
     public boolean insertWarehouse(Warehouse warehouse) {
         Integer categoryId = warehouse.getCategoryId();
-        warehouse.setWarehouseStatus(1);
+
         boolean f = false;
-        boolean o = save(warehouse);
 
         //如果为入库申请则无需审批
         if(warehouse.getCategoryId() == 1){
+            warehouse.setWarehouseStatus(1);
+            boolean o = save(warehouse);
             //并且遍历warehouse 的一个json属性 将所有入库产品都加入record
             List<Record> recordList = recordService.transferWarehouseContentToRecord(warehouse);
             return recordService.saveBatch(recordList);
         }else{
+            warehouse.setWarehouseStatus(0);
+            boolean o = save(warehouse);
             if (o) {
                 f = flowService.insertFlow(warehouse);
             }else{

@@ -17,6 +17,7 @@ import com.gdproj.vo.AccountVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
 
@@ -86,34 +87,33 @@ public class SystemLoginServiceImpl implements SystemLoginService {
     }
 
     @Override
-    public ResponseResult frontLogin(AccountVo vo , HttpSession session) {
+    public ResponseResult frontLogin(AccountVo vo, HttpServletRequest request) {
         Account one = new Account();
 
+        //找到数据库的对应
+        LambdaQueryWrapper<Account> lambdaQueryWrapper =new LambdaQueryWrapper<>();
+
+        lambdaQueryWrapper.eq(Account::getUsername,vo.getUsername());
+
+        one = accountService.getOne(lambdaQueryWrapper);
+
+        one.setLoginTime(new Date());
+
+        LambdaUpdateWrapper<Account> updateWrapper = new LambdaUpdateWrapper<>();
+
+        updateWrapper.set(Account::getLoginTime , new Date());
+
+        if(!ObjectUtil.isEmpty(vo.getOpenid())){
+            updateWrapper.eq(Account::getDeployeeId,one.getDeployeeId());
+            updateWrapper.set(Account::getOpenId,vo.getOpenid());
+        }
+        accountService.update(updateWrapper);
         try {
 
-
-            //找到数据库的对应
-            LambdaQueryWrapper<Account> lambdaQueryWrapper =new LambdaQueryWrapper<>();
-
-            lambdaQueryWrapper.eq(Account::getUsername,vo.getUsername());
-
-            one = accountService.getOne(lambdaQueryWrapper);
-
-            one.setLoginTime(new Date());
-
-            LambdaUpdateWrapper<Account> updateWrapper = new LambdaUpdateWrapper<>();
-
-            updateWrapper.set(Account::getLoginTime , new Date());
-
-            if(!ObjectUtil.isEmpty(vo.getOpenid())){
-                updateWrapper.eq(Account::getDeployeeId,one.getDeployeeId());
-                updateWrapper.set(Account::getOpenId,vo.getOpenid());
-            }
-            accountService.update(updateWrapper);
             //如果 密码正确 登录信息 生成token
             if(RSAUtil.decrypt(one.getPassword()).equals(RSAUtil.decrypt(vo.getPassword()))){
 
-                String jwtToken = JwtUtils.getJwtToken(one.getId().toString());
+                String jwtToken = JwtUtils.getJwtToken(one.getDeployeeId().toString());
 
                 return ResponseResult.okResult(jwtToken);
 

@@ -1,6 +1,5 @@
 package com.gdproj.interceptor;
 
-import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gdproj.exception.TokenExpiredException;
@@ -72,8 +71,7 @@ public class LoginInterceptors implements HandlerInterceptor {
             // 拦截当前请求
 //            return false;
         }
-
-        // 校验当前的JWT令牌是否错误
+            // 校验当前的JWT令牌是否错误
             if(!JwtUtils.checkToken(token)){
                 //设置响应头（告知浏览器：响应的数据类型为json、响应的数据编码表为utf-8）
                 response.setContentType("application/json;charset=utf-8");
@@ -82,7 +80,6 @@ public class LoginInterceptors implements HandlerInterceptor {
                 // 拦截当前请求
 //                return false;
             }
-
         return true;
     }
  

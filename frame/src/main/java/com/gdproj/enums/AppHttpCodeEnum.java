@@ -35,6 +35,11 @@ public enum AppHttpCodeEnum {
     BINDING_FAILED(413,"绑定失败"),
     JSAPITICKET_EXPIRE(414,"ticket过期"),
 
+    CUSTOM_MENU_ERROR(415,"自定义菜单失败"),
+
+    GET_TOKEN_ERROR(416,"获取token失败"),
+
+    GET_SIGNATURE_ERROR(417,"获取签名失败"),
 
     UPDATE_ERROR(10001,"数据修改失败"),
     INSERT_ERROR(10002,"数据新增失败" ),
@@ -49,6 +54,8 @@ public enum AppHttpCodeEnum {
     PHONENUMBER_EXIST(502,"手机号已存在"),
     EMAIL_EXIST(503, "邮箱已存在"),
     REQUIRE_USERNAME(504, "必需填写用户名"),
+
+    PRARM_NULL(505,"参数为空"),
 
     DEVISION_BYZERO(301,"除零"),
 

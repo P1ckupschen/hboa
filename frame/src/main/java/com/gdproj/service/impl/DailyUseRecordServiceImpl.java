@@ -39,10 +39,15 @@ public class DailyUseRecordServiceImpl extends ServiceImpl<DailyUseRecordMapper,
         int count = 0;
         for ( DailyUseRecord item : list) {
             //TODO 入库的 或者已归还的网上加
-            if(item.getCategoryId() == 1 || item.getIsReturn() == 1){
+            if(item.getCategoryId() == 1 ){
                 count += item.getCount();
             } else if (item.getCategoryId() == 2) {
-                count -= item.getCount();
+                if(item.getIsReturn() == 1){
+                    //如果出库后已归还不用减
+                }else{
+                    //出库并且未归还则要减
+                    count -= item.getCount();
+                }
             } else if (count < 0) {
                 count = 0;
                 break;

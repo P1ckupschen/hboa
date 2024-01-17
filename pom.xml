@@ -160,76 +160,105 @@
         </dependencies>
 
     </dependencyManagement>
+
+
     <build>
+<!--        <resources>-->
+<!--            <resource>-->
+<!--                <directory>src/main/java</directory>-->
+<!--                <includes>-->
+<!--                    <include>**/*.xml</include>-->
+<!--                </includes>-->
+<!--            </resource>-->
+<!--            <resource>-->
+<!--                <directory>src/main/resources</directory>-->
+<!--            </resource>-->
+<!--        </resources>-->
+
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.10.1</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
-            <!-- 此插件必须放在父 POM 中  -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.6.0</version>
-                <executions>
-                    <!--
-                    执行本插件的方法为，在主目录下执行如下命令：
-                    mvn package assembly:single
-
-                    对于 IntelliJ IDEA，生成的 JAR 包位于每个模块下的文件夹 target
-                    -->
-                    <execution>
-                        <id>make-assembly</id>
-                        <phase>package</phase>
-                        <goals>
-                            <!-- 此处 IntelliJ IDEA 可能会报红，这是正常现象  -->
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <!-- 配置程序运行入口所在的类 -->
-                            <!-- 自己的启动类path-->
-                            <mainClass>com.gdproj.App</mainClass>
-                        </manifest>
-<!--                        <manifest>-->
-<!--                            &lt;!&ndash; 配置程序运行入口所在的类 &ndash;&gt;-->
-<!--                            <mainClass>com.mest.MestBlogApplication</mainClass>-->
-<!--                        </manifest>-->
-                    </archive>
-                    <!-- 设置 JAR 包输出目录 -->
-                    <outputDirectory>${project.build.directory}/#maven-assembly-plugin</outputDirectory>
-                    <!-- 设置打包后的 JAR 包的目录结构为默认 -->
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                </configuration>
-            </plugin>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <version>2.7.8</version>
+            <configuration>
+                <mainClass>com.gdproj.App</mainClass>
+                <layout>JAR</layout>
+                <finalName>hboa</finalName>
+                <includeSystemScope>true</includeSystemScope>
+                <excludes>
+                    <exclude>
+                        <groupId>org.projectlombok</groupId>
+                        <artifactId>lombok</artifactId>
+                    </exclude>
+                </excludes>
+            </configuration>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>repackage</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
         </plugins>
-    </build>
 
-<!--    <build>-->
+
 <!--        <plugins>-->
 <!--            <plugin>-->
 <!--                <groupId>org.apache.maven.plugins</groupId>-->
 <!--                <artifactId>maven-compiler-plugin</artifactId>-->
-<!--                <version>3.1</version>-->
+<!--                <version>3.10.1</version>-->
 <!--                <configuration>-->
-<!--                    <source>${java.version}</source>-->
-<!--                    <target>${java.version}</target>-->
-<!--                    <encoding>${project.build.sourceEncoding}</encoding>-->
+<!--                    <source>1.8</source>-->
+<!--                    <target>1.8</target>-->
+<!--                    <encoding>UTF-8</encoding>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
+<!--            &lt;!&ndash; 此插件必须放在父 POM 中  &ndash;&gt;-->
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-assembly-plugin</artifactId>-->
+<!--                <version>3.6.0</version>-->
+<!--                <executions>-->
+<!--                    &lt;!&ndash;-->
+<!--                    执行本插件的方法为，在主目录下执行如下命令：-->
+<!--                    mvn package assembly:single-->
+
+<!--                    对于 IntelliJ IDEA，生成的 JAR 包位于每个模块下的文件夹 target-->
+<!--                    &ndash;&gt;-->
+<!--                    <execution>-->
+<!--                        <id>make-assembly</id>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            &lt;!&ndash; 此处 IntelliJ IDEA 可能会报红，这是正常现象  &ndash;&gt;-->
+<!--                            <goal>single</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--                <configuration>-->
+<!--                    <archive>-->
+<!--                        <manifest>-->
+<!--                            &lt;!&ndash; 配置程序运行入口所在的类 &ndash;&gt;-->
+<!--                            &lt;!&ndash; 自己的启动类path&ndash;&gt;-->
+<!--                            <mainClass>com.gdproj.App</mainClass>-->
+<!--                        </manifest>-->
+<!--&lt;!&ndash;                        <manifest>&ndash;&gt;-->
+<!--&lt;!&ndash;                            &lt;!&ndash; 配置程序运行入口所在的类 &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;                            <mainClass>com.mest.MestBlogApplication</mainClass>&ndash;&gt;-->
+<!--&lt;!&ndash;                        </manifest>&ndash;&gt;-->
+<!--                    </archive>-->
+<!--                    &lt;!&ndash; 设置 JAR 包输出目录 &ndash;&gt;-->
+<!--                    <outputDirectory>${project.build.directory}/#maven-assembly-plugin</outputDirectory>-->
+<!--                    &lt;!&ndash; 设置打包后的 JAR 包的目录结构为默认 &ndash;&gt;-->
+<!--                    <descriptorRefs>-->
+<!--                        <descriptorRef>jar-with-dependencies</descriptorRef>-->
+<!--                    </descriptorRefs>-->
 <!--                </configuration>-->
 <!--            </plugin>-->
 <!--        </plugins>-->
-<!--    </build>-->
+
+
+    </build>
 
 
 </project>

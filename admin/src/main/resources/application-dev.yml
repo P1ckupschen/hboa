@@ -33,7 +33,8 @@ mybatis-plus:
       logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
 wx:
   mp:
-    templateId: WBzrHnLayQoPvvh1LV9M4-TmiqddsRBdSiZG8a_1Y-g
+    templateId1: WBzrHnLayQoPvvh1LV9M4-TmiqddsRBdSiZG8a_1Y-g
+    templateId2: VLgOzJ1jpfOWkuigas9ptf9x4TXqy8xwCs-HkSJX9oo
     useRedis: false
     redisConfig:
       host: 127.0.0.1
@@ -48,14 +49,14 @@ wx:
 #        secret: 1111
 #        token: 111
 #        aesKey: 111
-#logging:
-##  file:
-##    name: server.log
-#  logback:
-#    rollingpolicy:
-#      max-file-size: 5MB
+logging:
 #  file:
-#    path: log
+#    name: server.log
+  logback:
+    rollingpolicy:
+      max-file-size: 5MB
+  file:
+    path: log
 
 
 #  pattern:
@@ -64,7 +65,7 @@ wx:
 
 #Windows下的路径配置
 ImagesFilePath: E:\\sch-work-space\\projects\\hbkj\\hboa\\admin\\src\\main\\resources\\images\\
-ExcelFilePath: E:\\sch-work-space\\projects\\hbkj\\hboa\\admin\\src\\main\\resources\\excel\\
+ExcelFilePath: E:\\sch-work-space\\projects\\hbkj\\hboa\\admin\\src\\main\\resources\\signExcel\\
 ProjectUrl: ""
 #linux下的路径配置
 #ImagesFilePath: /usr/local/images/

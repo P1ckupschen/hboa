@@ -48,7 +48,7 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account>
         //id是account 表的 主键id
         LambdaQueryWrapper<Account> queryWrapper = new LambdaQueryWrapper<>();
 
-        queryWrapper.eq(Account::getId,id);
+        queryWrapper.eq(Account::getDeployeeId,id);
         Account one = getOne(queryWrapper);
         AccountVo vo = BeanCopyUtils.copyBean(one, AccountVo.class);
         vo.setUsername(null);
@@ -60,7 +60,6 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account>
         }
 
         //设置权限信息
-//        vo.setMenu(menuService.getPermissionsByDeployeeId(one.getDeployeeId()));
         vo.setRole(roleService.getRoleById(one.getDeployeeId()));
         return vo;
     }

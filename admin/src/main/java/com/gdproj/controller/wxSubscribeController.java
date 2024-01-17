@@ -17,6 +17,8 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.api.WxConsts;
 import me.chanjar.weixin.common.bean.WxJsapiSignature;
+import me.chanjar.weixin.common.bean.menu.WxMenu;
+import me.chanjar.weixin.common.bean.menu.WxMenuButton;
 import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
@@ -41,8 +43,11 @@ public class wxSubscribeController {
     @Value("${ProjectUrl}")
     String projectUrl;
 
-    @Value("${wx.mp.templateId}")
-    String templateId;
+    @Value("${wx.mp.templateId1}")
+    String templateId1;
+
+    @Value("${wx.mp.templateId2}")
+    String templateId2;
 
     @Autowired
     AccountService accountService;
@@ -50,15 +55,18 @@ public class wxSubscribeController {
     @Autowired
     SystemLoginService loginService;
 
+    @Autowired
+    WxMpService wxService;
+
     private static final String TOKEN = "hboatoken"; // 替换成自己的Token
 
-    private final WxMpService wxService;
+//    private final WxMpService wxService;
 
     private Jedis resource = new JedisPool().getResource();
 
-    public wxSubscribeController(WxMpService wxService) {
-        this.wxService = wxService;
-    }
+//    public wxSubscribeController(WxMpService wxService) {
+//        this.wxService = wxService;
+//    }
 
     @GetMapping("/verification")
     @autoLog
@@ -100,12 +108,16 @@ public class wxSubscribeController {
                 wxService.getJsapiTicket();
                 WxJsapiSignature jsapiSignature = wxService.createJsapiSignature(url);
                 SignatureVo signatureVo = new SignatureVo();
+                log.info("【微信网页授权】url={}", url);
+                log.info("【微信网页授权】签名={}", jsapiSignature.getSignature());
+                log.info("【微信网页授权】timestamp={}", jsapiSignature.getTimestamp());
+                log.info("【微信网页授权】noncestr={}", jsapiSignature.getNonceStr());
                 signatureVo.setSignature(jsapiSignature.getSignature());
                 signatureVo.setTimestamps(jsapiSignature.getTimestamp());
                 signatureVo.setNoncestr(jsapiSignature.getNonceStr());
                 return ResponseResult.okResult(signatureVo);
             }catch (Exception e){
-                throw new SystemException(AppHttpCodeEnum.WX_AUTH_ERROR);
+                throw new SystemException(AppHttpCodeEnum.GET_SIGNATURE_ERROR);
             }
 
     }
@@ -164,27 +176,49 @@ public class wxSubscribeController {
           }
         } catch (WxErrorException e) {
             log.error("【微信网页授权】{}", e);
-            throw new SystemException(AppHttpCodeEnum.WX_AUTH_ERROR);
+            throw new SystemException(AppHttpCodeEnum.GET_TOKEN_ERROR);
         }
     }
 
 
-    @GetMapping("/sendTemplateMessage")
-    @autoLog
-    @ApiOperation(value = "发送消息推送")
-    public void sendMessage(){
-
+//    @GetMapping("/sendTemplateMessage")
+//    @autoLog
+//    @ApiOperation(value = "发送消息推送")
+    public  void sendExpireMessage(String name , String date , String content , String openId){
         //实例化模板对象
         WxMpTemplateMessage wxMpTemplateMessage = new WxMpTemplateMessage();
         //设置模板ID
-        wxMpTemplateMessage.setTemplateId(templateId);
+        wxMpTemplateMessage.setTemplateId(templateId1);
         //设置发送给哪个用户
-        wxMpTemplateMessage.setToUser("oCQEq6gDe4uM327t0QqHYLwVN16c");
+        wxMpTemplateMessage.setToUser(openId);
         //构建消息格式
         List<WxMpTemplateData> list = Arrays.asList(
-                new WxMpTemplateData("name", "wen"),
-                new WxMpTemplateData("time", "wen"),
-                new WxMpTemplateData("content", "wen")
+                new WxMpTemplateData("thing6", name),
+                new WxMpTemplateData("time8", date),
+                new WxMpTemplateData("thing3", content)
+        );
+        //放进模板对象。准备发送
+        wxMpTemplateMessage.setData(list);
+        try {
+            //发送模板
+            wxService.getTemplateMsgService().sendTemplateMsg(wxMpTemplateMessage);
+        } catch (WxErrorException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public  void sendTaskMessage(String name , String date , String content , String openId){
+        //实例化模板对象
+        WxMpTemplateMessage wxMpTemplateMessage = new WxMpTemplateMessage();
+        //设置模板ID
+        wxMpTemplateMessage.setTemplateId(templateId2);
+        //设置发送给哪个用户
+        wxMpTemplateMessage.setToUser(openId);
+        //构建消息格式
+        List<WxMpTemplateData> list = Arrays.asList(
+                new WxMpTemplateData("thing1", name),
+                new WxMpTemplateData("time5", date),
+                new WxMpTemplateData("thing11", content)
         );
         //放进模板对象。准备发送
         wxMpTemplateMessage.setData(list);
@@ -252,14 +286,13 @@ public class wxSubscribeController {
     @ApiOperation(value = "openid和用户进行绑定")
     public ResponseResult loginByAccount(@RequestBody AccountVo vo , HttpServletRequest request){
 
-        ResponseResult responseResult = loginService.frontLogin(vo, request.getSession());
-        if(!ObjectUtil.isEmpty(responseResult)){
+        ResponseResult responseResult = loginService.frontLogin(vo, request);
+        if(!ObjectUtil.isEmpty(responseResult) && responseResult.getCode()  == 200){
             String Token = (String) responseResult.getData();
             return ResponseResult.okResult(Token);
         }else{
             return ResponseResult.errorResult(AppHttpCodeEnum.BINDING_FAILED);
         }
-
     }
 
 
@@ -278,14 +311,49 @@ public class wxSubscribeController {
     }
 
     /**
-     *  TODO 1.接口类型  2.审批通过的时候即发送公司公告提醒
+     *  配置wxmenuButtonList
+     *  TODO  自定义菜单
      *
      * */
-    @GetMapping("pushApprovedNotify")
-    @ApiOperation(value = "推送审批通过并生效的公司公告")
-    public ResponseResult PushApprovedNotify(){
+    @GetMapping("customMenu")
+    @autoLog
+    @ApiOperation(value = "自定义菜单")
+    public ResponseResult customMenu(){
+        WxMenu wxMenu = new WxMenu();
+        WxMenuButton button = new WxMenuButton();
+        button.setName("oa系统");
+        button.setUrl("https://phpssl.hangzhouwan.net/hboa/wx");
+        button.setType("view");
+        wxMenu.getButtons().add(button);
+        try {
+            String s = wxService.getMenuService().menuCreate(wxMenu);
+            return ResponseResult.okResult(s);
+        } catch (WxErrorException e) {
+            throw new RuntimeException(e);
+        }
 
-        return null;
+//        List<WxMenuButton> buttons = new ArrayList<WxMenuButton>();
+//        WxMenuButton btn1 = new WxMenuButton();
+//        btn1.setType("click");
+//        btn1.setName("查询城市");
+//        btn1.setKey("QUERY_CITY");
+//        WxMenuButton btn2 = new WxMenuButton();
+//        btn2.setType("view");
+//        btn2.setName("跳转网页");
+//        btn2.setUrl("http://www.csdn.net");
+//        buttons.add(btn1);
+//        buttons.add(btn2);
+//        // 创建
+//        WxMenu wxMenu = new WxMenu();
+//        wxMenu.setButtons(buttons);
+//        String re= null;
+//        try {
+//            re = wxService.getMenuService().menuCreate(wxMenu);
+//        } catch (WxErrorException e) {
+//            throw new SystemException(AppHttpCodeEnum.CUSTOM_MENU_ERROR);
+//        }
+//        System.out.println(re);
+//        return true;
     }
 
 }

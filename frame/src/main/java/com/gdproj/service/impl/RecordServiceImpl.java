@@ -320,7 +320,7 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
             Integer count = item.getCount();
             Record record = new Record();
             record.setProductName(item.getStockName());
-            record.setCategoryId(1);
+            record.setCategoryId(warehouse.getCategoryId());
             //需要有projectId contractId;
             record.setIsDeleted(0);
             record.setContractId(warehouse.getContractId());

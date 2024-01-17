@@ -92,6 +92,35 @@ public class contractController {
 
     }
 
+    @GetMapping("/getAllContractList")
+    @autoLog
+    @ApiOperation(value = "查询合同列表,包括私人的")
+    public ResponseResult getAllContractList(@RequestParam Integer pageNum,
+                                          @RequestParam Integer pageSize,
+                                          @RequestParam(required = false,defaultValue = "+id")String sort,
+                                          @RequestParam(required = false,defaultValue = "") String title ,
+                                          @RequestParam(required = false) Integer departmentId,
+                                          @RequestParam(required = false) Integer type,
+                                          @RequestParam(required = false) String time){
+
+        PageQueryDto pageDto = new PageQueryDto(pageNum,pageSize,departmentId,type,title,time,sort);
+
+        IPage<ContractVo> List = new Page<>();
+
+        try {
+            List = contractService.getContractListForAdmin(pageDto);
+            PageVo<List<ContractVo>> pageList = new PageVo<>();
+            pageList.setData(List.getRecords());
+            pageList.setTotal((int) List.getTotal());
+            return ResponseResult.okResult(pageList);
+        }catch (SystemException e){
+            return ResponseResult.okResult(e.getCode(),e.getMsg());
+        }catch (Exception e){
+            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+        }
+
+    }
+
 
     @PutMapping("updateContract")
     @autoLog

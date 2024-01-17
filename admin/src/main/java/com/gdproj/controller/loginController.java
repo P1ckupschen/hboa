@@ -1,6 +1,7 @@
 package com.gdproj.controller;
 
 
+import cn.hutool.crypto.SecureUtil;
 import com.gdproj.annotation.autoLog;
 import com.gdproj.entity.User;
 import com.gdproj.enums.AppHttpCodeEnum;
@@ -43,9 +44,9 @@ public class loginController {
     @PostMapping("/frontLogin")
     @autoLog
     @ApiOperation(value = "前台登录请求")
-    public ResponseResult frontLogin(@RequestBody AccountVo vo, HttpSession session){
-
-        return  systemLoginService.frontLogin(vo,session);
+    public ResponseResult frontLogin(@RequestBody AccountVo vo, HttpServletRequest request){
+        SecureUtil.disableBouncyCastle();
+        return  systemLoginService.frontLogin(vo,request);
     }
 
     @GetMapping("/Userinfo")

@@ -92,6 +92,7 @@ public class PurchaseServiceImpl extends ServiceImpl<PurchaseMapper, Purchase>
             String content = JSONUtil.toJsonStr(item.getPurchaseContent());
             List<PurchaseContentVo> contentVoList = JSONUtil.toList(content, PurchaseContentVo.class);
             vo.setPurchaseContent(contentVoList);
+
             if(ObjectUtil.isEmpty(item.getUserId())){
                 throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
             }

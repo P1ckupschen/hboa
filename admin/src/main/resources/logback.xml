@@ -1,6 +1,6 @@
 <configuration debug="true" scan="true" scanPeriod="5 seconds"> <!--scan配置文件修改时重新加载-->
     <!--自定义日志输出路径-->
-    <property name="LOG_HOME" value="logs"/>
+    <property name="LOG_HOME" value="/mnt/data/hboa/logs"/>
     <!--自定义日志留存天数-->
     <property name="LOG_MAX_MISTORY" value="90"/>
     <!--自定义单个文件大小，超过生成新的文件-->

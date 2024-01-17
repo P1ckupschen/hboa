@@ -4,9 +4,9 @@ spring:
   main:
     allow-circular-references: true
   datasource:
-    url: jdbc:mysql://10.195.159.201:30335/hb_sql?useSSL=false
-    username: hbkj
-    password: 2A%#RNM2en
+    url: jdbc:mysql://172.30.121.209:3306/hb_sql?useSSL=false
+    username: u
+    password: upassword
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 #  用来把数据库对象的字段变为下划线
@@ -31,26 +31,19 @@ mybatis-plus:
 
 wx:
   mp:
-    templateId1: WOfgftogiDzAxUVLeVo5paE-xRduBuhp08kSTGkKClY
-    templateId2: Ouxk8BGpT055nL8E5Fc33HyeKWnf5R_EhPbLdyjWJpI
+    templateId1: WBzrHnLayQoPvvh1LV9M4-TmiqddsRBdSiZG8a_1Y-g
+    templateId2: VLgOzJ1jpfOWkuigas9ptf9x4TXqy8xwCs-HkSJX9oo
     useRedis: false
     redisConfig:
       host: 127.0.0.1
       port: 6379
     configs:
-      - appId: wx16f3d2848ececc55 # 第一个公众号的appid
-        secret: 600e1d841ae614035523f10d5383758d # 公众号的appsecret
+      - appId: wxad89a06b6524c854 # 第一个公众号的appid
+        secret: 1c89fd7aa6c07de55ef0ea8f5c8484b9 # 公众号的appsecret
         token: hboatoken # 接口配置里的Token值
-        aesKey: 9UT2ltCYdYDTpcwO3NZ9TJmK4HMCKWj7T7EG2bTfzpM # 接口配置里的EncodingAESKey值
+        aesKey: 111 # 接口配置里的EncodingAESKey值
 
-logging:
-#  file:
-#    name: server.log
-  logback:
-    rollingpolicy:
-      max-file-size: 5MB
-  file:
-    path: /mnt/data/hboa/statics/log/
+
 #Windows下的路径配置
 #ImagesFilePath: E:\\sch-work-space\\projects\\hbkj\\hboa\\admin\\src\\main\\resources\\images\\
 

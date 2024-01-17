@@ -40,6 +40,7 @@ public class webConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/webjars/**")
                 .excludePathPatterns("/v2/**")
                 .excludePathPatterns("/images/")
+                .excludePathPatterns("/MP_verify_buXWsnJZs8brdUDP.txt")
                 .addPathPatterns("/**");                  //添加需要拦截的路径
     }
     @Bean

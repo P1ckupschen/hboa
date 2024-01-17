@@ -35,4 +35,6 @@ public interface SignService extends IService<Sign> {
     ResponseResult getTodayList(PageQueryDto queryDto);
 
     void exportSignExcel(List<Date> interval, HttpServletResponse response);
+
+    ResponseResult deleteSign(Integer id);
 }

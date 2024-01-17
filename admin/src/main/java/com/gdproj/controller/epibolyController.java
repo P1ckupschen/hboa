@@ -17,8 +17,10 @@ import com.gdproj.vo.SelectVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,6 +82,14 @@ public class epibolyController {
 
     }
 
+    @GetMapping("/getEpibolyListByCurrentId")
+    @autoLog
+    @ApiOperation(value = "查询我的项目列表")
+    public ResponseResult getEpibolyListByCurrentId(@Validated PageQueryDto queryDto , HttpServletRequest request){
+
+        return epibolyService.getEpibolyListByCurrentId(queryDto,request);
+
+    }
     @PutMapping("updateEpiboly")
     @autoLog
     @ApiOperation(value = "更新外包")

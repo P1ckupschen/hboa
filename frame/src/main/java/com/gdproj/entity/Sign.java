@@ -103,6 +103,17 @@ public class Sign implements Serializable {
     @TableField(exist = false)
     private Double latitude;
 
+    public String getEndAddr() {
+        return endAddr;
+    }
+
+    public void setEndAddr(String endAddr) {
+        this.endAddr = endAddr;
+    }
+
+    @TableField(value="end_addr")
+    private String endAddr;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

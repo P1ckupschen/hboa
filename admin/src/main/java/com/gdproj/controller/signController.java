@@ -130,11 +130,17 @@ public class signController {
         }
     }
 
+    @DeleteMapping("deleteSign")
+    @autoLog
+    @ApiOperation(value="删除签到信息")
+    public ResponseResult deleteSign(@RequestParam("id") Integer Id){
+        return signService.deleteSign(Id);
+    }
+
     @GetMapping("/getSignInfoByUserIdAndDate")
     @autoLog
     @ApiOperation(value = "通过用户Id和日期查询用户当日的考勤信息")
     public ResponseResult getSignInfoByUserIdAndDate(@RequestParam Integer userId){
-
 
         //怎么添加签到信息
         try {

@@ -228,24 +228,46 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
             deployee.setDeployeePhone(AesUtil.encrypt(deployee.getDeployeePhone(),AesUtil.key128));
         }
         boolean isSave = save(deployee);
-        
 
         //insert默认员工权限为普通员工 6
         UserRole userRole = new UserRole();
         userRole.setDeployeeId(deployee.getDeployeeId());
         userRole.setRoleId(6);
         userRoleService.save(userRole);
-        if(isSave && !ObjectUtil.isEmpty(deployee.getUsername())){
-            //如果有账号密码就新建account
-                Account account = new Account();
-                account.setDeployeeId(deployee.getDeployeeId());
-                account.setName(deployee.getDeployeeName());
-                account.setUsername(deployee.getUsername());
-                account.setPassword(RSAUtil.DEFAULT_PASSWORD);
-                return ResponseResult.okResult(accountService.save(account));
+        if(isSave){
+            //TODO 用户名不能重复如果有账号密码就新建account
+            Account account = new Account();
+            account.setDeployeeId(deployee.getDeployeeId());
+            account.setName(deployee.getDeployeeName());
+            account.setUsername(deployee.getDeployeeName());
+            account.setPassword(RSAUtil.DEFAULT_PASSWORD);
+            return ResponseResult.okResult(accountService.save(account));
         }else{
-            return ResponseResult.okResult(isSave);
+            //如果为空 默认账号名
+            Account account = new Account();
+            account.setDeployeeId(deployee.getDeployeeId());
+            account.setName(deployee.getDeployeeName());
+            account.setUsername(deployee.getDeployeeName());
+            account.setPassword(RSAUtil.DEFAULT_PASSWORD);
+            return ResponseResult.okResult(accountService.save(account));
         }
+//        if(isSave && !ObjectUtil.isEmpty(deployee.getUsername())){
+//            //TODO 用户名不能重复如果有账号密码就新建account
+//                Account account = new Account();
+//                account.setDeployeeId(deployee.getDeployeeId());
+//                account.setName(deployee.getDeployeeName());
+//                account.setUsername(deployee.getUsername());
+//                account.setPassword(RSAUtil.DEFAULT_PASSWORD);
+//                return ResponseResult.okResult(accountService.save(account));
+//        }else{
+//            //如果为空 默认账号名
+//            Account account = new Account();
+//            account.setDeployeeId(deployee.getDeployeeId());
+//            account.setName(deployee.getDeployeeName());
+//            account.setUsername(deployee.getDeployeeName());
+//            account.setPassword(RSAUtil.DEFAULT_PASSWORD);
+//            return ResponseResult.okResult(accountService.save(account));
+//        }
 
     }
 
@@ -263,7 +285,7 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
             LambdaUpdateWrapper<Account> updateWrapper = new LambdaUpdateWrapper<>();
             updateWrapper.eq(Account::getDeployeeId,deployee.getDeployeeId())
                     .set(Account::getName,deployee.getDeployeeName())
-                    .set(Account::getUsername,deployee.getUsername());
+                    .set(Account::getUsername,deployee.getDeployeeName());
             return ResponseResult.okResult(accountService.update(updateWrapper));
         }else{
             throw new SystemException(AppHttpCodeEnum.UPDATE_ERROR);

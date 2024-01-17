@@ -18,6 +18,8 @@ public interface ContractService extends IService<Contract> {
 
     IPage<ContractVo> getContractList(PageQueryDto pageDto);
 
+
+    IPage<ContractVo> getContractListForAdmin(PageQueryDto pageDto);
     List<SelectVo> getListForSelect();
 
     List<Contract> getListByClientId(Integer clientId);
