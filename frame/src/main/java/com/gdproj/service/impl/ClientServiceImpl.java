@@ -1,5 +1,6 @@
 package com.gdproj.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -10,6 +11,7 @@ import com.gdproj.entity.Contract;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.ClientMapper;
+import com.gdproj.result.ResponseResult;
 import com.gdproj.service.ClientService;
 import com.gdproj.service.ContractService;
 import com.gdproj.service.DeployeeService;
@@ -95,28 +97,33 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client>
         Page<ClientVo> resultPage = new Page<>();
 
         List<ClientVo> resultList = new ArrayList<>();
+
         try {
 
             resultList = recordPage.getRecords().stream().map((item) -> {
 
                 ClientVo vo = BeanCopyUtils.copyBean(item, ClientVo.class);
                 //类型名称?
-                vo.setProjectList(projectService.getProjectListByClientId(item.getClientId()));
-                List<ProjectVo> productList = projectService.getProjectListByClientId(item.getClientId());
-                List<Integer> collect1 = productList.stream().map(ProjectVo::getProjectId).collect(Collectors.toList());
-                //客户合同
-                vo.setProjectId(collect1);
-                //客户项目
-                List<Contract> contractList = contractService.getListByClientId(item.getClientId());
-                List<Integer> collect = contractList.stream().map(Contract::getContractId).collect(Collectors.toList());
-                vo.setContractId(collect);
+                if(!ObjectUtil.isEmpty(item.getClientId()))  {
+                    vo.setProjectList(projectService.getProjectListByClientId(item.getClientId()));
+                    List<ProjectVo> productList = projectService.getProjectListByClientId(item.getClientId());
+                    List<Integer> collect1 = productList.stream().map(ProjectVo::getProjectId).collect(Collectors.toList());
+                    //客户合同
+                    vo.setProjectId(collect1);
+                    //客户项目
+                    List<Contract> contractList = contractService.getListByClientId(item.getClientId());
+                    List<Integer> collect = contractList.stream().map(Contract::getContractId).collect(Collectors.toList());
+                    vo.setContractId(collect);
+                }
                 return vo;
             }).collect(Collectors.toList());
         }catch (Exception e){
             throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
         }
 
-        resultPage.setRecords(resultList);
+        List<ClientVo> clientVos = addOrderId(resultList, pageNum, pageSize);
+
+        resultPage.setRecords(clientVos);
 
         resultPage.setTotal(recordPage.getTotal());
 
@@ -137,6 +144,25 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client>
         }).collect(Collectors.toList());
         return collect;
 
+    }
+
+    @Override
+    public ResponseResult getClientContacts(Integer id) {
+        Client one = getById(id);
+        if(ObjectUtil.isEmpty(one)){
+           throw new SystemException(AppHttpCodeEnum.SELECT_ERROR);
+        }
+        return ResponseResult.okResult(one.getClientContacts());
+    }
+
+
+    private List<ClientVo> addOrderId(List<ClientVo> list,Integer pageNum,Integer pageSize){
+        if (!ObjectUtil.isEmpty(pageNum) && !ObjectUtil.isEmpty(pageSize)) {
+            for (int i = 0 ; i < list.size() ; i++){
+                list.get(i).setOrderId((pageNum - 1) * pageSize + i + 1);
+            }
+        }
+        return list;
     }
 }
 

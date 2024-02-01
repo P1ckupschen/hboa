@@ -1,17 +1,16 @@
 package com.gdproj.service;
 
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Sign;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.vo.IsSignVo;
-import com.gdproj.vo.MonthSignVo;
+import com.gdproj.vo.PageVo;
 import com.gdproj.vo.SignVo;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,19 +21,23 @@ import java.util.List;
 */
 public interface SignService extends IService<Sign> {
 
-    IPage<SignVo> getSignList(PageQueryDto pagedto);
+    PageVo<List<SignVo>> getSignList(PageQueryDto queryDto);
 
     boolean insertSign(Sign sign);
 
     IsSignVo getSignInfoByUserIdAndDate(Integer userId);
 
-    IPage<MonthSignVo> getMonthSignList(PageQueryDto pageDto);
+//    IPage<MonthSignVo> getMonthSignList(PageQueryDto pageDto);
 
-    void exportMonthSignExcel(PageQueryDto pageDto, HttpServletResponse response);
+//    void exportMonthSignExcel(PageQueryDto pageDto, HttpServletResponse response);
 
     ResponseResult getTodayList(PageQueryDto queryDto);
 
-    void exportSignExcel(List<Date> interval, HttpServletResponse response);
+    void exportSignExcel(PageQueryDto dto, HttpServletResponse response);
 
     ResponseResult deleteSign(Integer id);
+
+    ResponseResult getSignRules();
+
+    PageVo<List<SignVo>> getMySignList(PageQueryDto dto, HttpServletRequest request);
 }

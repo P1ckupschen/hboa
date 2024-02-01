@@ -26,4 +26,6 @@ public interface RoleService extends IService<Role> {
     List<String> getRoleById(Integer deployeeId);
 
     ResponseResult getRoleListForSelect();
+
+    List<String> getListByRoleKey(String s);
 }

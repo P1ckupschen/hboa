@@ -39,5 +39,7 @@ public class PaymentVo {
     //金额大写
     private String paymentAmountCap;
     private String paymentUse;
+
+    private Integer orderId;
 }
 

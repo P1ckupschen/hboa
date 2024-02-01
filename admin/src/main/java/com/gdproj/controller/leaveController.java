@@ -20,10 +20,10 @@ import com.gdproj.vo.PageVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -40,14 +40,7 @@ public class leaveController {
     @GetMapping("/getLeaveList")
     @autoLog
     @ApiOperation(value = "查询请假列表")
-    public ResponseResult getLeaveList(@RequestParam Integer pageNum,
-                                       @RequestParam Integer pageSize,
-                                       @RequestParam(required = false,defaultValue = "+id")String sort,
-                                       @RequestParam(required = false,defaultValue = "") String title ,
-                                       @RequestParam(required = false) Integer departmentId,
-                                       @RequestParam(required = false) Integer type,
-                                       @RequestParam(required = false) String time){
-        PageQueryDto pageDto = new PageQueryDto(pageNum,pageSize,departmentId,type,title,time,sort);
+    public ResponseResult getLeaveList(@Validated PageQueryDto pageDto){
 
         IPage<LeaveVo> leaveList = new Page<LeaveVo>();
 
@@ -187,8 +180,8 @@ public class leaveController {
     @PostMapping("/exportLeaveExcel")
     @autoLog
     @ApiOperation(value = "请假记录统计")
-    public void exportLeaveExcel(@RequestBody List<Date> Interval , HttpServletResponse response){
-        leaveService.exportLeaveExcel(Interval, response);
+    public void exportLeaveExcel(@RequestBody PageQueryDto queryDto, HttpServletResponse response){
+        leaveService.exportLeaveExcel(queryDto, response);
     }
 
 

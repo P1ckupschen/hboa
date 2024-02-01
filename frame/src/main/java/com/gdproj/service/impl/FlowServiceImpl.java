@@ -162,7 +162,7 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
             updateWrapper.eq(DailyUse::getDailyuseId, runId);
             updateWrapper.set(DailyUse::getDailyuseStatus, 1);
             return dailyUseService.update(updateWrapper);
-        } else if (typeId == 5) {
+        } else if (typeId == 5 || typeId == 8 || typeId == 9) {
             //付款申请
             LambdaUpdateWrapper<Payment> updateWrapper = new LambdaUpdateWrapper<>();
             updateWrapper.eq(Payment::getPaymentId, runId);
@@ -212,7 +212,7 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
             updateWrapper.eq(DailyUse::getDailyuseId, runId);
             updateWrapper.set(DailyUse::getDailyuseStatus, 2);
             return dailyUseService.update(updateWrapper);
-        } else if (typeId == 5) {
+        } else if (typeId == 5 || typeId == 8 || typeId == 9) {
             //付款申请
             LambdaUpdateWrapper<Payment> updateWrapper = new LambdaUpdateWrapper<>();
             updateWrapper.eq(Payment::getPaymentId, runId);
@@ -290,7 +290,8 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
                 setFlowVoProperty(vo, item);
                 return vo;
             }).collect(Collectors.toList());
-            resultPage.setRecords(resultList);
+            List<FlowVo> flowVos = addOrderId(resultList, pageNum, pageSize);
+            resultPage.setRecords(flowVos);
             resultPage.setTotal(recordPage.getTotal());
             return resultPage;
         } catch (Exception e) {
@@ -401,7 +402,7 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
                 //                说明当前流程对应的申请被删除，当前申请删除
                 removeById(item.getFlowId());
             }
-        } else if (typeId == 5) {
+        } else if (typeId == 5 || typeId == 8 || typeId == 9) {
             //付款申请
             Payment payment = paymentService.getById(item.getRunId());
             if (!ObjectUtil.isEmpty(payment)) {
@@ -712,7 +713,8 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
                 setFlowVoProperty(vo, item);
                 return vo;
             }).collect(Collectors.toList());
-            result.setData(resultList);
+            List<FlowVo> flowVos = addOrderId(resultList, pageNum, pageSize);
+            result.setData(flowVos);
             result.setTotal((int) recordPage.getTotal());
             return ResponseResult.okResult(result);
         } catch (Exception e) {
@@ -786,6 +788,15 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
         }else{
             return ResponseResult.errorResult(AppHttpCodeEnum.DELETE_ERROR);
         }
+    }
+
+    private List<FlowVo> addOrderId(List<FlowVo> list, Integer pageNum, Integer pageSize){
+        if (!ObjectUtil.isEmpty(pageNum) && !ObjectUtil.isEmpty(pageSize)) {
+            for (int i = 0 ; i < list.size() ; i++){
+                list.get(i).setOrderId((pageNum - 1) * pageSize + i + 1);
+            }
+        }
+        return list;
     }
 
 }

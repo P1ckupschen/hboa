@@ -38,6 +38,17 @@ public class Template implements Serializable {
     @TableLogic
     private Integer isDeleted;
 
+    public Integer getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
+    }
+
+    @TableField(exist = false)
+    private Integer orderId;
+
     /**
      *
      */

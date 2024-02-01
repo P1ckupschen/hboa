@@ -209,16 +209,17 @@ public class Contract implements Serializable {
     @TableLogic
     private Integer isDeleted;
 
-    public Integer getCanSee() {
-        return canSee;
+
+    public Integer getIsPrivate() {
+        return isPrivate;
     }
 
-    public void setCanSee(Integer canSee) {
-        this.canSee = canSee;
+    public void setIsPrivate(Integer isPrivate) {
+        this.isPrivate = isPrivate;
     }
 
-    @TableField(value = "can_see")
-    private Integer canSee;
+    @TableField(value = "is_private")
+    private Integer isPrivate;
 
 
     @TableField(exist = false)

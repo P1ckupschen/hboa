@@ -26,4 +26,6 @@ public class DepartmentVo {
     private Integer parentId;
 
     private List<DepartmentVo> children;
+
+    private Integer orderId;
 }

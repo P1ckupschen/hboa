@@ -21,9 +21,9 @@ public class TaskVo {
 
     private String assignedUsername;
 
-    private Integer executorId;
+    private List<Integer> executorIds;
 
-    private String executorUsername;
+    private List<String> executorUsername;
 
     private Integer taskUrgency;
 
@@ -67,4 +67,6 @@ public class TaskVo {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date overdueTime;
+
+    private Integer orderId;
 }

@@ -8,7 +8,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdproj.dto.PageQueryDto;
-import com.gdproj.entity.*;
+import com.gdproj.entity.Deployee;
+import com.gdproj.entity.Overtime;
+import com.gdproj.entity.OvertimeCategory;
+import com.gdproj.entity.OvertimeExcelEntity;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.OvertimeMapper;
@@ -21,10 +24,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -62,6 +64,7 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
         String title = pageDto.getTitle();
         Integer pageNum = pageDto.getPageNum();
         Integer pageSize = pageDto.getPageSize();
+//        List<Date> interval = pageDto.getInterval();
 
         Page<Overtime> page = new Page<>(pageNum, pageSize);
 
@@ -84,8 +87,9 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
             }
         }
         //模糊查询时间
-        if(time != null){
-            queryWrapper.like(Overtime::getStartTime,time);
+        if (!ObjectUtil.isEmpty(time)) {
+            //时间区间查询
+            queryWrapper.like(Overtime::getCreatedTime,time);
         }
 
         //模糊查询人名
@@ -126,8 +130,10 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
 
                 //加班类型
                 if(!ObjectUtil.isEmpty(item.getCategoryId())){
-                    overtimevo.setCategory(overtimecategoryService.getById(item.getCategoryId()).getCategoryName());
-
+                    OvertimeCategory one = overtimecategoryService.getById(item.getCategoryId());
+                    if(!ObjectUtil.isEmpty(one)){
+                        overtimevo.setCategory(one.getCategoryName());
+                    }
                 }else{
                     overtimevo.setCategory("");
                 }
@@ -152,10 +158,9 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
         }catch (Exception e){
             throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
         }
-        resultPage.setRecords(resultList);
+        List<OvertimeVo> overtimeVos = addOrderId(resultList, pageNum, pageSize);
+        resultPage.setRecords(overtimeVos);
         resultPage.setTotal(overtimePage.getTotal());
-
-
         return resultPage;
     }
 
@@ -177,31 +182,48 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
     }
 
     @Override
-    public void exportOvertimeExcel(List<Date> interval, HttpServletResponse response) {
-        String fileName = filePath + System.currentTimeMillis() + ".xlsx";
-        List<String> dateList = interval.stream().map((item) -> {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            try {
-                return sdf.format(item);
-            } catch (Exception e) {
-                throw new SystemException(AppHttpCodeEnum.DATE_FORMAT_ERROR);
-            }
-        }).collect(Collectors.toList());
-        List<Overtime> overtimeList = getOvertimeListByTimeInterval(dateList);
-        // TODO 应该是depolyeeList？
+    public void exportOvertimeExcel(PageQueryDto queryDto, HttpServletResponse response) {
+
+//        List<Date> interval = queryDto.getInterval();
+        String time = queryDto.getTime();
+        String title = queryDto.getTitle();
+        Integer departmentId = queryDto.getDepartmentId();
+
         LambdaQueryWrapper<Deployee> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Deployee::getDeployeeStatus , 1);
+
+        if(!ObjectUtil.isEmpty(departmentId)){
+            queryWrapper.eq(Deployee::getDepartmentId, departmentId);
+        }
+        if(!ObjectUtil.isEmpty(title)){
+            queryWrapper.like(Deployee::getDeployeeName, title);
+        }
+
+
+        String fileName = filePath + System.currentTimeMillis() + ".xlsx";
+//        List<String> dateList = interval.stream().map((item) -> {
+//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//            try {
+//                return sdf.format(item);
+//            } catch (Exception e) {
+//                throw new SystemException(AppHttpCodeEnum.DATE_FORMAT_ERROR);
+//            }
+//        }).collect(Collectors.toList());
+//        List<Overtime> overtimeList = getOvertimeListByTimeInterval(dateList);
+        // TODO 应该是depolyeeList？
+
         List<Deployee> list = deployeeService.list(queryWrapper);
+        AtomicInteger i = new AtomicInteger(1);
         List<OvertimeExcelEntity> collect = list.stream().map((item) -> {
             OvertimeExcelEntity oee = new OvertimeExcelEntity();
-            oee.setUserId(item.getDeployeeId());
+            oee.setOrderId(i.getAndIncrement());
             oee.setUsername(item.getDeployeeName());
-            oee.setStage(dateList.get(0) + "至" + dateList.get(1));
-            oee.setOvertimeDays(countOvertimeDaysByIdAndInterval(item.getDeployeeId(), dateList));
-            oee.setOvertimeHistory(getOvertimeListByIdAndInterval(item.getDeployeeId(), dateList));
+            oee.setStage(time);
+            oee.setOvertimeDays(countOvertimeDaysByIdAndInterval(item.getDeployeeId(), time));
+            oee.setOvertimeHistory(getOvertimeListByIdAndInterval(item.getDeployeeId(), time));
             return oee;
         }).collect(Collectors.toList());
-        EasyExcel.write(fileName, OvertimeExcelEntity.class).sheet("上班统计").doWrite(collect);
+        EasyExcel.write(fileName, OvertimeExcelEntity.class).sheet("加班统计").doWrite(collect);
         DownloadUtils.downloadExcel(fileName,response);
     }
 
@@ -215,12 +237,12 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
         }
     }
 
-    private String getOvertimeListByIdAndInterval(Integer deployeeId, List<String> dateList) {
+    private String getOvertimeListByIdAndInterval(Integer deployeeId, String time) {
         LambdaQueryWrapper<Overtime> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Overtime::getExecutorId,deployeeId);
         queryWrapper.eq(Overtime::getOvertimeStatus,1);
-        if(!ObjectUtil.isEmpty(dateList)){
-            queryWrapper.between(Overtime::getStartTime, dateList.get(0), dateList.get(1));
+        if(!ObjectUtil.isEmpty(time)){
+            queryWrapper.like(Overtime::getStartTime, time);
             List<Overtime> list = list(queryWrapper);
             List<String> collect = list.stream().map((item) -> {
                 String start = DateUtil.format(item.getStartTime(), "yyyy-MM-dd HH:mm:ss");
@@ -233,14 +255,14 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
         }
     }
 
-    private double countOvertimeDaysByIdAndInterval(Integer deployeeId, List<String> dateList) {
+    private double countOvertimeDaysByIdAndInterval(Integer deployeeId, String time) {
         LambdaQueryWrapper<Overtime> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Overtime::getExecutorId,deployeeId);
         queryWrapper.eq(Overtime::getOvertimeStatus,1);
         AtomicReference<Double> count = new AtomicReference<>((double) 0);
         //TODO 为0 ERROR
-        if(!ObjectUtil.isEmpty(dateList)){
-            queryWrapper.between(Overtime::getStartTime, dateList.get(0), dateList.get(1));
+        if(!ObjectUtil.isEmpty(time)){
+            queryWrapper.like(Overtime::getStartTime,time);
             List<Overtime> list = list(queryWrapper);
             for (Overtime item : list ) {
                 System.out.println(item);
@@ -268,6 +290,14 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
         }
     }
 
+    private List<OvertimeVo> addOrderId(List<OvertimeVo> list, Integer pageNum, Integer pageSize){
+        if (!ObjectUtil.isEmpty(pageNum) && !ObjectUtil.isEmpty(pageSize)) {
+            for (int i = 0 ; i < list.size() ; i++){
+                list.get(i).setOrderId((pageNum - 1) * pageSize + i + 1);
+            }
+        }
+        return list;
+    }
 
 }
 

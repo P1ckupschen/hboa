@@ -39,7 +39,7 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
         Department one = getOne(lambdaQueryWrapper);
 
         if (ObjectUtil.isEmpty(one)){
-            throw new SystemException(AppHttpCodeEnum.DEPARTMENT_NULL);
+            return "";
         }else{
             return one.getDepartmentName();
         }
@@ -116,7 +116,9 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
                 return vo;
             }).collect(Collectors.toList());
 
-            List<DepartmentVo> result = builderTree(resultList, 0);
+            List<DepartmentVo> departmentVos = addOrderId(resultList, pageNum, pageSize);
+
+            List<DepartmentVo> result = builderTree(departmentVos, 0);
 
             resultPage.setRecords(result);
 
@@ -167,6 +169,15 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
                 .map(m->m.setChildren(getChildren(m,list)))
                 .collect(Collectors.toList());
         return childrenList;
+    }
+
+    private List<DepartmentVo> addOrderId(List<DepartmentVo> list, Integer pageNum, Integer pageSize){
+        if (!ObjectUtil.isEmpty(pageNum) && !ObjectUtil.isEmpty(pageSize)) {
+            for (int i = 0 ; i < list.size() ; i++){
+                list.get(i).setOrderId((pageNum - 1) * pageSize + i + 1);
+            }
+        }
+        return list;
     }
 
 

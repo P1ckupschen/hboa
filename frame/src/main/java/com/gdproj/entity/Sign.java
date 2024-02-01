@@ -114,6 +114,39 @@ public class Sign implements Serializable {
     @TableField(value="end_addr")
     private String endAddr;
 
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+
+    public String getMonth() {
+        return month;
+    }
+
+    public void setMonth(String month) {
+        this.month = month;
+    }
+
+    public String getDay() {
+        return day;
+    }
+
+    public void setDay(String day) {
+        this.day = day;
+    }
+
+    @TableField(value= "year")
+    private String year;
+
+    @TableField(value = "month")
+    private String month;
+
+    @TableField(value = "day")
+    private String day;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

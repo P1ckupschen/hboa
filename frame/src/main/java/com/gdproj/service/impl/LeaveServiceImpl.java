@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Deployee;
 import com.gdproj.entity.Leave;
+import com.gdproj.entity.LeaveCategory;
 import com.gdproj.entity.LeaveExcelEntity;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
@@ -23,10 +24,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -87,8 +87,10 @@ public class LeaveServiceImpl extends ServiceImpl<LeaveMapper, Leave>
         }
         //设置时间 年 月 日
         //模糊查询时间
-        if(time != null){
-            queryWrapper.like(Leave::getStartTime,time);
+        if (!ObjectUtil.isEmpty(time)) {
+            //时间区间查询
+//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            queryWrapper.like(Leave::getCreatedTime,time);
         }
 
         //模糊查询人名
@@ -130,7 +132,10 @@ public class LeaveServiceImpl extends ServiceImpl<LeaveMapper, Leave>
 
                 //请假类型
                 if(!ObjectUtil.isEmpty(item.getCategoryId())){
-                    leavevo.setCategory(leaveCategoryService.getById(item.getCategoryId()).getCategoryName());
+                    LeaveCategory one = leaveCategoryService.getById(item.getCategoryId());
+                    if(!ObjectUtil.isEmpty(one)){
+                        leavevo.setCategory(one.getCategoryName());
+                    }
                 }else{
                     leavevo.setCategory("");
                 }
@@ -166,20 +171,20 @@ public class LeaveServiceImpl extends ServiceImpl<LeaveMapper, Leave>
         }catch (Exception e){
             throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
         }
-
-        resultPage.setRecords(resultList);
-
+        List<LeaveVo> leaveVos = addOrderId(resultList, pageNum, pageSize);
+        resultPage.setRecords(leaveVos);
         resultPage.setTotal(leavePage.getTotal());
-
-
         return resultPage;
     }
 
     @Override
     public boolean insertLeave(Leave insertLeave) {
 
-        boolean f =false;
-        boolean o =save(insertLeave);
+        boolean f = false;
+        boolean o = false;
+        if (!ObjectUtil.isEmpty(insertLeave.getLeaveDescription()) && insertLeave.getLeaveDescription().length() > 10) {
+            o = save(insertLeave);
+        }
         if(o){
             f = flowService.insertFlow(insertLeave);
         }else{
@@ -192,55 +197,56 @@ public class LeaveServiceImpl extends ServiceImpl<LeaveMapper, Leave>
     }
 
     @Override
-    public void exportLeaveExcel(List<Date> interval , HttpServletResponse response) {
+    public void exportLeaveExcel(PageQueryDto queryDto, HttpServletResponse response) {
 
-        String fileName = filePath + System.currentTimeMillis() + ".xlsx";
-        List<String> dateList = interval.stream().map((item) -> {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            try {
-                return sdf.format(item);
-            } catch (Exception e) {
-                throw new SystemException(AppHttpCodeEnum.DATE_FORMAT_ERROR);
-            }
-        }).collect(Collectors.toList());
-        List<Leave> leaveList = getLeaveListByTimeInterval(dateList);
-        // TODO 应该是depolyeeList？
+//        List<Date> interval = queryDto.getInterval();
+        String time = queryDto.getTime();
+        Integer departmentId = queryDto.getDepartmentId();
+        String title = queryDto.getTitle();
         LambdaQueryWrapper<Deployee> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Deployee::getDeployeeStatus , 1);
+        if(!ObjectUtil.isEmpty(departmentId)){
+            queryWrapper.eq(Deployee::getDepartmentId, departmentId);
+        }
+        if(!ObjectUtil.isEmpty(title)){
+            queryWrapper.like(Deployee::getDeployeeName, title);
+        }
+        String fileName = filePath + System.currentTimeMillis() + ".xlsx";
+//        List<String> dateList = interval.stream().map((item) -> {
+//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//            try {
+//                return sdf.format(item);
+//            } catch (Exception e) {
+//                throw new SystemException(AppHttpCodeEnum.DATE_FORMAT_ERROR);
+//            }
+//        }).collect(Collectors.toList());
+//        List<Leave> leaveList = getLeaveListByTimeInterval(dateList);
+        // TODO 应该是depolyeeList？
+
+        AtomicInteger i = new AtomicInteger(1);
         List<Deployee> list = deployeeService.list(queryWrapper);
         List<LeaveExcelEntity> collect = list.stream().map((item) -> {
             LeaveExcelEntity lee = new LeaveExcelEntity();
-            lee.setUserId(item.getDeployeeId());
+            lee.setOrderId(i.getAndIncrement());
             lee.setUsername(item.getDeployeeName());
-            lee.setStage(dateList.get(0) + "至" + dateList.get(1));
-            lee.setLeaveDays(countLeaveDaysByIdAndInterval(item.getDeployeeId(), dateList));
-            lee.setLeaveHistory(getLeaveListByIdAndInterval(item.getDeployeeId(), dateList));
+            lee.setStage(time);
+            lee.setLeaveDays(countLeaveDaysByIdAndInterval(item.getDeployeeId(), time));
+            lee.setLeaveHistory(getLeaveListByIdAndInterval(item.getDeployeeId(), time));
             return lee;
         }).collect(Collectors.toList());
 
-
-        //
-//        List<LeaveExcelEntity> collect = leaveList.stream().map((item) -> {
-//            LeaveExcelEntity lee = new LeaveExcelEntity();
-//            lee.setUserId(item.getUserId());
-//            lee.setUsername(deployeeService.getNameByUserId(item.getUserId()));
-//            lee.setStage(dateList.get(0) + "~" +dateList.get(1));
-//            lee.setLeaveDays(countLeaveDaysByIdAndInterval(item.getUserId(),dateList));
-//            lee.setLeaveHistory(getLeaveListByIdAndInterval(item.getUserId(),dateList));
-//            return lee;
-//        }).collect(Collectors.toList());
         EasyExcel.write(fileName, LeaveExcelEntity.class).sheet("请假统计").doWrite(collect);
         DownloadUtils.downloadExcel(fileName,response);
     }
 
-    private double countLeaveDaysByIdAndInterval(Integer userId, List<String> dateList) {
+    private double countLeaveDaysByIdAndInterval(Integer userId,  String time) {
         LambdaQueryWrapper<Leave> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Leave::getUserId,userId);
         queryWrapper.eq(Leave::getLeaveStatus,1);
         AtomicReference<Double> count = new AtomicReference<>((double) 0);
         //TODO 为0 ERROR
-        if(!ObjectUtil.isEmpty(dateList)){
-            queryWrapper.between(Leave::getStartTime, dateList.get(0), dateList.get(1));
+        if(!ObjectUtil.isEmpty(time)){
+            queryWrapper.like(Leave::getStartTime, time);
             List<Leave> list = list(queryWrapper);
             for (Leave item : list ) {
                 System.out.println(item);
@@ -268,12 +274,12 @@ public class LeaveServiceImpl extends ServiceImpl<LeaveMapper, Leave>
         }
     }
 
-    private String getLeaveListByIdAndInterval(Integer userId, List<String> dateList) {
+    private String getLeaveListByIdAndInterval(Integer userId, String time) {
         LambdaQueryWrapper<Leave> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Leave::getUserId,userId);
         queryWrapper.eq(Leave::getLeaveStatus,1);
-        if(!ObjectUtil.isEmpty(dateList)){
-            queryWrapper.between(Leave::getStartTime, dateList.get(0), dateList.get(1));
+        if(!ObjectUtil.isEmpty(time)){
+            queryWrapper.like(Leave::getStartTime,time);
             List<Leave> list = list(queryWrapper);
             List<String> collect = list.stream().map((item) -> {
                 String start = DateUtil.format(item.getStartTime(), "yyyy-MM-dd HH:mm:ss");
@@ -294,6 +300,16 @@ public class LeaveServiceImpl extends ServiceImpl<LeaveMapper, Leave>
         }else{
             throw new SystemException(AppHttpCodeEnum.DATE_FORMAT_ERROR);
         }
+    }
+
+
+    private List<LeaveVo> addOrderId(List<LeaveVo> list, Integer pageNum, Integer pageSize){
+        if (!ObjectUtil.isEmpty(pageNum) && !ObjectUtil.isEmpty(pageSize)) {
+            for (int i = 0 ; i < list.size() ; i++){
+                list.get(i).setOrderId((pageNum - 1) * pageSize + i + 1);
+            }
+        }
+        return list;
     }
 }
 

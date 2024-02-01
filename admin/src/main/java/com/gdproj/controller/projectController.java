@@ -68,6 +68,14 @@ public class projectController {
 
     }
 
+    @GetMapping("/getProjectListForBackend")
+    @autoLog
+    @ApiOperation(value = "后台查询项目列表")
+    public ResponseResult getProjectListForBackend(@Validated PageQueryDto queryDto){
+        return projectService.getProjectListForBackend(queryDto);
+    }
+
+
     @GetMapping("/getProjectList")
     @autoLog
     @ApiOperation(value = "查询项目列表")
@@ -99,10 +107,19 @@ public class projectController {
 
     @GetMapping("/getProjectListByCurrentId")
     @autoLog
-    @ApiOperation(value = "查询我的项目列表")
+    @ApiOperation(value = "查询当前用户有关的项目列表")
     public ResponseResult getProjectListByCurrentId(@Validated PageQueryDto queryDto , HttpServletRequest request){
 
         return projectService.getProjectListByCurrentId(queryDto,request);
+
+    }
+
+    @GetMapping("/getPrivateProjectList")
+    @autoLog
+    @ApiOperation(value = "查询私人的项目列表")
+    public ResponseResult getPrivateProjectList(@Validated PageQueryDto queryDto , HttpServletRequest request){
+
+        return projectService.getPrivateProjectList(queryDto,request);
 
     }
 
@@ -117,16 +134,15 @@ public class projectController {
         // 如果有了质保时间和质保年限
         if(!ObjectUtil.isEmpty(updateInfo.getCompletedTime()) && !ObjectUtil.isEmpty(updateInfo.getWarrantyYear())){
             Contract one = contractService.getById(updateInfo.getContractId());
-            one.setWarrantyAmount(updateInfo.getWarrantyAmount());
-            //TODO +4年
+//            one.setWarrantyAmount(updateInfo.getWarrantyAmount());
             Calendar instance = Calendar.getInstance();
             instance.setTime(updateInfo.getCompletedTime());
-            instance.add(Calendar.YEAR,Integer.valueOf(updateInfo.getWarrantyYear()));
+            instance.add(Calendar.YEAR, one.getWarrantyYear());
             Date time = instance.getTime();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             one.setWarrantyEndTime(time);
             one.setWarrantyStartTime(updateInfo.getCompletedTime());
-            one.setWarrantyYear(Integer.valueOf(updateInfo.getWarrantyYear()));
+//            one.setWarrantyYear(Integer.valueOf(updateInfo.getWarrantyYear()));
             contractService.updateById(one);
         }
         boolean b = false;

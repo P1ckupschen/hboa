@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="generator.mapper.TicketMapper">
+
+    <resultMap id="BaseResultMap" type="generator.entity.Ticket">
+            <id property="ticketId" column="ticket_id" jdbcType="INTEGER"/>
+            <result property="ticketName" column="ticket_name" jdbcType="VARCHAR"/>
+            <result property="ticketCompany" column="ticket_company" jdbcType="VARCHAR"/>
+            <result property="ticketUrl" column="ticket_url" jdbcType="VARCHAR"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="createdUser" column="created_user" jdbcType="INTEGER"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+            <result property="ticketTime" column="ticket_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        ticket_id,ticket_name,ticket_company,
+        ticket_url,created_time,created_user,
+        is_deleted,ticket_time
+    </sql>
+</mapper>

@@ -17,4 +17,6 @@ public interface NotifyService extends IService<Notify> {
     IPage<NotifyVo> getNotifyList(PageQueryDto pageDto);
 
     ResponseResult updateReadListById(Integer notifyid, Integer userId);
+
+    IPage<NotifyVo> getEffectiveNotifyList(PageQueryDto pageDto);
 }

@@ -78,6 +78,13 @@ public class clientController {
 
     }
 
+    @GetMapping("/getClientContacts")
+    @autoLog
+    @ApiOperation(value = "查询对应客户的联系人信息")
+    public ResponseResult getClientContacts(@RequestParam("id") Integer Id){
+        return clientService.getClientContacts(Id);
+    }
+
 
     @PutMapping("updateClient")
     @autoLog

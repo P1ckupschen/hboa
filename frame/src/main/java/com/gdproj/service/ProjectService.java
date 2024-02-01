@@ -27,4 +27,8 @@ public interface ProjectService extends IService<Project> {
     List<Integer> getIdsByName(String title);
 
     ResponseResult getProjectListByCurrentId(PageQueryDto queryDto, HttpServletRequest request);
+
+    ResponseResult getPrivateProjectList(PageQueryDto queryDto, HttpServletRequest request);
+
+    ResponseResult getProjectListForBackend(PageQueryDto queryDto);
 }

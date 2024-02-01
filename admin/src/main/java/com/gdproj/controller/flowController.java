@@ -165,4 +165,12 @@ public class flowController {
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
         }
     }
+
+    @PutMapping("/updateFlowConfig")
+    @autoLog
+    @ApiOperation(value = "更新流程配置")
+    public ResponseResult updateFlowConfig(@RequestBody FlowConfigVo vo){
+
+        return configService.updateFlowConfig(vo);
+    }
 }

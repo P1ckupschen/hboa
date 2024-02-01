@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Notify;
+import com.gdproj.entity.NotifyCategory;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.NotifyMapper;
@@ -91,12 +92,7 @@ public class NotifyServiceImpl extends ServiceImpl<NotifyMapper, Notify>
         //模糊查询人名
         if (!title.isEmpty()) {
             //如果有模糊查询的时间 先通过查title 的用户ids
-            List<Integer> ids = deployeeService.getIdsByTitle(title);
-            if (!ObjectUtil.isEmpty(ids)) {
-                queryWrapper.in(Notify::getUserId, ids);
-            } else {
-                queryWrapper.in(Notify::getUserId, 0);
-            }
+            queryWrapper.like(Notify::getNotifyTitle, title);
             //通过ids去找所有符合ids的对象 sign;
         }
 
@@ -123,25 +119,28 @@ public class NotifyServiceImpl extends ServiceImpl<NotifyMapper, Notify>
                     notifyVo.setDepartment("");
                 }
                 if (!ObjectUtil.isEmpty(item.getCategoryId())) {
-                    notifyVo.setCategory(notifyCategoryService.getById(item.getCategoryId()).getCategoryName());
+                    NotifyCategory one = notifyCategoryService.getById(item.getCategoryId());
+                    if(!ObjectUtil.isEmpty(one)){
+                        notifyVo.setCategory(one.getCategoryName());
+                    }
                 } else {
                     notifyVo.setCategory("");
                 }
 
-                //公告审核人
-                if (!ObjectUtil.isEmpty(item.getExaminerId())) {
-                    notifyVo.setExaminerName(deployeeService.getNameByUserId(item.getExaminerId()));
-                } else {
-                    notifyVo.setExaminerName("");
-                }
+//                //公告审核人
+//                if (!ObjectUtil.isEmpty(item.getExaminerId())) {
+//                    notifyVo.setExaminerName(deployeeService.getNameByUserId(item.getExaminerId()));
+//                } else {
+//                    notifyVo.setExaminerName("");
+//                }
                 return notifyVo;
 
             }).collect(Collectors.toList());
         } catch (Exception e) {
             throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
         }
-
-        resultPage.setRecords(resultList);
+        List<NotifyVo> notifyVos = addOrderId(resultList, pageNum, pageSize);
+        resultPage.setRecords(notifyVos);
 
         resultPage.setTotal(notifyPage.getTotal());
 
@@ -177,6 +176,118 @@ public class NotifyServiceImpl extends ServiceImpl<NotifyMapper, Notify>
         } else {
             return ResponseResult.errorResult(AppHttpCodeEnum.UPDATE_ERROR);
         }
+    }
+
+    @Override
+    public IPage<NotifyVo> getEffectiveNotifyList(PageQueryDto pageDto) {
+        Integer type = pageDto.getType();
+        Integer departmentId = pageDto.getDepartmentId();
+        String time = pageDto.getTime();
+        String sort = pageDto.getSort();
+        String title = pageDto.getTitle();
+        Integer pageNum = pageDto.getPageNum();
+        Integer pageSize = pageDto.getPageSize();
+        Integer status = pageDto.getStatus();
+
+        Page<Notify> page = new Page<>(pageNum, pageSize);
+
+        LambdaQueryWrapper<Notify> queryWrapper = new LambdaQueryWrapper<>();
+
+        //排序
+        if (sort.equals("+id")) {
+            queryWrapper.orderByAsc(Notify::getNotifyId);
+        } else {
+            queryWrapper.orderByDesc(Notify::getNotifyId);
+        }
+        //如果根据部门分类，有一定几率会与模糊人民冲突
+        if (!Objects.isNull(departmentId) && title.isEmpty()) {
+            //如果没有对象没有部门id属性就找到对应id的部门所以的员工的userid
+            List<Integer> userIds = deployeeService.getIdsByDepartmentId(departmentId);
+            if (ObjectUtil.isEmpty(userIds)) {
+                queryWrapper.in(Notify::getUserId, 0);
+            } else {
+                queryWrapper.in(Notify::getUserId, userIds);
+            }
+        }
+        if(!ObjectUtil.isEmpty(status)){
+            queryWrapper.eq(Notify::getNotifyStatus,status);
+        }
+        //设置时间 年 月 日
+        //模糊查询时间
+        if (time != null) {
+            queryWrapper.like(Notify::getCreatedTime, time);
+        }
+        queryWrapper.eq(Notify::getNotifyStatus,1);
+        //模糊查询人名
+        if (!title.isEmpty()) {
+            //如果有模糊查询的时间 先通过查title 的用户ids
+            List<Integer> ids = deployeeService.getIdsByTitle(title);
+            if (!ObjectUtil.isEmpty(ids)) {
+                queryWrapper.in(Notify::getUserId, ids);
+            } else {
+                queryWrapper.in(Notify::getUserId, 0);
+            }
+            //通过ids去找所有符合ids的对象 sign;
+        }
+
+        if (!ObjectUtil.isEmpty(type)) {
+            queryWrapper.eq(Notify::getCategoryId, type);
+        }
+
+        IPage<Notify> notifyPage = notifyMapper.selectPage(page, queryWrapper);
+
+        Page<NotifyVo> resultPage = new Page<>();
+        //结果里的部门 和用户都返回成string；
+        List<NotifyVo> resultList = new ArrayList<>();
+        try {
+            resultList = notifyPage.getRecords().stream().map((item) -> {
+
+                NotifyVo notifyVo = BeanCopyUtils.copyBean(item, NotifyVo.class);
+                //人员
+                if (!ObjectUtil.isEmpty(item.getUserId())) {
+                    notifyVo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
+                    notifyVo.setDepartment(deployeeService.getDepartmentNameByUserId(item.getUserId()));
+                    notifyVo.setDepartmentId(deployeeService.getDepartmentIdByUserId(item.getUserId()));
+                } else {
+                    notifyVo.setUsername("");
+                    notifyVo.setDepartment("");
+                }
+                if (!ObjectUtil.isEmpty(item.getCategoryId())) {
+                    NotifyCategory one = notifyCategoryService.getById(item.getCategoryId());
+                    if(!ObjectUtil.isEmpty(one)){
+                        notifyVo.setCategory(one.getCategoryName());
+                    }
+                } else {
+                    notifyVo.setCategory("");
+                }
+
+//                //公告审核人
+//                if (!ObjectUtil.isEmpty(item.getExaminerId())) {
+//                    notifyVo.setExaminerName(deployeeService.getNameByUserId(item.getExaminerId()));
+//                } else {
+//                    notifyVo.setExaminerName("");
+//                }
+                return notifyVo;
+
+            }).collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
+        }
+        List<NotifyVo> notifyVos = addOrderId(resultList, pageNum, pageSize);
+        resultPage.setRecords(notifyVos);
+
+        resultPage.setTotal(notifyPage.getTotal());
+
+        return resultPage;
+    }
+
+    private List<NotifyVo> addOrderId(List<NotifyVo> list, Integer pageNum, Integer pageSize){
+        if (!ObjectUtil.isEmpty(pageNum) && !ObjectUtil.isEmpty(pageSize)) {
+            for (int i = 0 ; i < list.size() ; i++){
+                list.get(i).setOrderId((pageNum - 1) * pageSize + i + 1);
+            }
+        }
+        return list;
     }
 
 }

@@ -24,10 +24,12 @@ import com.gdproj.vo.SelectVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 @RestController
@@ -63,6 +65,15 @@ public class contractController {
 
 
     }
+
+
+    @GetMapping("/getContractListForBackend")
+    @autoLog
+    @ApiOperation(value = "查询后台合同列表")
+    public ResponseResult getContractListForBackend(@Validated PageQueryDto queryDto){
+        return contractService.getContractListForBackend(queryDto);
+    }
+
     @GetMapping("/getContractList")
     @autoLog
     @ApiOperation(value = "查询合同列表")
@@ -92,10 +103,10 @@ public class contractController {
 
     }
 
-    @GetMapping("/getAllContractList")
+    @GetMapping("/getPrivateContractList")
     @autoLog
-    @ApiOperation(value = "查询合同列表,包括私人的")
-    public ResponseResult getAllContractList(@RequestParam Integer pageNum,
+    @ApiOperation(value = "查询私人的合同列表")
+    public ResponseResult getPrivateContractList(@RequestParam Integer pageNum,
                                           @RequestParam Integer pageSize,
                                           @RequestParam(required = false,defaultValue = "+id")String sort,
                                           @RequestParam(required = false,defaultValue = "") String title ,
@@ -130,7 +141,10 @@ public class contractController {
 
         Contract updateInfo = BeanCopyUtils.copyBean(vo, Contract.class);
 //        vo中的 发布人  类型 部门
-
+        Calendar instance = Calendar.getInstance();
+        instance.setTime(vo.getWarrantyStartTime());
+        instance.add(Calendar.YEAR, vo.getWarrantyYear());
+        updateInfo.setWarrantyEndTime(instance.getTime());
         if(!ObjectUtil.isEmpty(updateInfo.getaPhone())){
             updateInfo.setaPhone(AesUtil.encrypt(updateInfo.getaPhone(),AesUtil.key128));
         }
@@ -164,7 +178,10 @@ public class contractController {
     public ResponseResult insertContract(@RequestBody ContractVo vo){
 
         Contract insertInfo = BeanCopyUtils.copyBean(vo, Contract.class);
-
+        Calendar instance = Calendar.getInstance();
+        instance.setTime(vo.getWarrantyStartTime());
+        instance.add(Calendar.YEAR, vo.getWarrantyYear());
+        insertInfo.setWarrantyEndTime(instance.getTime());
         if(!ObjectUtil.isEmpty(insertInfo.getaPhone())){
             insertInfo.setaPhone(AesUtil.encrypt(insertInfo.getaPhone(),AesUtil.key128));
         }
@@ -349,8 +366,9 @@ public class contractController {
             }else {
                 templateList = templateService.getTemplateList(pageDto);
                 PageVo<List<Template>> pageList = new PageVo<>();
+                List<Template> templates = addOrderId(templateList.getRecords(), pageNum, pageSize);
                 pageList.setTotal((int) templateList.getTotal());
-                pageList.setData(templateList.getRecords());
+                pageList.setData(templates);
                 return  ResponseResult.okResult(pageList);
             }
 
@@ -408,6 +426,15 @@ public class contractController {
         }catch (Exception e){
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
         }
+    }
+
+    private List<Template> addOrderId(List<Template> list, Integer pageNum, Integer pageSize){
+        if (!ObjectUtil.isEmpty(pageNum) && !ObjectUtil.isEmpty(pageSize)) {
+            for (int i = 0 ; i < list.size() ; i++){
+                list.get(i).setOrderId((pageNum - 1) * pageSize + i + 1);
+            }
+        }
+        return list;
     }
 
 

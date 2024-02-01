@@ -91,7 +91,7 @@ public class Payment implements Serializable {
      * 现金 or 银行
      */
     @TableField(value = "payment_method")
-    private Integer paymentMethod;
+    private String paymentMethod;
 
     /**
      *
@@ -316,14 +316,14 @@ public class Payment implements Serializable {
     /**
      * 现金 or 银行
      */
-    public Integer getPaymentMethod() {
+    public String getPaymentMethod() {
         return paymentMethod;
     }
 
     /**
      * 现金 or 银行
      */
-    public void setPaymentMethod(Integer paymentMethod) {
+    public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
 

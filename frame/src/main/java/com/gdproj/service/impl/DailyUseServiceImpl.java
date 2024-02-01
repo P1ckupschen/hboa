@@ -111,9 +111,11 @@ public class DailyUseServiceImpl extends ServiceImpl<DailyUseMapper, DailyUse>
                     vo.setCategory("出库");
                 }
                 //TODO 内嵌属性content 字段需要统一
-                String Content = JSONUtil.toJsonStr(item.getDailyuseContent());
-                List<DailyUseContentVo> contentVoList = JSONUtil.toList(Content, DailyUseContentVo.class);
-                vo.setDailyuseContent(contentVoList);
+                if(!ObjectUtil.isEmpty(item.getDailyuseContent())){
+                    String Content = JSONUtil.toJsonStr(item.getDailyuseContent());
+                    List<DailyUseContentVo> contentVoList = JSONUtil.toList(Content, DailyUseContentVo.class);
+                    vo.setDailyuseContent(contentVoList);
+                }
                 if(!ObjectUtil.isEmpty(item.getUserId())){
                     vo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
                 }else{
@@ -121,8 +123,8 @@ public class DailyUseServiceImpl extends ServiceImpl<DailyUseMapper, DailyUse>
                 }
                 return vo;
             }).collect(Collectors.toList());
-
-            resultPage.setRecords(resultList);
+            List<DailyUseVo> dailyUseVos = addOrderId(resultList, pageNum, pageSize);
+            resultPage.setRecords(dailyUseVos);
 
             resultPage.setTotal(recordPage.getTotal());
 
@@ -248,7 +250,8 @@ public class DailyUseServiceImpl extends ServiceImpl<DailyUseMapper, DailyUse>
                 return vo;
 
             }).collect(Collectors.toList());
-            resultPage.setRecords(resultList);
+            List<DailyUseRecordVo> dailyUseRecordVos = addOrderId1(resultList, pageNum, pageSize);
+            resultPage.setRecords(dailyUseRecordVos);
 
             resultPage.setTotal(recordPage.getTotal());
 
@@ -257,6 +260,23 @@ public class DailyUseServiceImpl extends ServiceImpl<DailyUseMapper, DailyUse>
             throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
         }
 
+    }
+
+    private List<DailyUseRecordVo> addOrderId1(List<DailyUseRecordVo> list, Integer pageNum, Integer pageSize){
+        if (!ObjectUtil.isEmpty(pageNum) && !ObjectUtil.isEmpty(pageSize)) {
+            for (int i = 0 ; i < list.size() ; i++){
+                list.get(i).setOrderId((pageNum - 1) * pageSize + i + 1);
+            }
+        }
+        return list;
+    }
+    private List<DailyUseVo> addOrderId(List<DailyUseVo> list, Integer pageNum, Integer pageSize){
+        if (!ObjectUtil.isEmpty(pageNum) && !ObjectUtil.isEmpty(pageSize)) {
+            for (int i = 0 ; i < list.size() ; i++){
+                list.get(i).setOrderId((pageNum - 1) * pageSize + i + 1);
+            }
+        }
+        return list;
     }
 }
 

@@ -30,10 +30,9 @@ public class scheduleController {
     @GetMapping("getScheduleById")
     @autoLog
     @ApiOperation(value = "通过id查询")
-    public ResponseResult getScheduleByid(@RequestParam("id") Integer id,
-                                          @RequestParam("typeId") Integer typeId){
+    public ResponseResult getScheduleByid(@Validated PageQueryDto queryDto){
 
-        return scheduleService.getScheduleByid(id,typeId);
+        return scheduleService.getScheduleByid(queryDto);
     }
 
     @PostMapping("insertSchedule")

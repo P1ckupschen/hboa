@@ -96,6 +96,17 @@ public class flowConfigServiceImpl extends ServiceImpl<flowConfigMapper, FlowCon
         }).collect(Collectors.toList());
         return ResponseResult.okResult(collect);
     }
+
+    @Override
+    public ResponseResult updateFlowConfig(FlowConfigVo vo) {
+
+        FlowConfig flowConfig = BeanCopyUtils.copyBean(vo, FlowConfig.class);
+        boolean success = updateById(flowConfig);
+        if(!success){
+            throw new SystemException(AppHttpCodeEnum.UPDATE_ERROR);
+        }
+        return ResponseResult.okResult();
+    }
 }
 
 

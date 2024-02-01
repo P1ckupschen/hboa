@@ -203,7 +203,7 @@ public class wxSubscribeController {
             //发送模板
             wxService.getTemplateMsgService().sendTemplateMsg(wxMpTemplateMessage);
         } catch (WxErrorException e) {
-            e.printStackTrace();
+            throw new SystemException(AppHttpCodeEnum.SEND_MESSAGE_ERROR);
         }
     }
 
@@ -226,7 +226,7 @@ public class wxSubscribeController {
             //发送模板
             wxService.getTemplateMsgService().sendTemplateMsg(wxMpTemplateMessage);
         } catch (WxErrorException e) {
-            e.printStackTrace();
+            throw new SystemException(AppHttpCodeEnum.SEND_MESSAGE_ERROR);
         }
     }
 

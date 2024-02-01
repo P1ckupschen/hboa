@@ -24,4 +24,6 @@ public interface EpibolyService extends IService<Epiboly> {
     List<SelectVo> getListForSelect();
 
     ResponseResult getEpibolyListByCurrentId(PageQueryDto queryDto, HttpServletRequest request);
+
+    List<Integer> getidsByName(String title);
 }

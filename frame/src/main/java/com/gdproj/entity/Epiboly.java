@@ -2,6 +2,7 @@ package com.gdproj.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.gdproj.vo.ContactVo;
 import com.gdproj.vo.FileVo;
 import com.gdproj.vo.stockSelectVo;
 
@@ -104,13 +105,17 @@ public class Epiboly implements Serializable {
      * 进度
      */
     @TableField(value = "epiboly_process")
-    private Integer epibolyProcess;
+    private String epibolyProcess;
+
+    public void setContractId(Integer contractId) {
+        this.contractId = contractId;
+    }
 
     /**
      * 
      */
-    @TableField(value = "contract_ids",typeHandler = JacksonTypeHandler.class)
-    private List contractIds;
+    @TableField(value = "contract_id")
+    private Integer contractId;
 
     /**
      * json存客户信息
@@ -189,7 +194,7 @@ public class Epiboly implements Serializable {
      * 联系人
      */
     @TableField(value = "epiboly_contacts",typeHandler = JacksonTypeHandler.class)
-    private List epibolyContacts;
+    private List<ContactVo> epibolyContacts;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -393,30 +398,27 @@ public class Epiboly implements Serializable {
     /**
      * 进度
      */
-    public Integer getEpibolyProcess() {
+    public String getEpibolyProcess() {
         return epibolyProcess;
     }
 
     /**
      * 进度
      */
-    public void setEpibolyProcess(Integer epibolyProcess) {
+    public void setEpibolyProcess(String epibolyProcess) {
         this.epibolyProcess = epibolyProcess;
     }
 
     /**
      * 
      */
-    public List getContractIds() {
-        return contractIds;
+    public Integer getContractId() {
+        return contractId;
     }
 
     /**
      * 
      */
-    public void setContractIds(List contractIds) {
-        this.contractIds = contractIds;
-    }
 
     /**
      * json存客户信息
@@ -589,14 +591,14 @@ public class Epiboly implements Serializable {
     /**
      * 联系人
      */
-    public List getEpibolyContacts() {
+    public List<ContactVo> getEpibolyContacts() {
         return epibolyContacts;
     }
 
     /**
      * 联系人
      */
-    public void setEpibolyContacts(List epibolContacts) {
+    public void setEpibolyContacts(List<ContactVo> epibolContacts) {
         this.epibolyContacts = epibolContacts;
     }
 
@@ -627,7 +629,7 @@ public class Epiboly implements Serializable {
             && (this.getEpibolyStatus() == null ? other.getEpibolyStatus() == null : this.getEpibolyStatus().equals(other.getEpibolyStatus()))
             && (this.getEndTime() == null ? other.getEndTime() == null : this.getEndTime().equals(other.getEndTime()))
             && (this.getEpibolyProcess() == null ? other.getEpibolyProcess() == null : this.getEpibolyProcess().equals(other.getEpibolyProcess()))
-            && (this.getContractIds() == null ? other.getContractIds() == null : this.getContractIds().equals(other.getContractIds()))
+            && (this.getContractId() == null ? other.getContractId() == null : this.getContractId().equals(other.getContractId()))
             && (this.getEpibolyClient() == null ? other.getEpibolyClient() == null : this.getEpibolyClient().equals(other.getEpibolyClient()))
             && (this.getEpibolyAmount() == null ? other.getEpibolyAmount() == null : this.getEpibolyAmount().equals(other.getEpibolyAmount()))
             && (this.getIsCompleted() == null ? other.getIsCompleted() == null : this.getIsCompleted().equals(other.getIsCompleted()))
@@ -662,7 +664,7 @@ public class Epiboly implements Serializable {
         result = prime * result + ((getEpibolyStatus() == null) ? 0 : getEpibolyStatus().hashCode());
         result = prime * result + ((getEndTime() == null) ? 0 : getEndTime().hashCode());
         result = prime * result + ((getEpibolyProcess() == null) ? 0 : getEpibolyProcess().hashCode());
-        result = prime * result + ((getContractIds() == null) ? 0 : getContractIds().hashCode());
+        result = prime * result + ((getContractId() == null) ? 0 : getContractId().hashCode());
         result = prime * result + ((getEpibolyClient() == null) ? 0 : getEpibolyClient().hashCode());
         result = prime * result + ((getEpibolyAmount() == null) ? 0 : getEpibolyAmount().hashCode());
         result = prime * result + ((getIsCompleted() == null) ? 0 : getIsCompleted().hashCode());
@@ -700,7 +702,7 @@ public class Epiboly implements Serializable {
         sb.append(", epibolyStatus=").append(epibolyStatus);
         sb.append(", endTime=").append(endTime);
         sb.append(", epibolyProcess=").append(epibolyProcess);
-        sb.append(", contractIds=").append(contractIds);
+        sb.append(", contractId=").append(contractId);
         sb.append(", epibolyClient=").append(epibolyClient);
         sb.append(", epibolyAmount=").append(epibolyAmount);
         sb.append(", isCompleted=").append(isCompleted);

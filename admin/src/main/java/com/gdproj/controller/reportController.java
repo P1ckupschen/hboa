@@ -6,8 +6,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.annotation.autoLog;
 import com.gdproj.dto.PageQueryDto;
-import com.gdproj.entity.Report;
 import com.gdproj.entity.NotifyCategory;
+import com.gdproj.entity.Report;
 import com.gdproj.entity.ReportCategory;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
@@ -15,6 +15,7 @@ import com.gdproj.result.ResponseResult;
 import com.gdproj.service.ReportService;
 import com.gdproj.service.reportCategoryService;
 import com.gdproj.utils.BeanCopyUtils;
+import com.gdproj.utils.JwtUtils;
 import com.gdproj.vo.CategoryVo;
 import com.gdproj.vo.PageVo;
 import com.gdproj.vo.ReportVo;
@@ -23,12 +24,17 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
 @RequestMapping("/adminReport")
 @Api(tags = "汇报功能")
 public class reportController {
+
+    @Autowired
+    HttpServletRequest request;
 
     @Autowired
     ReportService reportService;
@@ -53,7 +59,43 @@ public class reportController {
 
         try {
             reportList = reportService.getReportList(pageDto);
+            PageVo<List<ReportVo>> pageList = new PageVo<>();
+            pageList.setData(reportList.getRecords());
+            pageList.setTotal((int) reportList.getTotal());
+            return ResponseResult.okResult(pageList);
+        }catch (SystemException e){
+            return ResponseResult.errorResult(e.getCode(),e.getMsg());
+        } catch (Exception e){
+            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+        }
+    }
 
+
+    @GetMapping("getDetailById")
+    @autoLog
+    @ApiOperation(value = "查询详细信息")
+    public ResponseResult getDetailById(@RequestParam("id") @NotNull Integer Id){
+        return reportService.getDetailById(Id);
+    }
+
+
+    @GetMapping("/getReportListByCurrentId")
+    @autoLog
+    @ApiOperation(value = "查询我的汇报列表")
+    public ResponseResult getReportListByCurrentId(@RequestParam Integer pageNum,
+                                        @RequestParam Integer pageSize,
+                                        @RequestParam(required = false,defaultValue = "+id")String sort,
+                                        @RequestParam(required = false,defaultValue = "") String title ,
+                                        @RequestParam(required = false) Integer departmentId,
+                                        @RequestParam(required = false) Integer type,
+                                        @RequestParam(required = false) String time){
+
+        PageQueryDto pageDto = new PageQueryDto(pageNum,pageSize,departmentId,type,title,time,sort);
+
+        IPage<ReportVo> reportList = new Page<ReportVo>();
+        String id = JwtUtils.getMemberIdByJwtToken(request);
+        try {
+            reportList = reportService.getReportListByCurrentId(pageDto,id);
             PageVo<List<ReportVo>> pageList = new PageVo<>();
             pageList.setData(reportList.getRecords());
             pageList.setTotal((int) reportList.getTotal());
@@ -129,7 +171,6 @@ public class reportController {
     @ApiOperation(value = "删除汇报")
     public ResponseResult deleteReport(@RequestParam("reportId") Integer reportId){
 
-        System.out.println(reportId);
 
         boolean b = false;
 

@@ -87,7 +87,6 @@ public class productController {
     }
 
 
-
     @PutMapping("updateProduct")
     @autoLog
     @ApiOperation(value = "更新产品")

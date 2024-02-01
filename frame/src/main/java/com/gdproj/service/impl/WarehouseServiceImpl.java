@@ -139,8 +139,8 @@ public class WarehouseServiceImpl extends ServiceImpl<WarehouseMapper, Warehouse
                 return vo;
             }).collect(Collectors.toList());
 
-
-            resultPage.setRecords(resultList);
+            List<WarehouseVo> warehouseVos = addOrderId(resultList, pageNum, pageSize);
+            resultPage.setRecords(warehouseVos);
 
             resultPage.setTotal(recordPage.getTotal());
 
@@ -149,6 +149,15 @@ public class WarehouseServiceImpl extends ServiceImpl<WarehouseMapper, Warehouse
             throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
         }
 
+    }
+
+    private List<WarehouseVo> addOrderId(List<WarehouseVo> list, Integer pageNum, Integer pageSize){
+        if (!ObjectUtil.isEmpty(pageNum) && !ObjectUtil.isEmpty(pageSize)) {
+            for (int i = 0 ; i < list.size() ; i++){
+                list.get(i).setOrderId((pageNum - 1) * pageSize + i + 1);
+            }
+        }
+        return list;
     }
 }
 

@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @TableName sys_task
  */
-@TableName(value ="sys_task",autoResultMap = true)
+@TableName(value ="sys_task", autoResultMap = true)
 public class Task implements Serializable {
     /**
      *
@@ -35,8 +35,8 @@ public class Task implements Serializable {
     /**
      * 执行人
      */
-    @TableField(value = "executor_id")
-    private Integer executorId;
+    @TableField(value = "executor_ids" , typeHandler = JacksonTypeHandler.class)
+    private List<Integer> executorIds;
 
     /**
      *
@@ -195,15 +195,15 @@ public class Task implements Serializable {
     /**
      * 执行人
      */
-    public Integer getExecutorId() {
-        return executorId;
+    public List<Integer> getExecutorIds() {
+        return executorIds;
     }
 
     /**
      * 执行人
      */
-    public void setExecutorId(Integer executorId) {
-        this.executorId = executorId;
+    public void setExecutorIds( List<Integer> executorIds) {
+        this.executorIds = executorIds;
     }
 
     /**
@@ -473,7 +473,7 @@ public class Task implements Serializable {
         return (this.getTaskId() == null ? other.getTaskId() == null : this.getTaskId().equals(other.getTaskId()))
                 && (this.getTaskName() == null ? other.getTaskName() == null : this.getTaskName().equals(other.getTaskName()))
                 && (this.getApplicantId() == null ? other.getApplicantId() == null : this.getApplicantId().equals(other.getApplicantId()))
-                && (this.getExecutorId() == null ? other.getExecutorId() == null : this.getExecutorId().equals(other.getExecutorId()))
+                && (this.getExecutorIds() == null ? other.getExecutorIds() == null : this.getExecutorIds().equals(other.getExecutorIds()))
                 && (this.getTaskUrgency() == null ? other.getTaskUrgency() == null : this.getTaskUrgency().equals(other.getTaskUrgency()))
                 && (this.getTaskContent() == null ? other.getTaskContent() == null : this.getTaskContent().equals(other.getTaskContent()))
                 && (this.getTaskFeedback() == null ? other.getTaskFeedback() == null : this.getTaskFeedback().equals(other.getTaskFeedback()))
@@ -501,7 +501,7 @@ public class Task implements Serializable {
         result = prime * result + ((getTaskId() == null) ? 0 : getTaskId().hashCode());
         result = prime * result + ((getTaskName() == null) ? 0 : getTaskName().hashCode());
         result = prime * result + ((getApplicantId() == null) ? 0 : getApplicantId().hashCode());
-        result = prime * result + ((getExecutorId() == null) ? 0 : getExecutorId().hashCode());
+        result = prime * result + ((getExecutorIds() == null) ? 0 : getExecutorIds().hashCode());
         result = prime * result + ((getTaskUrgency() == null) ? 0 : getTaskUrgency().hashCode());
         result = prime * result + ((getTaskContent() == null) ? 0 : getTaskContent().hashCode());
         result = prime * result + ((getTaskFeedback() == null) ? 0 : getTaskFeedback().hashCode());
@@ -532,7 +532,7 @@ public class Task implements Serializable {
         sb.append(", taskId=").append(taskId);
         sb.append(", taskName=").append(taskName);
         sb.append(", applicantId=").append(applicantId);
-        sb.append(", executorId=").append(executorId);
+        sb.append(", executorIds=").append(executorIds);
         sb.append(", taskUrgency=").append(taskUrgency);
         sb.append(", taskContent=").append(taskContent);
         sb.append(", taskFeedback=").append(taskFeedback);

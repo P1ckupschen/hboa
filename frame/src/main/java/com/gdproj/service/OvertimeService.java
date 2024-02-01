@@ -7,8 +7,6 @@ import com.gdproj.entity.Overtime;
 import com.gdproj.vo.OvertimeVo;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
-import java.util.List;
 
 /**
 * @author Administrator
@@ -21,5 +19,5 @@ public interface OvertimeService extends IService<Overtime> {
 
     boolean insertOvertime(Overtime insertOvertime);
 
-    void exportOvertimeExcel(List<Date> interval, HttpServletResponse response);
+    void exportOvertimeExcel(PageQueryDto queryDto, HttpServletResponse response);
 }

@@ -52,4 +52,6 @@ public class DailyUseVo {
     private String Category;
 
     private String Username;
+
+    private Integer orderId;
 }

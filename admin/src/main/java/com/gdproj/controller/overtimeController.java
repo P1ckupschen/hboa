@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.annotation.autoLog;
 import com.gdproj.dto.PageQueryDto;
-import com.gdproj.entity.Overtime;
 import com.gdproj.entity.NotifyCategory;
+import com.gdproj.entity.Overtime;
 import com.gdproj.entity.OvertimeCategory;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
@@ -20,10 +20,10 @@ import com.gdproj.vo.PageVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -40,14 +40,7 @@ public class overtimeController {
     @GetMapping("/getOvertimeList")
     @autoLog
     @ApiOperation(value = "查询加班列表")
-    public ResponseResult getOvertimeList(@RequestParam Integer pageNum,
-                                          @RequestParam Integer pageSize,
-                                          @RequestParam(required = false,defaultValue = "+id")String sort,
-                                          @RequestParam(required = false,defaultValue = "") String title ,
-                                          @RequestParam(required = false) Integer departmentId,
-                                          @RequestParam(required = false) Integer type,
-                                          @RequestParam(required = false) String time){
-        PageQueryDto pageDto = new PageQueryDto(pageNum,pageSize,departmentId,type,title,time,sort);
+    public ResponseResult getOvertimeList(@Validated PageQueryDto pageDto){
 
         IPage<OvertimeVo> overtimeList = new Page<OvertimeVo>();
 
@@ -191,8 +184,8 @@ public class overtimeController {
     @PostMapping("/exportOvertimeExcel")
     @autoLog
     @ApiOperation(value = "上班记录统计")
-    public void exportOvertimeExcel(@RequestBody List<Date> Interval , HttpServletResponse response){
-        overtimeService.exportOvertimeExcel(Interval, response);
+    public void exportOvertimeExcel(@RequestBody PageQueryDto queryDto , HttpServletResponse response){
+        overtimeService.exportOvertimeExcel(queryDto, response);
     }
 
     //类型的增删改查

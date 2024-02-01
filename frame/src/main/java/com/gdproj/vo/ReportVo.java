@@ -37,5 +37,10 @@ public class ReportVo {
 
     private List<FileVo> reportFile;
 
+    private String feedBack;
+
+
+    private Integer orderId;
+
 
 }

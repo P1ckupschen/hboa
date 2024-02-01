@@ -36,4 +36,6 @@ public class commonUtils {
         // 此处要注意，去掉时分秒的差值影响，此处采用先换算为天再相减的方式
         return Math.abs(end.getTime()/ONE_DAY_MILLIS - start.getTime()/ONE_DAY_MILLIS);
     }
+
+
 }

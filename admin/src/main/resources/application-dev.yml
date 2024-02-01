@@ -12,7 +12,7 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
-  #  用来把数据库对象的字段变为下划线
+  #  用来把与前端传输的数据字段从下划线变驼峰，和从驼峰变为下划线
   jackson:
     property-naming-strategy: SNAKE_CASE
 

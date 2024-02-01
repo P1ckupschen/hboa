@@ -52,4 +52,7 @@ public class PurchaseVo {
 
     private String Username;
 
+
+    private Integer orderId;
+
 }

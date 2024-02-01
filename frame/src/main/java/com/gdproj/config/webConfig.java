@@ -39,7 +39,7 @@ public class webConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/swagger-ui.html/**")
                 .excludePathPatterns("/webjars/**")
                 .excludePathPatterns("/v2/**")
-                .excludePathPatterns("/images/")
+                .excludePathPatterns("/images/**")
                 .excludePathPatterns("/MP_verify_buXWsnJZs8brdUDP.txt")
                 .addPathPatterns("/**");                  //添加需要拦截的路径
     }

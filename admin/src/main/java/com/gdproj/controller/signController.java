@@ -1,8 +1,6 @@
 package com.gdproj.controller;
 
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdproj.annotation.autoLog;
 import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Sign;
@@ -13,7 +11,6 @@ import com.gdproj.service.SignService;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.utils.Iputil;
 import com.gdproj.vo.IsSignVo;
-import com.gdproj.vo.MonthSignVo;
 import com.gdproj.vo.PageVo;
 import com.gdproj.vo.SignVo;
 import io.swagger.annotations.Api;
@@ -24,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -38,38 +34,34 @@ public class signController {
     @GetMapping("/getSignList")
     @autoLog
     @ApiOperation(value = "查询考勤列表")
-    public ResponseResult getSignList(@RequestParam Integer pageNum,
-                                      @RequestParam Integer pageSize,
-                                      @RequestParam(required = false,defaultValue = "+id")String sort,
-                                      @RequestParam(required = false,defaultValue = "") String title ,
-                                      @RequestParam(required = false) Integer departmentId,
-                                      @RequestParam(required = false) Integer type,
-                                      @RequestParam(required = false) String time){
-
-        PageQueryDto pageDto = new PageQueryDto(pageNum,pageSize,departmentId,type,title,time,sort);
-
-        IPage<SignVo> signList = new Page<SignVo>();
-
+    public ResponseResult getSignList(@Validated PageQueryDto queryDto){
+        PageVo<List<SignVo>> pageList = new PageVo<>();
         try {
-
-            signList  =  signService.getSignList(pageDto);
-
-            PageVo<List<SignVo>> pageList = new PageVo<>();
-            pageList.setData(signList.getRecords());
-            pageList.setTotal((int) signList.getTotal());
+            pageList = signService.getSignList(queryDto);
             return ResponseResult.okResult(pageList);
-
         }catch (SystemException e){
-
             return ResponseResult.errorResult(e.getCode(),e.getMsg());
-
         } catch (Exception e){
-
             return ResponseResult.errorResult(AppHttpCodeEnum.LIST_ERROR);
-
         }
-
     }
+
+    @GetMapping("/getMySignList")
+    @autoLog
+    @ApiOperation(value = "查询我的考勤")
+    public ResponseResult getMySignList(@Validated PageQueryDto dto , HttpServletRequest request){
+        PageVo<List<SignVo>> pageList = new PageVo<>();
+        try {
+            pageList = signService.getMySignList(dto,request);
+            return ResponseResult.okResult(pageList);
+        }catch (SystemException e){
+            return ResponseResult.errorResult(e.getCode(),e.getMsg());
+        } catch (Exception e){
+            return ResponseResult.errorResult(AppHttpCodeEnum.LIST_ERROR);
+        }
+    }
+
+
 
     //TODO
     @GetMapping("/getTodayList")
@@ -80,35 +72,35 @@ public class signController {
         return signService.getTodayList(queryDto);
     }
 
-    @GetMapping("/getMonthSignList")
-    @autoLog
-    @ApiOperation(value = "查询月度考勤统计列表")
-    public ResponseResult getMonthSignList(@RequestParam Integer pageNum,
-                                      @RequestParam Integer pageSize,
-                                      @RequestParam(required = false,defaultValue = "+id")String sort,
-                                      @RequestParam(required = false,defaultValue = "") String title ,
-                                      @RequestParam(required = false) Integer departmentId,
-                                      @RequestParam(required = false) Integer type,
-                                      @RequestParam(required = false) String time){
-
-        PageQueryDto pageDto = new PageQueryDto(pageNum,pageSize,departmentId,type,title,time,sort);
-
-        IPage<MonthSignVo> signList = new Page<MonthSignVo>();
-
-        try {
-
-            signList  =  signService.getMonthSignList(pageDto);
-
-            PageVo<List<MonthSignVo>> pageList = new PageVo<>();
-            pageList.setData(signList.getRecords());
-            pageList.setTotal((int) signList.getTotal());
-            return ResponseResult.okResult(pageList);
-        }catch (SystemException e){
-            return ResponseResult.errorResult(e.getCode(),e.getMsg());
-        } catch (Exception e){
-            return ResponseResult.errorResult(AppHttpCodeEnum.LIST_ERROR);
-        }
-    }
+//    @GetMapping("/getMonthSignList")
+//    @autoLog
+//    @ApiOperation(value = "查询月度考勤统计列表")
+//    public ResponseResult getMonthSignList(@RequestParam Integer pageNum,
+//                                      @RequestParam Integer pageSize,
+//                                      @RequestParam(required = false,defaultValue = "+id")String sort,
+//                                      @RequestParam(required = false,defaultValue = "") String title ,
+//                                      @RequestParam(required = false) Integer departmentId,
+//                                      @RequestParam(required = false) Integer type,
+//                                      @RequestParam(required = false) String time){
+//
+//        PageQueryDto pageDto = new PageQueryDto(pageNum,pageSize,departmentId,type,title,time,sort);
+//
+//        IPage<MonthSignVo> signList = new Page<MonthSignVo>();
+//
+//        try {
+//
+//            signList  =  signService.getMonthSignList(pageDto);
+//
+//            PageVo<List<MonthSignVo>> pageList = new PageVo<>();
+//            pageList.setData(signList.getRecords());
+//            pageList.setTotal((int) signList.getTotal());
+//            return ResponseResult.okResult(pageList);
+//        }catch (SystemException e){
+//            return ResponseResult.errorResult(e.getCode(),e.getMsg());
+//        } catch (Exception e){
+//            return ResponseResult.errorResult(AppHttpCodeEnum.LIST_ERROR);
+//        }
+//    }
 
     @PostMapping("insertSign")
     @autoLog
@@ -152,31 +144,19 @@ public class signController {
         }
     }
 
-    @GetMapping("exportMonthSignExcel")
-    @autoLog
-    @ApiOperation(value = "考勤数据导出")
-    public void exportMonthSignExcel(@RequestParam Integer pageNum,
-                                               @RequestParam Integer pageSize,
-                                               @RequestParam(required = false,defaultValue = "+id")String sort,
-                                               @RequestParam(required = false,defaultValue = "") String title ,
-                                               @RequestParam(required = false) Integer departmentId,
-                                               @RequestParam(required = false) Integer type,
-                                               @RequestParam(required = false) String time, HttpServletResponse response){
-        PageQueryDto pageDto = new PageQueryDto(pageNum,pageSize,departmentId,type,title,time,sort);
-        //怎么添加签到信息
-        try {
-             signService.exportMonthSignExcel(pageDto,response);
-//            return ResponseResult.okResult(200,"导出成功");
-        }catch (Exception e){
-            e.printStackTrace();
-//            return ResponseResult.errorResult(AppHttpCodeEnum.EXCEL_EXPORT_ERROR);
-        }
-    }
-
     @PostMapping("exportSignExcel")
     @autoLog
     @ApiOperation(value = "考勤数据导出")
-    public void exportSignExcel(@RequestBody List<Date> Interval , HttpServletResponse response){
-            signService.exportSignExcel(Interval,response);
+    public void exportSignExcel(@RequestBody PageQueryDto dto, HttpServletResponse response){
+        System.out.println(dto);
+            signService.exportSignExcel(dto,response);
+    }
+
+
+    @GetMapping("getSignRules")
+    @autoLog
+    @ApiOperation(value = "获取考勤规则")
+    public ResponseResult getSignRules(){
+        return signService.getSignRules();
     }
 }

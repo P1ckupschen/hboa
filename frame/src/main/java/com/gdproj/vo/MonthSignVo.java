@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
@@ -31,5 +32,11 @@ public class MonthSignVo {
     private Integer earlyDays;
     //早退记录
     private List<SignVo> earlyHistory;
+
+    private Map<Integer,String > inDetail;
+    private Map<Integer,String > endDetail;
+
+
+    private Integer orderId;
 
 }

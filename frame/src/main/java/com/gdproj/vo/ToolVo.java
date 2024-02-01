@@ -47,5 +47,7 @@ public class ToolVo {
     private Date updateTime;
 
     private String Category;
+
+    private Integer orderId;
 }
 

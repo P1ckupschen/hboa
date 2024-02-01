@@ -35,7 +35,6 @@ public class DownloadUtils {
             fis.close();
 
         } catch (IOException e) {
-            e.printStackTrace();
             throw new SystemException(AppHttpCodeEnum.DOWNLOAD_EXCEL_ERROR);
         }
 

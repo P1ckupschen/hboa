@@ -21,4 +21,7 @@ public class CategoryVo {
 
     private List<CategoryVo> children;
 
+
+    private Integer orderId;
+
 }

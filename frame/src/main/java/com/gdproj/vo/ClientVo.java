@@ -15,9 +15,11 @@ import java.util.Map;
 public class ClientVo {
 
     private List<ProjectVo> projectList;
+    // client_id
     private Integer clientId;
     private String clientName;
-    private Integer clientOrderId;
+
+    private Integer orderId;
 
     private Integer clientManager;
 

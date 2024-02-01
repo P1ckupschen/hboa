@@ -93,7 +93,12 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
 
         Deployee one = getOne(lambdaQueryWrapper);
 
-        return one.getDeployeeName();
+        if(!ObjectUtil.isEmpty(one)){
+            return one.getDeployeeName();
+        }else{
+            return "";
+        }
+
     }
 
     public String getDepartmentNameByUserId(Integer userId){
@@ -106,7 +111,13 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
 
         Department department = departmentService.getById(one.getDepartmentId());
 
-        return  department.getDepartmentName();
+        if(!ObjectUtil.isEmpty(department)){
+            return  department.getDepartmentName();
+        }else{
+            return "";
+        }
+
+
     }
 
     @Override
@@ -121,7 +132,11 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
 
         Department department = departmentService.getById(one.getDepartmentId());
 
-        return  department.getDepartmentId();
+        if(!ObjectUtil.isEmpty(department)){
+            return  department.getDepartmentId();
+        }else{
+            return null;
+        }
 
     }
 
@@ -135,14 +150,15 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
             UserVo userVo = new UserVo();
             userVo.setUserId(item.getDeployeeId());
             if(item.getDeployeeStatus() == 0){
-                userVo.setUsername(item.getDeployeeName() + " [已离职]");
+                // 添加已离职
+                userVo.setUsername(item.getDeployeeName());
             }else{
                 userVo.setUsername(item.getDeployeeName());
             }
-            userVo.setDepartmentId(item.getDepartmentId());
-            //
-            userVo.setDepartment(departmentService.getDepartmentNameByDepartmentId(item.getDepartmentId()));
-            //
+//            userVo.setDepartmentId(item.getDepartmentId());
+//
+//            userVo.setDepartment(departmentService.getDepartmentNameByDepartmentId(item.getDepartmentId()));
+
             return userVo;
         }).collect(Collectors.toList());
     }
@@ -212,8 +228,8 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
         }catch (Exception e){
             throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
         }
-
-        resultPage.setRecords(resultList);
+        List<DeployeeVo> deployeeVos = addOrderId(resultList, pageNum, pageSize);
+        resultPage.setRecords(deployeeVos);
 
         resultPage.setTotal(recordPage.getTotal());
 
@@ -338,6 +354,15 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
         }else{
             return ResponseResult.errorResult(AppHttpCodeEnum.UPDATE_ERROR);
         }
+    }
+
+    private List<DeployeeVo> addOrderId(List<DeployeeVo> list, Integer pageNum, Integer pageSize){
+        if (!ObjectUtil.isEmpty(pageNum) && !ObjectUtil.isEmpty(pageSize)) {
+            for (int i = 0 ; i < list.size() ; i++){
+                list.get(i).setOrderId((pageNum - 1) * pageSize + i + 1);
+            }
+        }
+        return list;
     }
 }
 

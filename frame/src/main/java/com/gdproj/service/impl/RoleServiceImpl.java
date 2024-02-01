@@ -1,16 +1,19 @@
 package com.gdproj.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdproj.dto.PageQueryDto;
+import com.gdproj.entity.Account;
 import com.gdproj.entity.Role;
 import com.gdproj.entity.UserRole;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.mapper.RoleMapper;
 import com.gdproj.mapper.UserRoleMapper;
 import com.gdproj.result.ResponseResult;
+import com.gdproj.service.AccountService;
 import com.gdproj.service.RoleService;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.vo.PageVo;
@@ -20,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -30,6 +34,9 @@ import java.util.stream.Collectors;
 @Service
 public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role>
     implements RoleService {
+
+    @Autowired
+    AccountService accountService;
 
     @Autowired
     UserRoleMapper UserRoleMapper;
@@ -73,8 +80,8 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role>
         }).collect(Collectors.toList());
 
         PageVo<List<RoleVo>> pageList = new PageVo<>();
-
-        pageList.setData(collect);
+        List<RoleVo> roleVos = addOrderId(collect, pageNum, pageSize);
+        pageList.setData(roleVos);
 
         pageList.setTotal((int) recordPage.getTotal());
 
@@ -136,6 +143,33 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role>
             vo.setName(item.getRoleName());
             return vo;
         }).collect(Collectors.toList()));
+    }
+
+    @Override
+    public List<String> getListByRoleKey(String s) {
+
+        LambdaQueryWrapper<Role> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Role::getRoleKey,s);
+        Role role = roleMapper.selectOne(queryWrapper);
+        LambdaQueryWrapper<UserRole> queryWrapper1 = new LambdaQueryWrapper<>();
+        queryWrapper1.eq(UserRole::getRoleId,role.getRoleId());
+        List<UserRole> userRoles = UserRoleMapper.selectList(queryWrapper1);
+        List<Integer> collect = userRoles.stream().map(UserRole::getDeployeeId).collect(Collectors.toList());
+        //找到了所有的deployeeId
+        List<String> openIdList = collect.stream().map((item) -> {
+            Account accountById = accountService.getAccountById(item);
+            return !ObjectUtil.isEmpty(accountById.getOpenId()) ? accountById.getOpenId() : null;
+        }).collect(Collectors.toList());
+        return openIdList.stream().filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
+    private List<RoleVo> addOrderId(List<RoleVo> list, Integer pageNum, Integer pageSize){
+        if (!ObjectUtil.isEmpty(pageNum) && !ObjectUtil.isEmpty(pageSize)) {
+            for (int i = 0 ; i < list.size() ; i++){
+                list.get(i).setOrderId((pageNum - 1) * pageSize + i + 1);
+            }
+        }
+        return list;
     }
 }
 

@@ -8,7 +8,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Epiboly;
-import com.gdproj.entity.Project;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.EpibolyMapper;
@@ -17,7 +16,10 @@ import com.gdproj.service.EpibolyService;
 import com.gdproj.service.ProjectService;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.utils.JwtUtils;
-import com.gdproj.vo.*;
+import com.gdproj.vo.EpibolyVo;
+import com.gdproj.vo.PageVo;
+import com.gdproj.vo.SelectVo;
+import com.gdproj.vo.stockSelectVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -65,9 +67,13 @@ public class EpibolyServiceImpl extends ServiceImpl<EpibolyMapper, Epiboly>
             queryWrapper.orderByDesc(Epiboly::getEpibolyId);
         }
 
+        if(!ObjectUtil.isEmpty(time)){
+            queryWrapper.like(Epiboly::getCreatedTime,time);
+        }
+
         //查询名称？
         if (!title.isEmpty()) {
-            queryWrapper.eq(Epiboly::getEpibolyId,title);
+            queryWrapper.like(Epiboly::getEpibolyName,title);
         }
 
         //如果有类型的话 类型
@@ -92,16 +98,16 @@ public class EpibolyServiceImpl extends ServiceImpl<EpibolyMapper, Epiboly>
 
                 vo.setMaterialBill(contentVoList);
 
-                Project projectInfo = projectService.getById(item.getProjectId());
-
-                ProjectVo projectVo = BeanCopyUtils.copyBean(projectInfo, ProjectVo.class);
-
-                vo.setProject(projectVo);
+//                if(!ObjectUtil.isEmpty(item.getProjectId())){
+//                    Project projectInfo = projectService.getById(item.getProjectId());
+//                    ProjectVo projectVo = BeanCopyUtils.copyBean(projectInfo, ProjectVo.class);
+//                    vo.setProject(projectVo);
+//                }
                 //设置是否延期
                 return vo;
             }).collect(Collectors.toList());
-
-            resultPage.setRecords(resultList);
+            List<EpibolyVo> epibolyVos = addOrderId(resultList, pageNum, pageSize);
+            resultPage.setRecords(epibolyVos);
 
             resultPage.setTotal(recordPage.getTotal());
 
@@ -148,17 +154,6 @@ public class EpibolyServiceImpl extends ServiceImpl<EpibolyMapper, Epiboly>
         Page<Epiboly> page = new Page<>(pageNum, pageSize);
 
         LambdaQueryWrapper<Epiboly> queryWrapper = new LambdaQueryWrapper<>();
-        //排序
-        if (sort.equals("+id")) {
-            queryWrapper.orderByAsc(Epiboly::getEpibolyId);
-        } else {
-            queryWrapper.orderByDesc(Epiboly::getEpibolyId);
-        }
-
-        //查询名称？
-        if (!title.isEmpty()) {
-            queryWrapper.eq(Epiboly::getEpibolyName,title);
-        }
 
 
         String authorization = request.getHeader("Authorization");
@@ -166,9 +161,28 @@ public class EpibolyServiceImpl extends ServiceImpl<EpibolyMapper, Epiboly>
             System.out.println(authorization);
             String token = authorization.split(" ")[1];
             String id = JwtUtils.getMemberIdByJwtToken(token);
-            queryWrapper.eq(Epiboly::getSupervisorId,id).or().eq(Epiboly::getCreatedUser,id);
+            queryWrapper.eq(Epiboly::getSupervisorId,id).
+                    or().eq(Epiboly::getCreatedUser,id).
+                    or().eq(Epiboly::getMonitorId,id).
+                    or().eq(Epiboly::getExaminerId,id);
         }else{
             throw new SystemException(AppHttpCodeEnum.TOKEN_PARSE_ERRPE);
+        }
+        //排序
+        if (sort.equals("+id")) {
+            queryWrapper.orderByAsc(Epiboly::getEpibolyId);
+        } else {
+            queryWrapper.orderByDesc(Epiboly::getEpibolyId);
+        }
+
+        if(!ObjectUtil.isEmpty(time)){
+            queryWrapper.like(Epiboly::getCreatedTime,time);
+        }
+
+
+        //查询名称？
+        if (!title.isEmpty()) {
+            queryWrapper.like(Epiboly::getEpibolyName,title);
         }
 
         IPage<Epiboly> recordPage = page(page, queryWrapper);
@@ -186,20 +200,40 @@ public class EpibolyServiceImpl extends ServiceImpl<EpibolyMapper, Epiboly>
 
                 vo.setMaterialBill(contentVoList);
 
-                Project projectInfo = projectService.getById(item.getProjectId());
+//                if(!ObjectUtil.isEmpty(item.getProjectId())){
+//                    Project projectInfo = projectService.getById(item.getProjectId());
+//
+//                    ProjectVo projectVo = BeanCopyUtils.copyBean(projectInfo, ProjectVo.class);
+//                    vo.setProject(projectVo);
+//                }
 
-                ProjectVo projectVo = BeanCopyUtils.copyBean(projectInfo, ProjectVo.class);
-
-                vo.setProject(projectVo);
 
                 return vo;
             }).collect(Collectors.toList());
-            result.setData(resultList);
+            List<EpibolyVo> epibolyVos = addOrderId(resultList, pageNum, pageSize);
+            result.setData(epibolyVos);
             result.setTotal((int) recordPage.getTotal());
             return ResponseResult.okResult(result);
         } catch (Exception e) {
             throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
         }
+    }
+
+    @Override
+    public List<Integer> getidsByName(String title) {
+        LambdaQueryWrapper<Epiboly> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.like(Epiboly::getEpibolyName,title);
+        List<Epiboly> list = list(queryWrapper);
+        return list.stream().map(Epiboly::getEpibolyId).collect(Collectors.toList());
+    }
+
+    private List<EpibolyVo> addOrderId(List<EpibolyVo> list, Integer pageNum, Integer pageSize){
+        if (!ObjectUtil.isEmpty(pageNum) && !ObjectUtil.isEmpty(pageSize)) {
+            for (int i = 0 ; i < list.size() ; i++){
+                list.get(i).setOrderId((pageNum - 1) * pageSize + i + 1);
+            }
+        }
+        return list;
     }
 }
 

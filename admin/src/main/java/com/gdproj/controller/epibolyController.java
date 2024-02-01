@@ -84,7 +84,7 @@ public class epibolyController {
 
     @GetMapping("/getEpibolyListByCurrentId")
     @autoLog
-    @ApiOperation(value = "查询我的项目列表")
+    @ApiOperation(value = "查询我的外包列表")
     public ResponseResult getEpibolyListByCurrentId(@Validated PageQueryDto queryDto , HttpServletRequest request){
 
         return epibolyService.getEpibolyListByCurrentId(queryDto,request);

@@ -60,4 +60,12 @@ public class SignVo {
 
     private Double latitude;
 
+    private String year;
+
+    private String month;
+
+    private String day;
+
+    private Integer orderId;
+
 }

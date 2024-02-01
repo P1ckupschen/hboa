@@ -48,4 +48,7 @@ public class ScheduleVo {
     private String timeStage;
     private  List<FileVo> scheduleAttachments;
     private Integer typeId;
+
+
+    private Integer orderId;
 }

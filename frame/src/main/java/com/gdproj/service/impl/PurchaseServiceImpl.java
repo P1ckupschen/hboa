@@ -105,8 +105,8 @@ public class PurchaseServiceImpl extends ServiceImpl<PurchaseMapper, Purchase>
         }).collect(Collectors.toList());
 
         PageVo<List<PurchaseVo>> pageList = new PageVo<>();
-
-        pageList.setData(collect);
+        List<PurchaseVo> purchaseVos = addOrderId(collect, pageNum, pageSize);
+        pageList.setData(purchaseVos);
 
         pageList.setTotal((int) recordPage.getTotal());
 
@@ -147,6 +147,15 @@ public class PurchaseServiceImpl extends ServiceImpl<PurchaseMapper, Purchase>
         }else{
             throw  new SystemException(AppHttpCodeEnum.UPDATE_ERROR);
         }
+    }
+
+    private List<PurchaseVo> addOrderId(List<PurchaseVo> list, Integer pageNum, Integer pageSize){
+        if (!ObjectUtil.isEmpty(pageNum) && !ObjectUtil.isEmpty(pageSize)) {
+            for (int i = 0 ; i < list.size() ; i++){
+                list.get(i).setOrderId((pageNum - 1) * pageSize + i + 1);
+            }
+        }
+        return list;
     }
 }
 

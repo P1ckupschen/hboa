@@ -8,8 +8,6 @@ import com.gdproj.entity.Leave;
 import com.gdproj.vo.LeaveVo;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
-import java.util.List;
 
 /**
 * @author Administrator
@@ -22,5 +20,5 @@ public interface LeaveService extends IService<Leave> {
 
     boolean insertLeave(Leave insertLeave);
 
-    void exportLeaveExcel(List<Date> interval , HttpServletResponse response);
+    void exportLeaveExcel(PageQueryDto queryDto , HttpServletResponse response);
 }

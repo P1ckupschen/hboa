@@ -62,6 +62,17 @@ public class Report implements Serializable {
     @TableField(value = "report_file",typeHandler = jsonAndListTypeHandler.class)
     private List<FileVo> reportFile;
 
+    public String getFeedBack() {
+        return feedBack;
+    }
+
+    public void setFeedBack(String feedBack) {
+        this.feedBack = feedBack;
+    }
+
+    @TableField(value="feed_back")
+    private String feedBack;
+
     /**
      * 
      */

@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Tool;
+import com.gdproj.entity.ToolCategory;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.ToolMapper;
@@ -105,7 +106,10 @@ public class ToolServiceImpl extends ServiceImpl<ToolMapper, Tool>
 
                 //类型名称
                 if(!ObjectUtil.isEmpty(item.getCategoryId())){
-                    vo.setCategory(categoryService.getById(item.getCategoryId()).getCategoryName());
+                    ToolCategory one = categoryService.getById(item.getCategoryId());
+                    if(!ObjectUtil.isEmpty(one)){
+                        vo.setCategory(one.getCategoryName());
+                    }
                 }
 //
 //                //total 计算
@@ -115,7 +119,8 @@ public class ToolServiceImpl extends ServiceImpl<ToolMapper, Tool>
                 return vo;
 
             }).collect(Collectors.toList());
-            resultPage.setRecords(resultList);
+            List<ToolVo> toolVos = addOrderId(resultList, pageNum, pageSize);
+            resultPage.setRecords(toolVos);
 
             resultPage.setTotal(productPage.getTotal());
 
@@ -136,6 +141,15 @@ public class ToolServiceImpl extends ServiceImpl<ToolMapper, Tool>
         List<Tool> list = list(queryWrapper);
 
         return list.stream().map(Tool::getToolId).collect(Collectors.toList());
+    }
+
+    private List<ToolVo> addOrderId(List<ToolVo> list, Integer pageNum, Integer pageSize){
+        if (!ObjectUtil.isEmpty(pageNum) && !ObjectUtil.isEmpty(pageSize)) {
+            for (int i = 0 ; i < list.size() ; i++){
+                list.get(i).setOrderId((pageNum - 1) * pageSize + i + 1);
+            }
+        }
+        return list;
     }
 }
 

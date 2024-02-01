@@ -25,12 +25,12 @@ public class ProjectVo {
 
     private String projectName;
 
-    @JsonFormat(pattern = "yyyy-MM-ss HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date startTime;
 
     private Integer supervisorId;
 
-    private String projectUrgency;
+    private Integer projectUrgency;
 
     private Integer monitorId;
 
@@ -42,34 +42,33 @@ public class ProjectVo {
 
     private List<FileVo> projectAttachments;
 
-    @JsonFormat(pattern = "yyyy-MM-ss HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date createdTime;
 
     private Integer createdUser;
 
     private Integer projectStatus;
 
-    @JsonFormat(pattern = "yyyy-MM-ss HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date endTime;
 
-    private Integer projectProcess;
+    private String projectProcess;
 
     private Integer contractId;
 
     private Integer projectClient;
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
+
     private BigDecimal projectAmount;
 
     private Integer isCompleted;
 
     private String warrantyYear;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    
     private BigDecimal warrantyAmount;
 
     private List<FileVo> projectPic;
 
-    @JsonFormat(pattern = "yyyy-MM-ss HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date completedTime;
 
     private List<FileVo> completedVoucher;
@@ -78,6 +77,12 @@ public class ProjectVo {
 
     private Integer categoryId;
 
-    @JsonFormat(pattern = "yyyy-MM-ss HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date updateTime;
+
+    private Integer isPrivate;
+
+
+    private Integer orderId;
+
 }

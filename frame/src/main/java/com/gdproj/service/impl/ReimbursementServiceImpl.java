@@ -135,12 +135,21 @@ public class ReimbursementServiceImpl extends ServiceImpl<ReimbursementMapper, R
         }).collect(Collectors.toList());
 
         PageVo<List<ReimbursementVo>> pageList = new PageVo<>();
-
-        pageList.setData(collect);
+        List<ReimbursementVo> reimbursementVos = addOrderId(collect, pageNum, pageSize);
+        pageList.setData(reimbursementVos);
 
         pageList.setTotal((int) recordPage.getTotal());
 
         return ResponseResult.okResult(pageList);
+    }
+
+    private List<ReimbursementVo> addOrderId(List<ReimbursementVo> list, Integer pageNum, Integer pageSize){
+        if (!ObjectUtil.isEmpty(pageNum) && !ObjectUtil.isEmpty(pageSize)) {
+            for (int i = 0 ; i < list.size() ; i++){
+                list.get(i).setOrderId((pageNum - 1) * pageSize + i + 1);
+            }
+        }
+        return list;
     }
 }
 

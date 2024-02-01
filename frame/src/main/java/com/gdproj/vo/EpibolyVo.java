@@ -48,9 +48,9 @@ public class EpibolyVo {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date endTime;
 
-    private Integer epibolyProcess;
+    private String epibolyProcess;
 
-    private List contractIds;
+    private Integer contractId;
 
     private Integer epibolyClient;
 
@@ -76,7 +76,9 @@ public class EpibolyVo {
 
     private String epibolyCompany;
 
-    private List epibolyContacts;
+    private List<ContactVo> epibolyContacts;
 
     private ProjectVo project;
+
+    private Integer orderId;
 }

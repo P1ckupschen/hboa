@@ -149,8 +149,8 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
             throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
         }
 
-
-        resultPage.setRecords(resultList);
+        List<RecordVo> recordVos = addOrderId(resultList, pageNum, pageSize);
+        resultPage.setRecords(recordVos);
 
         resultPage.setTotal(recordPage.getTotal());
 
@@ -282,8 +282,8 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
         }catch (Exception e){
             throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
         }
-
-        resultPage.setRecords(resultList);
+        List<ProductVo> productVos = addOrderId1(resultList, pageNum, pageSize);
+        resultPage.setRecords(productVos);
 
         resultPage.setTotal(recordPage.getTotal());
 
@@ -338,6 +338,24 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record>
             return record;
         }).collect(Collectors.toList());
         return collect;
+    }
+
+    private List<RecordVo> addOrderId(List<RecordVo> list, Integer pageNum, Integer pageSize){
+        if (!ObjectUtil.isEmpty(pageNum) && !ObjectUtil.isEmpty(pageSize)) {
+            for (int i = 0 ; i < list.size() ; i++){
+                list.get(i).setOrderId((pageNum - 1) * pageSize + i + 1);
+            }
+        }
+        return list;
+    }
+
+    private List<ProductVo> addOrderId1(List<ProductVo> list, Integer pageNum, Integer pageSize){
+        if (!ObjectUtil.isEmpty(pageNum) && !ObjectUtil.isEmpty(pageSize)) {
+            for (int i = 0 ; i < list.size() ; i++){
+                list.get(i).setOrderId((pageNum - 1) * pageSize + i + 1);
+            }
+        }
+        return list;
     }
 
 }

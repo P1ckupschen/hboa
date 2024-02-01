@@ -17,4 +17,6 @@ public interface flowConfigService extends IService<FlowConfig> {
     IPage<FlowConfigVo> getFlowConfigList(PageQueryDto pageDto);
 
     ResponseResult getListForSelect();
+
+    ResponseResult updateFlowConfig(FlowConfigVo vo);
 }

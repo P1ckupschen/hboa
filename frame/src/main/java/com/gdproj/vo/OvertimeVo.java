@@ -17,6 +17,8 @@ public class OvertimeVo {
 
     private String Username;
 
+    private Integer orderId;
+
     private String Department;
 
     private Integer overtimeHours;
@@ -46,6 +48,8 @@ public class OvertimeVo {
     private Integer typeId;
 
     private String overtimeTitle;
+
+
 
 
 }

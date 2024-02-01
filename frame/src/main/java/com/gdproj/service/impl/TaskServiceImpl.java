@@ -64,31 +64,14 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
         }else{
             queryWrapper.orderByDesc(Task::getTaskId);
         }
-        //如果根据部门分类，有一定几率会与模糊人民冲突
-        if(!Objects.isNull(departmentId) && title.isEmpty()){
-            //如果没有对象没有部门id属性就找到对应id的部门所以的员工的userid
-            List<Integer> userIds = deployeeService.getIdsByDepartmentId(departmentId);
-            if(ObjectUtil.isEmpty(userIds)){
-                queryWrapper.in(Task::getExecutorId,0);
-            }else{
-                queryWrapper.in(Task::getExecutorId,userIds);
-            }
-        }
         //设置时间 年 月 日
         //模糊查询时间
         if(time != null){
             queryWrapper.like(Task::getTaskTime,time);
         }
-        //模糊查询人名
+        //模糊查询任务名称
         if(!title.isEmpty()){
-            //如果有模糊查询的时间 先通过查title 的用户ids
-            List<Integer> ids = deployeeService.getIdsByTitle(title);
-            if(!ObjectUtil.isEmpty(ids)){
-                queryWrapper.in(Task::getCreatedUser, ids);
-            }else{
-                queryWrapper.in(Task::getCreatedUser,0);
-            }
-            //通过ids去找所有符合ids的对象 sign;
+            queryWrapper.like(Task::getTaskName,title);
         }
         //如果有类型的话
         if(!ObjectUtil.isEmpty(type)){
@@ -100,6 +83,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
         Page<TaskVo> resultPage = new Page<>();
 
         List<TaskVo> resultList = new ArrayList<>();
+
         //结果里的部门 和用户都返回成string；
         try {
             resultList = taskPage.getRecords().stream().map((item) -> {
@@ -110,8 +94,12 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
                 }
 
                 //执行人
-                if(!ObjectUtil.isEmpty(item.getExecutorId())){
-                    taskVo.setExecutorUsername(deployeeService.getNameByUserId(item.getExecutorId()));
+                if(!ObjectUtil.isEmpty(item.getExecutorIds())){
+                    List<String> names = new ArrayList<>();
+                    for(Integer id : item.getExecutorIds()){
+                        names.add(deployeeService.getNameByUserId(id));
+                    }
+                    taskVo.setExecutorUsername(names);
                 }
 
                 //创建人
@@ -129,8 +117,8 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
         }catch (Exception e){
             throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
         }
-
-        resultPage.setRecords(resultList);
+        List<TaskVo> taskVos = addOrderId(resultList, pageNum, pageSize);
+        resultPage.setRecords(taskVos);
 
         resultPage.setTotal(taskPage.getTotal());
 
@@ -167,8 +155,8 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
         }
 
         //查询名称？
-        if (!title.isEmpty()) {
-            queryWrapper.eq(Task::getTaskId, title);
+        if(!title.isEmpty()){
+            queryWrapper.like(Task::getTaskName,title);
         }
 
         //如果有类型的话 类型
@@ -178,19 +166,24 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
         }
 
         String authorization = request.getHeader("Authorization");
-        if(!ObjectUtil.isEmpty(authorization)){
-            System.out.println(authorization);
-            String token = authorization.split(" ")[1];
-            String id = JwtUtils.getMemberIdByJwtToken(token);
-            queryWrapper.eq(Task::getExecutorId,id).or().eq(Task::getCreatedUser,id);
-
-        }else{
-            throw new SystemException(AppHttpCodeEnum.TOKEN_PARSE_ERRPE);
-        }
+        System.out.println(authorization);
+        String token = authorization.split(" ")[1];
+        String id = JwtUtils.getMemberIdByJwtToken(token);
+        // TODO 如何使用 lamdbaquerywrapper 判断数据库字段中的数组 是否含有某个元素
+//        if(!ObjectUtil.isEmpty(authorization)){
+//            System.out.println(authorization);
+//            String token = authorization.split(" ")[1];
+//            String id = JwtUtils.getMemberIdByJwtToken(token);
+//            queryWrapper.eq(Task::getCreatedUser,id).or().apply("FIND_IN_SET({0}, executor_ids)", id);
+//            TODO
+//        }else{
+//            throw new SystemException(AppHttpCodeEnum.TOKEN_PARSE_ERRPE);
+//        }
 
         IPage<Task> recordPage = page(page, queryWrapper);
         //相同的typeId 和runId的只显示最早的createdTime的数据
-
+        Integer i1 = Integer.valueOf(id);
+        recordPage.setRecords(recordPage.getRecords().stream().filter(item->item.getExecutorIds().contains(i1) || Objects.equals(item.getCreatedUser(), i1)).collect(Collectors.toList()));
         PageVo<List<TaskVo>> result = new PageVo<>();
 
         List<TaskVo> resultList = new ArrayList<>();
@@ -201,10 +194,16 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
                 if(!ObjectUtil.isEmpty(item.getCreatedUser())){
                     vo.setUsername(deployeeService.getNameByUserId(item.getCreatedUser()));
                 }
-
                 //执行人
-                if(!ObjectUtil.isEmpty(item.getExecutorId())){
-                    vo.setExecutorUsername(deployeeService.getNameByUserId(item.getExecutorId()));
+                if(!ObjectUtil.isEmpty(item.getExecutorIds())){
+                    ArrayList<String> names = new ArrayList<>();
+                    item.getExecutorIds().forEach((i) -> {
+                        if(!ObjectUtil.isEmpty(i)){
+                            String name = deployeeService.getNameByUserId(i);
+                            names.add(name+ " ");
+                        }
+                    });
+                    vo.setExecutorUsername(names);
                 }
 
                 //创建人
@@ -217,12 +216,21 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
                 }
                 return vo;
             }).collect(Collectors.toList());
-            result.setData(resultList);
+            List<TaskVo> taskVos = addOrderId(resultList, pageNum, pageSize);
+            result.setData(taskVos);
             result.setTotal((int) recordPage.getTotal());
             return ResponseResult.okResult(result);
         } catch (Exception e) {
             throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
         }
+    }
+    private List<TaskVo> addOrderId(List<TaskVo> list, Integer pageNum, Integer pageSize){
+        if (!ObjectUtil.isEmpty(pageNum) && !ObjectUtil.isEmpty(pageSize)) {
+            for (int i = 0 ; i < list.size() ; i++){
+                list.get(i).setOrderId((pageNum - 1) * pageSize + i + 1);
+            }
+        }
+        return list;
     }
 }
 

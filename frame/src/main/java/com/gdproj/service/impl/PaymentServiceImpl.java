@@ -110,23 +110,25 @@ public class PaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment>
         List<PaymentVo> collect = recordPage.getRecords().stream().map((item) -> {
             PaymentVo vo = BeanCopyUtils.copyBean(item, PaymentVo.class);
             if(ObjectUtil.isEmpty(item.getUserId())){
+
                 throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
             }
             //金额大写
-            if(ObjectUtil.isEmpty(item.getPaymentAmount())){
-                throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
+            if(!ObjectUtil.isEmpty(item.getPaymentAmount())){
+                vo.setPaymentAmountCap(NumberChineseFormatter.format(item.getPaymentAmount().doubleValue(),true,true));
             }
             //账号解密
             if(!ObjectUtil.isEmpty(item.getPaymentAccount())){
                 vo.setPaymentAccount(AesUtil.decrypt(item.getPaymentAccount(),AesUtil.key128));
             }
-            vo.setPaymentAmountCap(NumberChineseFormatter.format(item.getPaymentAmount().doubleValue(),true,true));
+
             return vo;
         }).collect(Collectors.toList());
 
         PageVo<List<PaymentVo>> pageList = new PageVo<>();
 
-        pageList.setData(collect);
+        List<PaymentVo> paymentVos = addOrderId(collect, pageNum, pageSize);
+        pageList.setData(paymentVos);
 
         pageList.setTotal((int) recordPage.getTotal());
 
@@ -157,6 +159,15 @@ public class PaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment>
         }else{
             throw new SystemException(AppHttpCodeEnum.DELETE_ERROR);
         }
+    }
+
+    private List<PaymentVo> addOrderId(List<PaymentVo> list, Integer pageNum, Integer pageSize){
+        if (!ObjectUtil.isEmpty(pageNum) && !ObjectUtil.isEmpty(pageSize)) {
+            for (int i = 0 ; i < list.size() ; i++){
+                list.get(i).setOrderId((pageNum - 1) * pageSize + i + 1);
+            }
+        }
+        return list;
     }
 
 

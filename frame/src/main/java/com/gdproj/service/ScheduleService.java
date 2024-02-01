@@ -21,5 +21,5 @@ public interface ScheduleService extends IService<Schedule> {
 
     ResponseResult deleteSchedule(Integer id);
 
-    ResponseResult getScheduleByid(Integer id , Integer typeId);
+    ResponseResult getScheduleByid(PageQueryDto queryDto);
 }

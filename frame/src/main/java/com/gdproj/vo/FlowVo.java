@@ -47,4 +47,7 @@ public class FlowVo {
     private Integer createdUserId;
 
 
+    private Integer orderId;
+
+
 }

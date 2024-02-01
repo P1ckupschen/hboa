@@ -22,6 +22,9 @@ public class PageQueryDto {
     private String time;
     private String sort = "+id";
     private Integer status;
+//    @JsonProperty("Interval")
+//    private List<Date> Interval;
+    private Integer id;
 
     public PageQueryDto(Integer pageNum , Integer pageSize ,  Integer departmentId , Integer type ,String title ,String time, String sort){
         this.pageNum = pageNum;

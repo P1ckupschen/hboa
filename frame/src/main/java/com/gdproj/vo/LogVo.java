@@ -28,4 +28,7 @@ public class LogVo {
 
     private String Username;
 
+
+    private Integer orderId;
+
 }

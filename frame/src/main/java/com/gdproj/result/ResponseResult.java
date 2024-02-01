@@ -2,9 +2,12 @@ package com.gdproj.result;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.gdproj.enums.AppHttpCodeEnum;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 
+
+@Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResponseResult<T> implements Serializable {
     private Integer code;

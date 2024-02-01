@@ -50,7 +50,7 @@ public class Project implements Serializable {
      *
      */
     @TableField(value = "project_urgency")
-    private String projectUrgency;
+    private Integer projectUrgency;
 
     /**
      * 监控人
@@ -110,7 +110,7 @@ public class Project implements Serializable {
      * 进度
      */
     @TableField(value = "project_process")
-    private Integer projectProcess;
+    private String projectProcess;
 
     /**
      *
@@ -166,6 +166,8 @@ public class Project implements Serializable {
     @TableField(value = "completed_voucher" ,typeHandler = JacksonTypeHandler.class)
     private List<FileVo> completedVoucher;
 
+
+
     /**
      *
      */
@@ -173,6 +175,17 @@ public class Project implements Serializable {
     @TableLogic
     private Integer isDeleted;
 
+
+    public Integer getIsPrivate() {
+        return isPrivate;
+    }
+
+    public void setIsPrivate(Integer isPrivate) {
+        this.isPrivate = isPrivate;
+    }
+
+    @TableField(value = "is_private")
+    private Integer isPrivate;
     /**
      * 项目安排
      */
@@ -272,14 +285,14 @@ public class Project implements Serializable {
     /**
      *
      */
-    public String getProjectUrgency() {
+    public Integer getProjectUrgency() {
         return projectUrgency;
     }
 
     /**
      *
      */
-    public void setProjectUrgency(String projectUrgency) {
+    public void setProjectUrgency(Integer projectUrgency) {
         this.projectUrgency = projectUrgency;
     }
 
@@ -412,14 +425,14 @@ public class Project implements Serializable {
     /**
      * 进度
      */
-    public Integer getProjectProcess() {
+    public String getProjectProcess() {
         return projectProcess;
     }
 
     /**
      * 进度
      */
-    public void setProjectProcess(Integer projectProcess) {
+    public void setProjectProcess(String projectProcess) {
         this.projectProcess = projectProcess;
     }
 

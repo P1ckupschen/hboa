@@ -16,6 +16,7 @@ public class LeaveVo {
     private Integer leaveId;
     private String Username;
     private String Department;
+    private Integer orderId;
     private String leaveDays;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date startTime;
@@ -34,5 +35,7 @@ public class LeaveVo {
 
     private Integer typeId;
     private String leaveTitle;
+
+
 
 }

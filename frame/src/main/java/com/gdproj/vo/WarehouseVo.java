@@ -43,4 +43,6 @@ public class WarehouseVo {
     private Integer contractId;
 
     private Integer projectId;
+
+    private Integer orderId;
 }

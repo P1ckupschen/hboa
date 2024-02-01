@@ -46,4 +46,6 @@ public class ReimbursementVo {
     private Integer contractId;
     private String reimbursementAmountCap;
 
+
+    private Integer orderId;
 }

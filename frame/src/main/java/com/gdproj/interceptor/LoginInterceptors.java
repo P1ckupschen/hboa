@@ -67,7 +67,7 @@ public class LoginInterceptors implements HandlerInterceptor {
             //设置响应头（告知浏览器：响应的数据类型为json、响应的数据编码表为utf-8）
             response.setContentType("application/json;charset=utf-8");
             // 将结果返回给前端
-            throw new TokenExpiredException(515,"用户未登录");
+            throw new TokenExpiredException(500,"不存在或未知错误");
             // 拦截当前请求
 //            return false;
         }

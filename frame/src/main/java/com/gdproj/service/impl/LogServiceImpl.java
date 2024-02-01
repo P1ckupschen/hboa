@@ -86,8 +86,8 @@ public class LogServiceImpl extends ServiceImpl<LogMapper, Log>
                 }
                 return vo;
             }).collect(Collectors.toList());
-
-            result.setData(resultList);
+            List<LogVo> logVos = addOrderId(resultList, pageNum, pageSize);
+            result.setData(logVos);
             result.setTotal((int) recordPage.getTotal());
             return ResponseResult.okResult(result);
         }catch (Exception e){
@@ -104,6 +104,15 @@ public class LogServiceImpl extends ServiceImpl<LogMapper, Log>
         }catch (Exception e){
             throw new SystemException(AppHttpCodeEnum.INSERT_ERROR);
         }
+    }
+
+    private List<LogVo> addOrderId(List<LogVo> list, Integer pageNum, Integer pageSize){
+        if (!ObjectUtil.isEmpty(pageNum) && !ObjectUtil.isEmpty(pageSize)) {
+            for (int i = 0 ; i < list.size() ; i++){
+                list.get(i).setOrderId((pageNum - 1) * pageSize + i + 1);
+            }
+        }
+        return list;
     }
 
 

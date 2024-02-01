@@ -43,14 +43,14 @@ wx:
         token: hboatoken # 接口配置里的Token值
         aesKey: 9UT2ltCYdYDTpcwO3NZ9TJmK4HMCKWj7T7EG2bTfzpM # 接口配置里的EncodingAESKey值
 
-logging:
+#logging:
+##  file:
+##    name: server.log
+#  logback:
+#    rollingpolicy:
+#      max-file-size: 5MB
 #  file:
-#    name: server.log
-  logback:
-    rollingpolicy:
-      max-file-size: 5MB
-  file:
-    path: /mnt/data/hboa/statics/log/
+#    path: /mnt/data/hboa/statics/log/
 #Windows下的路径配置
 #ImagesFilePath: E:\\sch-work-space\\projects\\hbkj\\hboa\\admin\\src\\main\\resources\\images\\
 

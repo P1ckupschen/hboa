@@ -68,6 +68,38 @@ public class notifyController {
         }
 
     }
+
+    @GetMapping("/getEffectiveNotifyList")
+    @autoLog
+    @ApiOperation(value = "查询公告列表")
+    public ResponseResult getEffectiveNotifyList(@RequestParam Integer pageNum,
+                                        @RequestParam Integer pageSize,
+                                        @RequestParam(required = false,defaultValue = "+id")String sort,
+                                        @RequestParam(required = false,defaultValue = "") String title ,
+                                        @RequestParam(required = false) Integer departmentId,
+                                        @RequestParam(required = false) Integer type,
+                                        @RequestParam(required = false) String time,
+                                        @RequestParam(required = false) Integer status){
+        PageQueryDto pageDto = new PageQueryDto(pageNum,pageSize,departmentId,type,title,time,sort);
+        pageDto.setStatus(status);
+        IPage<NotifyVo> notifyList = new Page<>();
+
+        try {
+
+            notifyList =  notifyService.getEffectiveNotifyList(pageDto);
+
+            PageVo<List<NotifyVo>> pageList = new PageVo<>();
+            pageList.setData(notifyList.getRecords());
+            pageList.setTotal((int) notifyList.getTotal());
+            return ResponseResult.okResult(pageList);
+        }catch (SystemException e) {
+            return ResponseResult.okResult(e.getCode(), e.getMsg());
+        }catch (Exception e){
+            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+        }
+
+    }
+
     /**
      * notify_status
      * 0:待审批

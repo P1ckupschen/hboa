@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Client;
+import com.gdproj.result.ResponseResult;
 import com.gdproj.vo.ClientVo;
 import com.gdproj.vo.SelectVo;
 
@@ -19,4 +20,6 @@ public interface ClientService extends IService<Client> {
     IPage<ClientVo> getClientList(PageQueryDto pageDto);
 
     List<SelectVo> getListForSelect();
+
+    ResponseResult getClientContacts(Integer id);
 }

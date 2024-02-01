@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class LeaveExcelEntity {
 
     @ExcelProperty(value = "员工编号", index = 0 )
-    private Integer userId;
+    private Integer orderId;
     @ExcelProperty(value = "员工姓名")
     private String Username;
     @ExcelProperty(value = "统计时间段")

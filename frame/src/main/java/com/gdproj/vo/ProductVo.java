@@ -48,4 +48,7 @@ public class ProductVo {
     private String productDescription;
 
     private BigDecimal productPrice;
+
+
+    private Integer orderId;
 }

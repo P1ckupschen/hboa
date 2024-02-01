@@ -59,5 +59,7 @@ public class DailyUseRecordVo {
     private String Department;
     private String Category;
 
+    private Integer orderId;
+
 
 }

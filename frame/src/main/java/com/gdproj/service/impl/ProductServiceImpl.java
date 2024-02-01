@@ -6,7 +6,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdproj.dto.PageQueryDto;
-import com.gdproj.entity.*;
+import com.gdproj.entity.Product;
+import com.gdproj.entity.ProductCategory;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.ProductMapper;
@@ -112,7 +113,10 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product>
 
                 //类型名称
                 if(!ObjectUtil.isEmpty(item.getCategoryId())){
-                    vo.setCategory(categoryService.getById(item.getCategoryId()).getCategoryName());
+                    ProductCategory one = categoryService.getById(item.getCategoryId());
+                    if(!ObjectUtil.isEmpty(one)){
+                        vo.setCategory(one.getCategoryName());
+                    }
                 }else{
                     vo.setCategory("");
                 }
@@ -132,8 +136,8 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product>
         }catch (Exception e){
             throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
         }
-
-        resultPage.setRecords(resultList);
+        List<ProductVo> productVos = addOrderId(resultList, pageNum, pageSize);
+        resultPage.setRecords(productVos);
 
         resultPage.setTotal(productPage.getTotal());
 
@@ -159,9 +163,14 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product>
         Product oneById = getById(productId);
 
         ProductCategory categoryServiceById = categoryService.getById(oneById.getCategoryId());
+        if(ObjectUtil.isEmpty(categoryServiceById)){
+            return "";
+        }else{
+            return categoryServiceById.getCategoryName();
+        }
 
-        return categoryServiceById.getCategoryName();
     }
+
 
 
     public List<Integer> getIdsByTitle(String title){
@@ -173,6 +182,14 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product>
         List<Product> list = list(queryWrapper);
 
         return list.stream().map(Product::getProductId).collect(Collectors.toList());
+    }
+    private List<ProductVo> addOrderId(List<ProductVo> list, Integer pageNum, Integer pageSize){
+        if (!ObjectUtil.isEmpty(pageNum) && !ObjectUtil.isEmpty(pageSize)) {
+            for (int i = 0 ; i < list.size() ; i++){
+                list.get(i).setOrderId((pageNum - 1) * pageSize + i + 1);
+            }
+        }
+        return list;
     }
 }
 

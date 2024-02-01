@@ -1,13 +1,19 @@
 package com.gdproj.controller;
 
 
+import cn.hutool.core.io.resource.InputStreamResource;
 import com.gdproj.annotation.autoLog;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.result.ResponseResult;
+import com.gdproj.vo.FileVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,12 +21,15 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.util.Objects;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/upload")
+@RequestMapping("/file")
 @Api(tags = "上传功能")
+@Slf4j
 public class uploadController {
 
     @Value("${ImagesFilePath}")
@@ -30,8 +39,6 @@ public class uploadController {
     @autoLog
     @ApiOperation(value = "上传")
     public ResponseResult commonUpload(@RequestBody MultipartFile file, HttpServletRequest request){
-
-        System.out.println(file);
 //        String folder = "admin/src/main/resources/images";
         String folder =filePath;
         if (file == null) {
@@ -42,7 +49,7 @@ public class uploadController {
         }
 
         //获取文件后缀
-        String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1, file.getOriginalFilename().length());
+        String suffix = Objects.requireNonNull(file.getOriginalFilename()).substring(file.getOriginalFilename().lastIndexOf(".") + 1, file.getOriginalFilename().length());
         if (!"jpg,jpeg,png,pdf,doc,docx,xlsx,xls".toUpperCase().contains(suffix.toUpperCase())) {
             return ResponseResult.errorResult(AppHttpCodeEnum.FILE_TYPE_ERROR);
         }
@@ -61,7 +68,6 @@ public class uploadController {
             //File file1 = new File(file.getOriginalFilename());
             FileUtils.copyInputStreamToFile(file.getInputStream(),new File(savePath+"/" +  filename));
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseResult.errorResult(AppHttpCodeEnum.FILE_STORAGE_ERROR);
         }
 
@@ -73,4 +79,21 @@ public class uploadController {
         return ResponseResult.okResult(result);
         //返回文件名称
     }
+
+    @PostMapping(value = "/downloadFile")
+    public ResponseEntity<InputStreamResource> downloadCode(@RequestBody FileVo fv) {
+//        log.info("request param: {}", pf);
+
+        String filename = fv.getName() + System.currentTimeMillis() + ".zip";
+        byte[] bytes =  new byte[1024];
+        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", String.format("attachment; filename=\"%s\"", filename));
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .body(new InputStreamResource(bais));
+    }
+
 }

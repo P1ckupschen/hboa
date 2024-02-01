@@ -92,73 +92,59 @@ public class taskController {
     @autoLog
     @ApiOperation(value = "更新任务")
     public ResponseResult updateTask(@RequestBody TaskVo taskVo){
-
         Task updateTask = BeanCopyUtils.copyBean(taskVo, Task.class);
         if(!ObjectUtil.isEmpty(updateTask.getTaskContacts())){
             updateTask.setTaskContacts(AesUtil.encrypt(updateTask.getTaskContacts(),AesUtil.key128));
         }
         boolean b = false;
-
         try {
-
             b = taskService.updateById(updateTask);
-
-            if(b == true){
-
+            if(b){
                 return ResponseResult.okResult(b);
-
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.UPDATE_ERROR);
             }
-
         }catch (Exception e){
-
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
-
         }
-
-
     }
 
     @PostMapping("insertTask")
     @autoLog
     @ApiOperation(value = "新增任务")
     public ResponseResult insertTask(@RequestBody TaskVo taskVo){
-
         Task insertTask = BeanCopyUtils.copyBean(taskVo, Task.class);
         if(!ObjectUtil.isEmpty(insertTask.getTaskContacts())){
             insertTask.setTaskContacts(AesUtil.encrypt(insertTask.getTaskContacts(),AesUtil.key128));
         }
         boolean b = false;
-
         try {
-
             b = taskService.save(insertTask);
-
-            if(b == true){
-                if(ObjectUtil.isEmpty(insertTask.getExecutorId()) || ObjectUtil.isEmpty(insertTask.getTaskName())){
-
+            //批量增加任务
+            if(b){
+                if(ObjectUtil.isEmpty(insertTask.getExecutorIds()) || ObjectUtil.isEmpty(insertTask.getTaskName())){
+                    //如果执行人为空 或者 任务名称为空 就不推送消息
                 }else{
-                    Account one = accountService.getById(insertTask.getExecutorId());
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     if(ObjectUtil.isEmpty(insertTask.getTaskName())){
                         insertTask.setTaskName("新任务");
                     }
-                    if(!ObjectUtil.isEmpty(one.getOpenId())){
-                        wxSubscribeController.sendTaskMessage(insertTask.getTaskName(),sdf.format(insertTask.getTaskTime()),"新任务提醒",one.getOpenId());
+                    for( Integer id : taskVo.getExecutorIds()){
+                        Account account = accountService.getById(id);
+                        if(!ObjectUtil.isEmpty(account.getOpenId())){
+                            wxSubscribeController.sendTaskMessage(insertTask.getTaskName(),sdf.format(insertTask.getTaskTime()),"新任务提醒",account.getOpenId());
+                            System.out.println("发送了推送"+id);
+                        }
+
                     }
                 }
                 return ResponseResult.okResult(b);
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.INSERT_ERROR);
             }
-
         }catch (Exception e){
-
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
-
         }
-
     }
 
     @DeleteMapping("deleteTask")

@@ -49,4 +49,7 @@ public class DeployeeVo {
 
     private List<FileVo> ensurance;
 
+
+    private Integer orderId;
+
 }

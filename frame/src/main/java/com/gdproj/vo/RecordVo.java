@@ -56,4 +56,7 @@ public class RecordVo {
     private String productBrand;
     private String productName;
 
+
+    private Integer orderId;
+
 }

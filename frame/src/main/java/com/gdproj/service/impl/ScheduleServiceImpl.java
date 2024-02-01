@@ -71,10 +71,16 @@ public class ScheduleServiceImpl extends ServiceImpl<ScheduleMapper, Schedule>
 //            queryWrapper.orderByDesc(Schedule::getScheduleId);
 //        }
 
+        if(!ObjectUtil.isEmpty(type)){
+            queryWrapper.eq(Schedule::getTypeId,type);
+        }
+
         if (!title.isEmpty()) {
-            List<Integer> ids = projectService.getIdsByName(title);
-            if(!ObjectUtil.isEmpty(ids)){
-                queryWrapper.in(Schedule::getProjectId,ids);
+            List<Integer> ids1 = projectService.getIdsByName(title);
+            List<Integer> ids2 = epibolyService.getidsByName(title);
+            ids1.addAll(ids2);
+            if(!ObjectUtil.isEmpty(ids1)){
+                queryWrapper.in(Schedule::getProjectId,ids1);
             }else{
                 queryWrapper.eq(Schedule::getProjectId,0);
             }
@@ -92,45 +98,49 @@ public class ScheduleServiceImpl extends ServiceImpl<ScheduleMapper, Schedule>
             String Content = JSONUtil.toJsonStr(item.getToolList());
             List<DailyUseContentVo> contentVoList = JSONUtil.toList(Content, DailyUseContentVo.class);
             vo.setToolList(contentVoList);
-            if(item.getTypeId() == 1){
-                Project one = projectService.getById(item.getProjectId());
-                Integer supervisorId = one.getSupervisorId();
-                vo.setSupervisorName(deployeeService.getNameByUserId(supervisorId));
+            if(item.getTypeId() == 1 ){
+                if(!ObjectUtil.isEmpty(item.getProjectId())){
+                    Project one = projectService.getById(item.getProjectId());
+                    Integer supervisorId = one.getSupervisorId();
+                    vo.setSupervisorName(deployeeService.getNameByUserId(supervisorId));
 
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                String start = "";
-                String end = "";
-                if(!ObjectUtil.isEmpty(item.getTrueStartTime())){
-                    start = sdf.format(item.getTrueStartTime());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    String start = "";
+                    String end = "";
+                    if(!ObjectUtil.isEmpty(item.getTrueStartTime())){
+                        start = sdf.format(item.getTrueStartTime());
+                    }
+                    if(!ObjectUtil.isEmpty(item.getTrueEndTime())){
+                        end = sdf.format(item.getTrueEndTime());
+                    }
+                    vo.setTimeStage(start+"--"+end);
+                    vo.setProjectName(projectService.getById(item.getProjectId()).getProjectName());
                 }
-                if(!ObjectUtil.isEmpty(item.getTrueEndTime())){
-                    end = sdf.format(item.getTrueEndTime());
-                }
-                vo.setTimeStage(start+"--"+end);
-                vo.setProjectName(projectService.getById(item.getProjectId()).getProjectName());
             }else{
-                Epiboly one = epibolyService.getById(item.getProjectId());
-                Integer supervisorId = one.getSupervisorId();
-                vo.setSupervisorName(deployeeService.getNameByUserId(supervisorId));
+                if(!ObjectUtil.isEmpty(item.getProjectId())){
+                    Epiboly one = epibolyService.getById(item.getProjectId());
+                    Integer supervisorId = one.getSupervisorId();
+                    vo.setSupervisorName(deployeeService.getNameByUserId(supervisorId));
 
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                String start = "";
-                String end = "";
-                if(!ObjectUtil.isEmpty(item.getTrueStartTime())){
-                    start = sdf.format(item.getTrueStartTime());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    String start = "";
+                    String end = "";
+                    if(!ObjectUtil.isEmpty(item.getTrueStartTime())){
+                        start = sdf.format(item.getTrueStartTime());
+                    }
+                    if(!ObjectUtil.isEmpty(item.getTrueEndTime())){
+                        end = sdf.format(item.getTrueEndTime());
+                    }
+                    vo.setTimeStage(start+"--"+end);
+                    vo.setProjectName(epibolyService.getById(item.getProjectId()).getEpibolyName());
                 }
-                if(!ObjectUtil.isEmpty(item.getTrueEndTime())){
-                    end = sdf.format(item.getTrueEndTime());
-                }
-                vo.setTimeStage(start+"--"+end);
-                vo.setProjectName(epibolyService.getById(item.getProjectId()).getEpibolyName());
             }
             return vo;
         }).collect(Collectors.toList());
 
         PageVo<List<ScheduleVo>> pageList = new PageVo<>();
-
-        pageList.setData(collect);
+        List<ScheduleVo> scheduleVos = addOrderId(collect, pageNum, pageSize);
+        pageList.setData(scheduleVos);
 
         pageList.setTotal((int) recordPage.getTotal());
 
@@ -171,10 +181,21 @@ public class ScheduleServiceImpl extends ServiceImpl<ScheduleMapper, Schedule>
     }
 
     @Override
-    public ResponseResult getScheduleByid(Integer id , Integer typeId) {
+    public ResponseResult getScheduleByid(PageQueryDto queryDto) {
 
+        Integer typeId = queryDto.getType();
+        String title = queryDto.getTitle();
+        Integer pageNum = queryDto.getPageNum();
+        Integer pageSize = queryDto.getPageSize();
+        Integer id = queryDto.getId();
+
+        Page<Schedule> page = new Page<>(pageNum, pageSize);
         LambdaQueryWrapper<Schedule> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.orderByDesc(Schedule::getPlanStartTime);
+        if(!ObjectUtil.isEmpty(title)){
+            queryWrapper.like(Schedule::getScheduleName,title);
+        }
+
         if(typeId == 1){
             //为项目
             queryWrapper.eq(Schedule::getProjectId,id);
@@ -236,6 +257,14 @@ public class ScheduleServiceImpl extends ServiceImpl<ScheduleMapper, Schedule>
 
         }
 
+    }
+    private List<ScheduleVo> addOrderId(List<ScheduleVo> list, Integer pageNum, Integer pageSize){
+        if (!ObjectUtil.isEmpty(pageNum) && !ObjectUtil.isEmpty(pageSize)) {
+            for (int i = 0 ; i < list.size() ; i++){
+                list.get(i).setOrderId((pageNum - 1) * pageSize + i + 1);
+            }
+        }
+        return list;
     }
 }
 

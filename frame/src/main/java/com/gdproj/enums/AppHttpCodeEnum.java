@@ -41,6 +41,8 @@ public enum AppHttpCodeEnum {
 
     GET_SIGNATURE_ERROR(417,"获取签名失败"),
 
+    SEND_MESSAGE_ERROR(418,"发送消息失败"),
+    SELECT_ERROR(10000,"数据查询失败"),
     UPDATE_ERROR(10001,"数据修改失败"),
     INSERT_ERROR(10002,"数据新增失败" ),
 
@@ -48,6 +50,8 @@ public enum AppHttpCodeEnum {
 
     MYSQL_FIELD_ERROR(10004,"数据字段为空或错误"),
     ARRAY_NULL_ERROR(10005,"数组为空"),
+
+    PRARM_VALIDATE_FAILED(10006,"参数校验失败"),
     FILE_STREAM_NULL(101,"文件流为空"),
     NO_OPERATOR_AUTH(403,"无权限操作"),
     SYSTEM_ERROR(500,"出现错误"),
@@ -56,6 +60,10 @@ public enum AppHttpCodeEnum {
     REQUIRE_USERNAME(504, "必需填写用户名"),
 
     PRARM_NULL(505,"参数为空"),
+
+    NO_DATE_INPUT(506,"日期为空"),
+    NO_DEPLOYEE(507,"没有找到员工"),
+
 
     DEVISION_BYZERO(301,"除零"),
 
