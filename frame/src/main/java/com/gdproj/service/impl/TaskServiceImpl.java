@@ -218,7 +218,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
             }).collect(Collectors.toList());
             List<TaskVo> taskVos = addOrderId(resultList, pageNum, pageSize);
             result.setData(taskVos);
-            result.setTotal((int) recordPage.getTotal());
+            result.setTotal( recordPage.getRecords().size());
             return ResponseResult.okResult(result);
         } catch (Exception e) {
             throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);

@@ -46,6 +46,7 @@ public class loginController {
     @ApiOperation(value = "前台登录请求")
     public ResponseResult frontLogin(@RequestBody AccountVo vo, HttpServletRequest request){
         SecureUtil.disableBouncyCastle();
+
         return  systemLoginService.frontLogin(vo,request);
     }
 
@@ -63,8 +64,6 @@ public class loginController {
             return ResponseResult.errorResult(AppHttpCodeEnum.GET_ACCOUNTINFO_ERROR);
         }
 //        =userService.getUserInfo();
-
-
     }
 
     @GetMapping("/frontUserinfo")

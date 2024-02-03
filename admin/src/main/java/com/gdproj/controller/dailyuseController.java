@@ -20,8 +20,10 @@ import com.gdproj.vo.PageVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -72,6 +74,35 @@ public class dailyuseController {
 
     }
 
+    @GetMapping("/getMyDailyUseList")
+    @autoLog
+    @ApiOperation(value = "查询我的日常领用列表")
+    public ResponseResult getMyDailyUseList(@Validated PageQueryDto queryDto, HttpServletRequest request){
+
+        IPage<DailyUseVo> DailyUseList = new Page<>();
+
+        try {
+
+            DailyUseList =  dailyUseService.getMyDailyUseList(queryDto,request);
+
+            PageVo<List<DailyUseVo>> pageList = new PageVo<>();
+
+            pageList.setData(DailyUseList.getRecords());
+
+            pageList.setTotal((int) DailyUseList.getTotal());
+
+            return ResponseResult.okResult(pageList);
+
+        }catch (Exception e){
+
+            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+
+        }
+
+    }
+
+
+
     @PostMapping("/insertDailyUse")
     @autoLog
     @ApiOperation(value = "新增日常领用申请/入库申请")
@@ -94,11 +125,20 @@ public class dailyuseController {
     public ResponseResult updateDailyUse(@RequestBody DailyUseVo vo){
 
         DailyUse dailyUse = BeanCopyUtils.copyBean(vo, DailyUse.class);
-        boolean b = dailyUseService.updateById(dailyUse);
-        if(b){
-            return ResponseResult.okResult(b);
+        if(dailyUse.getCategoryId() == 1){
+            boolean b = dailyUseService.updateById(dailyUse);
+            if(b){
+                return ResponseResult.okResult(b);
+            }else{
+                throw  new SystemException(AppHttpCodeEnum.UPDATE_ERROR);
+            }
         }else{
-            throw  new SystemException(AppHttpCodeEnum.UPDATE_ERROR);
+            boolean b = dailyUseService.updateDailyUse(dailyUse);
+            if(b){
+                return ResponseResult.okResult(b);
+            }else{
+                throw  new SystemException(AppHttpCodeEnum.UPDATE_ERROR);
+            }
         }
 
     }

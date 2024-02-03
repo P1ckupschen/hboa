@@ -6,6 +6,8 @@ import com.gdproj.entity.Purchase;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.vo.PurchaseVo;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
 * @author Administrator
 * @description 针对表【sys_purchase】的数据库操作Service
@@ -20,4 +22,6 @@ public interface PurchaseService extends IService<Purchase> {
     ResponseResult deletePurchase(Integer id);
 
     ResponseResult updatePurchase(PurchaseVo vo);
+
+    ResponseResult getMyPurchaseList(PageQueryDto queryVo, HttpServletRequest request);
 }

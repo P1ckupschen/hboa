@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @Api(tags = "资金报销功能")
 @RequestMapping("/adminReimbursement")
@@ -29,6 +31,15 @@ public class reimbursementController {
     public ResponseResult getReimbursementList(@Validated PageQueryDto queryVo) {
 
         return reimbursementService.getReimbursementList(queryVo);
+
+    }
+
+    @GetMapping("/getMyReimbursementList")
+    @autoLog
+    @ApiOperation(value = "查询我的资金报销申请列表")
+    public ResponseResult getMyReimbursementList(@Validated PageQueryDto queryVo, HttpServletRequest request) {
+
+        return reimbursementService.getMyReimbursementList(queryVo,request);
 
     }
     @PostMapping("/insertReimbursement")

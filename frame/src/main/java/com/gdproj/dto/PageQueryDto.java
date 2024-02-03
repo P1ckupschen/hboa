@@ -25,7 +25,6 @@ public class PageQueryDto {
 //    @JsonProperty("Interval")
 //    private List<Date> Interval;
     private Integer id;
-
     public PageQueryDto(Integer pageNum , Integer pageSize ,  Integer departmentId , Integer type ,String title ,String time, String sort){
         this.pageNum = pageNum;
         this.pageSize = pageSize;

@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdproj.dto.PageQueryDto;
+import com.gdproj.entity.Flow;
 import com.gdproj.entity.Reimbursement;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
@@ -15,13 +16,17 @@ import com.gdproj.result.ResponseResult;
 import com.gdproj.service.DeployeeService;
 import com.gdproj.service.FlowService;
 import com.gdproj.service.ReimbursementService;
+import com.gdproj.service.UserRoleService;
 import com.gdproj.utils.BeanCopyUtils;
+import com.gdproj.utils.JwtUtils;
+import com.gdproj.utils.commonUtils;
 import com.gdproj.vo.PageVo;
 import com.gdproj.vo.ReimbursementContentVo;
 import com.gdproj.vo.ReimbursementVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,6 +42,8 @@ public class ReimbursementServiceImpl extends ServiceImpl<ReimbursementMapper, R
     @Autowired
     FlowService flowService;
 
+    @Autowired
+    UserRoleService userRoleService;
     @Autowired
     DeployeeService deployeeService;
 
@@ -60,9 +67,18 @@ public class ReimbursementServiceImpl extends ServiceImpl<ReimbursementMapper, R
     public ResponseResult updateReimbursement(ReimbursementVo vo) {
 
         Reimbursement reimbursement = BeanCopyUtils.copyBean(vo, Reimbursement.class);
+        reimbursement.setReimbursementStatus(0);
         boolean b = updateById(reimbursement);
         if(b){
-            return ResponseResult.okResult(b);
+            Integer typeId = reimbursement.getTypeId();
+            Integer Id = reimbursement.getReimbursementId();
+            LambdaQueryWrapper<Flow> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(Flow::getTypeId,typeId);
+            queryWrapper.eq(Flow::getRunId,Id);
+            Flow one = flowService.getOne(queryWrapper);
+            one.setFlowTitle(reimbursement.getReimbursementTitle());
+            Flow flow = flowService.resetProperty(one);
+            return ResponseResult.okResult(flowService.updateById(flow));
         }else{
             throw  new SystemException(AppHttpCodeEnum.UPDATE_ERROR);
         }
@@ -99,6 +115,79 @@ public class ReimbursementServiceImpl extends ServiceImpl<ReimbursementMapper, R
         Page<Reimbursement> page = new Page<>(pageNum, pageSize);
 
         LambdaQueryWrapper<Reimbursement> queryWrapper = new LambdaQueryWrapper<>();
+        //排序
+        if (sort.equals("+id")) {
+            queryWrapper.orderByAsc(Reimbursement::getReimbursementId);
+        } else {
+            queryWrapper.orderByDesc(Reimbursement::getReimbursementId);
+        }
+
+        if (!title.isEmpty()) {
+            List<Integer> ids = deployeeService.getIdsByTitle(title);
+            if(!ObjectUtil.isEmpty(ids)){
+                queryWrapper.in(Reimbursement::getUserId,ids);
+            }else{
+                queryWrapper.eq(Reimbursement::getUserId,0);
+            }
+        }
+
+        if(!ObjectUtil.isEmpty(time)){
+            queryWrapper.like(Reimbursement::getCreatedTime,time);
+        }
+        //如果有类型的话 类型
+//        if (!ObjectUtil.isEmpty(type)) {
+//            //传过来的是productCategoryId,需要去产品表下找属于这个产品类型的产品 id数组
+//            queryWrapper.eq(Reimbursement::getCategoryId,type);
+//        }
+        IPage<Reimbursement> recordPage = page(page, queryWrapper);
+
+        List<ReimbursementVo> collect = recordPage.getRecords().stream().map((item) -> {
+            ReimbursementVo vo = BeanCopyUtils.copyBean(item, ReimbursementVo.class);
+
+            String content = JSONUtil.toJsonStr(item.getReimbursementContent());
+            List<ReimbursementContentVo> contentVoList = JSONUtil.toList(content, ReimbursementContentVo.class);
+            vo.setReimbursementContent(contentVoList);
+            return vo;
+        }).collect(Collectors.toList());
+
+        PageVo<List<ReimbursementVo>> pageList = new PageVo<>();
+        List<ReimbursementVo> reimbursementVos = addOrderId(collect, pageNum, pageSize);
+        pageList.setData(reimbursementVos);
+
+        pageList.setTotal((int) recordPage.getTotal());
+
+        return ResponseResult.okResult(pageList);
+    }
+
+    @Override
+    public ResponseResult getMyReimbursementList(PageQueryDto queryVo, HttpServletRequest request) {
+//类型
+        Integer type = queryVo.getType();
+        //部门
+        Integer departmentId = queryVo.getDepartmentId();
+        //时间
+        String time = queryVo.getTime();
+        //排序
+        String sort = queryVo.getSort();
+        //搜索框如果是产品搜索产品名称或者选择产品id
+        //如果是人 搜素人名或者人id
+        //如果是物 搜索id
+        String title = queryVo.getTitle();
+        Integer pageNum = queryVo.getPageNum();
+        Integer pageSize = queryVo.getPageSize();
+
+        Page<Reimbursement> page = new Page<>(pageNum, pageSize);
+
+        LambdaQueryWrapper<Reimbursement> queryWrapper = new LambdaQueryWrapper<>();
+        String id = JwtUtils.getMemberIdByJwtToken(request);
+        List<String> role = userRoleService.getRoleKeysByUserId(id);
+
+        if(!ObjectUtil.isEmpty(role)){
+            boolean is = commonUtils.checkRole(role);
+            if(!is){
+                queryWrapper.eq(Reimbursement::getUserId, JwtUtils.getMemberIdByJwtToken(request));
+            }
+        }
         //排序
         if (sort.equals("+id")) {
             queryWrapper.orderByAsc(Reimbursement::getReimbursementId);

@@ -294,6 +294,12 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
         if(!ObjectUtil.isEmpty(deployee.getDeployeePhone())){
             deployee.setDeployeePhone(AesUtil.encrypt(deployee.getDeployeePhone(),AesUtil.key128));
         }
+        String name = deployee.getDeployeeName();
+        if(!ObjectUtil.isEmpty(name)){
+            if(name.contains("离职")){
+                deployee.setDeployeeName(name.replace(" 已离职",""));
+            }
+        }
         boolean isUpdate = updateById(deployee);
         //如果账号密码不为空
         if(isUpdate){
@@ -313,6 +319,9 @@ public class DeployeeServiceImpl extends ServiceImpl<DeployeeMapper, Deployee>
 
         LambdaUpdateWrapper<Deployee> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(Deployee::getDeployeeId,id).set(Deployee::getDeployeeStatus,0);
+        LambdaUpdateWrapper<Account> accountUpdateWrapper = new LambdaUpdateWrapper<>();
+        accountUpdateWrapper.eq(Account::getDeployeeId,id).set(Account::getUserStatus,0);
+        accountService.update(accountUpdateWrapper);
         return ResponseResult.okResult(update(updateWrapper));
 
     }

@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
@@ -60,6 +61,29 @@ public class leaveController {
 
     }
 
+    @GetMapping("/getMyLeaveList")
+    @autoLog
+    @ApiOperation(value = "查询我的请假列表")
+    public ResponseResult getMyLeaveList(@Validated PageQueryDto pageDto, HttpServletRequest request){
+
+        IPage<LeaveVo> leaveList = new Page<LeaveVo>();
+
+        try {
+            leaveList = leaveService.getMyLeaveList(pageDto,request);
+
+            PageVo<List<LeaveVo>> pageList = new PageVo<>();
+            pageList.setData(leaveList.getRecords());
+            pageList.setTotal((int) leaveList.getTotal());
+            return ResponseResult.okResult(pageList);
+        }catch (SystemException e){
+            return ResponseResult.okResult(e.getCode(),e.getMsg());
+        }catch (Exception e){
+            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+        }
+
+
+    }
+
     @PutMapping("updateLeave")
     @autoLog
     @ApiOperation(value = "更新请假")
@@ -74,9 +98,10 @@ public class leaveController {
 
         try {
 
-            b = leaveService.updateById(updateLeave);
+            b = leaveService.updateLeave(updateLeave);
 
             if(b){
+
                 return ResponseResult.okResult(b);
             }else{
                 return ResponseResult.errorResult(AppHttpCodeEnum.UPDATE_ERROR);

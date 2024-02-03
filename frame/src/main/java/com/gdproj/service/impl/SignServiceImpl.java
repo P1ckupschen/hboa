@@ -139,9 +139,6 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
         LambdaQueryWrapper<Sign> queryWrapper = new LambdaQueryWrapper<>();
         //格式化当前日期
         Calendar calendar = Calendar.getInstance();
-        calendar.get(Calendar.DAY_OF_MONTH);
-        calendar.get(Calendar.MONTH);
-        calendar.get(Calendar.YEAR);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String format = simpleDateFormat.format(calendar.getTime());
         //日期筛选
@@ -166,8 +163,11 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
             if(!ObjectUtil.isEmpty(sign.getLatitude()) && !ObjectUtil.isEmpty(sign.getLatitude())){
                 GlobalCoordinates source = new GlobalCoordinates(sign.getLatitude(),sign.getLongitude());
 //                double distanceMeter = GenUtil.getDistanceMeter(source, GenUtil.target, Ellipsoid.Sphere);
+
                 JSONObject o = (JSONObject) bMapApi.reverseGeocoding(BigDecimal.valueOf(sign.getLongitude()), BigDecimal.valueOf(sign.getLatitude()));
+
                 if(!ObjectUtil.isEmpty(o) && !ObjectUtil.isEmpty(o.get("result"))){
+                    System.out.println(JSONUtil.parseObj(o.get("result")));
                     one.setEndAddr((String) JSONUtil.parseObj(o.get("result")).get("formatted_address"));
                 }else{
                     one.setEndAddr("获取地址信息失败");
@@ -179,13 +179,14 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
             sign.setInTime(calendar.getTime());
             sign.setIsLate(compareToHour(sign.getInTime(),rule.getInAllowance(), 1));
             sign.setYear(String.valueOf(calendar.get(Calendar.YEAR)));
-            sign.setMonth(String.valueOf(calendar.get(Calendar.MONTH))+1);
+            sign.setMonth(String.valueOf(calendar.get(Calendar.MONTH)+1));
             sign.setDay(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
             if(!ObjectUtil.isEmpty(sign.getLatitude()) && !ObjectUtil.isEmpty(sign.getLatitude())){
                 GlobalCoordinates source = new GlobalCoordinates(sign.getLatitude(),sign.getLongitude());
 //                double distanceMeter = GenUtil.getDistanceMeter(source, GenUtil.target, Ellipsoid.Sphere);
                 JSONObject o = (JSONObject) bMapApi.reverseGeocoding(BigDecimal.valueOf(sign.getLongitude()), BigDecimal.valueOf(sign.getLatitude()));
                 if(!ObjectUtil.isEmpty(o) && !ObjectUtil.isEmpty(o.get("result"))){
+                    System.out.println(JSONUtil.parseObj(o.get("result")));
                     sign.setSignAddr((String) JSONUtil.parseObj(o.get("result")).get("formatted_address"));
                 }else{
                     sign.setSignAddr("获取地址信息失败");
@@ -250,8 +251,6 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
             //TODO 每日考勤时间设置 8:30 - 17:30
             Rules rule = rulesService.getById(1);
-            Date shouldInTime = sdf.parse("8:30");
-            Date shouldOutTime = sdf.parse("17:30");
             vo.setShouldInTime(rule.getInTime());
             vo.setShouldOutTime(rule.getEndTime());
             System.out.println(vo);
@@ -262,6 +261,7 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
 //            有打卡记录 并且签到时间不为空
             if (!ObjectUtil.isEmpty(one.getInTime())) {
                 vo.setIsSignIn(1);
+                vo.setSignAddr(one.getSignAddr());
                 vo.setSignInTime(one.getInTime());
             } else {
 //            有打卡记录 但是签到时间为空
@@ -271,6 +271,7 @@ public class SignServiceImpl extends ServiceImpl<SignMapper, Sign>
 //            有打卡记录 并且签退时间不为空
             if (!ObjectUtil.isEmpty(one.getEndTime())) {
                 vo.setIsSignOut(1);
+                vo.setEndAddr(one.getEndAddr());
                 vo.setSignOutTime(one.getEndTime());
             } else {
 //            有打卡记录 但是签退时间为空

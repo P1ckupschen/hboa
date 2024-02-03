@@ -9,17 +9,21 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.DailyUse;
 import com.gdproj.entity.DailyUseRecord;
+import com.gdproj.entity.Flow;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.DailyUseMapper;
 import com.gdproj.service.*;
 import com.gdproj.utils.BeanCopyUtils;
+import com.gdproj.utils.JwtUtils;
+import com.gdproj.utils.commonUtils;
 import com.gdproj.vo.DailyUseContentVo;
 import com.gdproj.vo.DailyUseRecordVo;
 import com.gdproj.vo.DailyUseVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -36,6 +40,9 @@ public class DailyUseServiceImpl extends ServiceImpl<DailyUseMapper, DailyUse>
 
     @Autowired
     DeployeeService deployeeService;
+
+    @Autowired
+    UserRoleService userRoleService;
 
     @Autowired
     DailyUseRecordService recordService;
@@ -258,6 +265,123 @@ public class DailyUseServiceImpl extends ServiceImpl<DailyUseMapper, DailyUse>
             return resultPage;
         }catch (Exception e){
             throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
+        }
+
+    }
+
+    @Override
+    public IPage<DailyUseVo> getMyDailyUseList(PageQueryDto pageDto, HttpServletRequest request) {
+//类型
+        Integer type = pageDto.getType();
+        //部门
+        Integer departmentId = pageDto.getDepartmentId();
+        //时间
+        String time = pageDto.getTime();
+        //排序
+        String sort = pageDto.getSort();
+        //搜索框如果是产品搜索产品名称或者选择产品id
+        //如果是人 搜素人名或者人id
+        //如果是物 搜索id
+        String title = pageDto.getTitle();
+        Integer pageNum = pageDto.getPageNum();
+        Integer pageSize = pageDto.getPageSize();
+
+        Page<DailyUse> page = new Page<>(pageNum, pageSize);
+
+        LambdaQueryWrapper<DailyUse> queryWrapper = new LambdaQueryWrapper<>();
+        //排序
+        if (sort.equals("+id")) {
+            queryWrapper.orderByAsc(DailyUse::getDailyuseId);
+        } else {
+            queryWrapper.orderByDesc(DailyUse::getDailyuseId);
+        }
+        String id = JwtUtils.getMemberIdByJwtToken(request);
+        List<String> role = userRoleService.getRoleKeysByUserId(id);
+
+        if(!ObjectUtil.isEmpty(role)){
+            boolean is = commonUtils.checkRole(role);
+            if(!is){
+                queryWrapper.eq(DailyUse::getUserId,JwtUtils.getMemberIdByJwtToken(request));
+            }
+        }
+
+        //查询名称？
+        if (!title.isEmpty()) {
+            List<Integer> ids = deployeeService.getIdsByTitle(title);
+            if(!ObjectUtil.isEmpty(ids)){
+                queryWrapper.in(DailyUse::getUserId,ids);
+            }else{
+                queryWrapper.eq(DailyUse::getUserId,0);
+            }
+        }
+
+        if(!ObjectUtil.isEmpty(time)){
+            queryWrapper.like(DailyUse::getCreatedTime,time);
+        }
+
+        //如果有类型的话 类型
+        if (!ObjectUtil.isEmpty(type)) {
+            //传过来的是productCategoryId,需要去产品表下找属于这个产品类型的产品 id数组
+            queryWrapper.eq(DailyUse::getCategoryId,type);
+        }
+        IPage<DailyUse> recordPage = page(page, queryWrapper);
+
+        Page<DailyUseVo> resultPage = new Page<>();
+
+        List<DailyUseVo> resultList = new ArrayList<>();
+        try {
+
+            resultList = recordPage.getRecords().stream().map((item) -> {
+
+                DailyUseVo vo = BeanCopyUtils.copyBean(item, DailyUseVo.class);
+
+                if(item.getCategoryId() == 1){
+                    vo.setCategory("入库");
+                }else if(item.getCategoryId() == 2){
+                    vo.setCategory("出库");
+                }
+                //TODO 内嵌属性content 字段需要统一
+                if(!ObjectUtil.isEmpty(item.getDailyuseContent())){
+                    String Content = JSONUtil.toJsonStr(item.getDailyuseContent());
+                    List<DailyUseContentVo> contentVoList = JSONUtil.toList(Content, DailyUseContentVo.class);
+                    vo.setDailyuseContent(contentVoList);
+                }
+                if(!ObjectUtil.isEmpty(item.getUserId())){
+                    vo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
+                }else{
+                    vo.setUsername("");
+                }
+
+                return vo;
+            }).collect(Collectors.toList());
+            List<DailyUseVo> dailyUseVos = addOrderId(resultList, pageNum, pageSize);
+            resultPage.setRecords(dailyUseVos);
+
+            resultPage.setTotal(recordPage.getTotal());
+
+            return resultPage;
+        }catch (Exception e){
+            throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
+        }
+    }
+
+    @Override
+    public boolean updateDailyUse(DailyUse dailyUse) {
+
+        dailyUse.setDailyuseStatus(0);
+        boolean update = updateById(dailyUse);
+        if(update){
+            Integer typeId = dailyUse.getTypeId();
+            Integer dailyuseId = dailyUse.getDailyuseId();
+            LambdaQueryWrapper<Flow> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(Flow::getTypeId,typeId);
+            queryWrapper.eq(Flow::getRunId,dailyuseId);
+            Flow one = flowService.getOne(queryWrapper);
+            one.setFlowTitle(dailyUse.getDailyuseTitle());
+            Flow flow = flowService.resetProperty(one);
+            return flowService.updateById(flow);
+        }else{
+            return false;
         }
 
     }

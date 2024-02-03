@@ -8,21 +8,21 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdproj.dto.PageQueryDto;
-import com.gdproj.entity.Deployee;
-import com.gdproj.entity.Overtime;
-import com.gdproj.entity.OvertimeCategory;
-import com.gdproj.entity.OvertimeExcelEntity;
+import com.gdproj.entity.*;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.OvertimeMapper;
 import com.gdproj.service.*;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.utils.DownloadUtils;
+import com.gdproj.utils.JwtUtils;
+import com.gdproj.utils.commonUtils;
 import com.gdproj.vo.OvertimeVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +47,8 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
 
     @Autowired
     overtimeCategoryService overtimecategoryService;
+    @Autowired
+    UserRoleService userRoleService;
 
     @Autowired
     FlowService flowService;
@@ -225,6 +227,144 @@ public class OvertimeServiceImpl extends ServiceImpl<OvertimeMapper, Overtime>
         }).collect(Collectors.toList());
         EasyExcel.write(fileName, OvertimeExcelEntity.class).sheet("加班统计").doWrite(collect);
         DownloadUtils.downloadExcel(fileName,response);
+    }
+
+    @Override
+    public IPage<OvertimeVo> getMyOverTimeList(PageQueryDto pageDto, HttpServletRequest request) {
+
+        Integer type = pageDto.getType();
+        Integer departmentId = pageDto.getDepartmentId();
+        String time = pageDto.getTime();
+        String sort = pageDto.getSort();
+        String title = pageDto.getTitle();
+        Integer pageNum = pageDto.getPageNum();
+        Integer pageSize = pageDto.getPageSize();
+//        List<Date> interval = pageDto.getInterval();
+
+        Page<Overtime> page = new Page<>(pageNum, pageSize);
+
+        LambdaQueryWrapper<Overtime> queryWrapper = new LambdaQueryWrapper<>();
+
+        queryWrapper.eq(Overtime::getIsDeleted,0);
+
+        String id = JwtUtils.getMemberIdByJwtToken(request);
+        List<String> role = userRoleService.getRoleKeysByUserId(id);
+        if(!ObjectUtil.isEmpty(role)){
+            boolean is = commonUtils.checkRole(role);
+            if(!is){
+                queryWrapper.eq(Overtime::getApplicantId, JwtUtils.getMemberIdByJwtToken(request));
+            }
+        }
+        //排序
+        if(sort.equals("+id")){
+            queryWrapper.orderByAsc(Overtime::getOvertimeId);
+        }else{
+            queryWrapper.orderByDesc(Overtime::getOvertimeId);
+        }
+        //如果根据部门分类，有一定几率会与模糊人民冲突
+        if(!ObjectUtil.isEmpty(departmentId) && title.isEmpty()){
+            List<Integer> ids = deployeeService.getIdsByDepartmentId(pageDto.getDepartmentId());
+            if(ObjectUtil.isEmpty(ids)){
+                queryWrapper.in(Overtime::getExecutorId,0);
+            }else{
+                queryWrapper.in(Overtime::getExecutorId,ids);
+            }
+        }
+        //模糊查询时间
+        if (!ObjectUtil.isEmpty(time)) {
+            //时间区间查询
+            queryWrapper.like(Overtime::getCreatedTime,time);
+        }
+
+        //模糊查询人名
+        if(!title.isEmpty()){
+            //如果有模糊查询的时间 先通过查title 的用户ids
+            List<Integer> ids = deployeeService.getIdsByTitle(title);
+            if(!ObjectUtil.isEmpty(ids)){
+                queryWrapper.in(Overtime::getExecutorId,ids);
+            }else{
+                queryWrapper.in(Overtime::getExecutorId,0);
+            }
+            //通过ids去找所有符合ids的对象 sign;
+        }
+
+        if(!ObjectUtil.isEmpty(type)){
+            queryWrapper.eq(Overtime::getCategoryId,type);
+        }
+
+        IPage<Overtime> overtimePage = page(page, queryWrapper);
+
+        Page<OvertimeVo> resultPage = new Page<>();
+        //结果里的部门 和用户都返回成string；
+        List<OvertimeVo> resultList =  new ArrayList<>();
+        try {
+            resultList = overtimePage.getRecords().stream().map((item) -> {
+                OvertimeVo overtimevo = BeanCopyUtils.copyBean(item, OvertimeVo.class);
+
+                //人员
+//                if(!ObjectUtil.isEmpty( deployeeService.getById(item.getExecutorId())))
+                if(!ObjectUtil.isEmpty(item.getExecutorId())){
+                    overtimevo.setUsername(deployeeService.getNameByUserId(item.getExecutorId()));
+                    overtimevo.setDepartment(deployeeService.getDepartmentNameByUserId(item.getExecutorId()));
+                    overtimevo.setDepartmentId(deployeeService.getDepartmentIdByUserId(item.getExecutorId()));
+                }else{
+                    overtimevo.setUsername("");
+                    overtimevo.setDepartment("");
+                }
+
+                //加班类型
+                if(!ObjectUtil.isEmpty(item.getCategoryId())){
+                    OvertimeCategory one = overtimecategoryService.getById(item.getCategoryId());
+                    if(!ObjectUtil.isEmpty(one)){
+                        overtimevo.setCategory(one.getCategoryName());
+                    }
+                }else{
+                    overtimevo.setCategory("");
+                }
+
+                long btime = 0;
+
+                double v = 0;
+                //加班总时长
+                if(ObjectUtil.isEmpty(item.getStartTime()) || ObjectUtil.isEmpty(item.getEndTime())){
+                    btime = 0;
+                }else{
+                    btime = item.getEndTime().getTime() - item.getStartTime().getTime();
+                    System.out.println(btime);
+                    v = btime / 1000 / 60 / 60 ;
+                }
+                System.out.println(v);
+                int round = (int) Math.round(v);
+                overtimevo.setOvertimeHours(round);
+                return overtimevo;
+
+            }).collect(Collectors.toList());
+        }catch (Exception e){
+            throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
+        }
+        List<OvertimeVo> overtimeVos = addOrderId(resultList, pageNum, pageSize);
+        resultPage.setRecords(overtimeVos);
+        resultPage.setTotal(overtimePage.getTotal());
+        return resultPage;
+    }
+
+    @Override
+    public boolean updateOvertime(Overtime info) {
+        info.setOvertimeStatus(0);
+        boolean update = updateById(info);
+        if(update){
+            Integer typeId = info.getTypeId();
+            Integer Id = info.getOvertimeId();
+            LambdaQueryWrapper<Flow> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(Flow::getTypeId,typeId);
+            queryWrapper.eq(Flow::getRunId,Id);
+            Flow one = flowService.getOne(queryWrapper);
+            one.setFlowTitle(info.getOvertimeTitle());
+            Flow flow = flowService.resetProperty(one);
+            return flowService.updateById(flow);
+        }else{
+            return false;
+        }
     }
 
     private List<Overtime> getOvertimeListByTimeInterval(List<String> dateList) {

@@ -8,21 +8,21 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdproj.dto.PageQueryDto;
-import com.gdproj.entity.Deployee;
-import com.gdproj.entity.Leave;
-import com.gdproj.entity.LeaveCategory;
-import com.gdproj.entity.LeaveExcelEntity;
+import com.gdproj.entity.*;
 import com.gdproj.enums.AppHttpCodeEnum;
 import com.gdproj.exception.SystemException;
 import com.gdproj.mapper.LeaveMapper;
 import com.gdproj.service.*;
 import com.gdproj.utils.BeanCopyUtils;
 import com.gdproj.utils.DownloadUtils;
+import com.gdproj.utils.JwtUtils;
+import com.gdproj.utils.commonUtils;
 import com.gdproj.vo.LeaveVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +47,9 @@ public class LeaveServiceImpl extends ServiceImpl<LeaveMapper, Leave>
 
     @Autowired
     leaveCategoryService leaveCategoryService;
+
+    @Autowired
+    UserRoleService userRoleService;
 
     @Autowired
     FlowService flowService;
@@ -237,6 +240,157 @@ public class LeaveServiceImpl extends ServiceImpl<LeaveMapper, Leave>
 
         EasyExcel.write(fileName, LeaveExcelEntity.class).sheet("请假统计").doWrite(collect);
         DownloadUtils.downloadExcel(fileName,response);
+    }
+
+    @Override
+    public IPage<LeaveVo> getMyLeaveList(PageQueryDto pageDto, HttpServletRequest request) {
+        Integer type = pageDto.getType();
+        Integer departmentId = pageDto.getDepartmentId();
+        String time = pageDto.getTime();
+        String sort = pageDto.getSort();
+        String title = pageDto.getTitle();
+        Integer pageNum = pageDto.getPageNum();
+        Integer pageSize = pageDto.getPageSize();
+        Page<Leave> page = new Page<>(pageNum, pageSize);
+
+        LambdaQueryWrapper<Leave> queryWrapper = new LambdaQueryWrapper<>();
+
+        queryWrapper.eq(Leave::getIsDeleted,0);
+
+        String id = JwtUtils.getMemberIdByJwtToken(request);
+        List<String> role = userRoleService.getRoleKeysByUserId(id);
+
+        if(!ObjectUtil.isEmpty(role)){
+            boolean is = commonUtils.checkRole(role);
+            if(!is){
+                queryWrapper.eq(Leave::getUserId, JwtUtils.getMemberIdByJwtToken(request));
+            }
+        }
+
+        //排序
+        if(sort.equals("+id")){
+            queryWrapper.orderByAsc(Leave::getLeaveId);
+        }else{
+            queryWrapper.orderByDesc(Leave::getLeaveId);
+        }
+        //如果根据部门分类，有一定几率会与模糊人民冲突
+        if(!ObjectUtil.isEmpty(departmentId) && title.isEmpty()){
+            List<Integer> ids = deployeeService.getIdsByDepartmentId(pageDto.getDepartmentId());
+            if(ObjectUtil.isEmpty(ids)){
+                queryWrapper.in(Leave::getUserId,0);
+            }else{
+                queryWrapper.in(Leave::getUserId,ids);
+            }
+        }
+        //设置时间 年 月 日
+        //模糊查询时间
+        if (!ObjectUtil.isEmpty(time)) {
+            //时间区间查询
+//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            queryWrapper.like(Leave::getCreatedTime,time);
+        }
+
+        //模糊查询人名
+        if(!title.isEmpty()){
+            //如果有模糊查询的时间 先通过查title 的用户ids
+            List<Integer> ids = deployeeService.getIdsByTitle(title);
+            if(!ObjectUtil.isEmpty(ids)){
+                queryWrapper.in(Leave::getUserId, ids);
+            }else{
+                queryWrapper.in(Leave::getUserId,0);
+            }
+            //通过ids去找所有符合ids的对象 sign;
+        }
+
+        if(!ObjectUtil.isEmpty(type)){
+            queryWrapper.eq(Leave::getCategoryId,type);
+        }
+
+        IPage<Leave> leavePage = page(page, queryWrapper);
+
+        Page<LeaveVo> resultPage = new Page<>();
+
+        List<LeaveVo> resultList = new ArrayList<>();
+
+        //结果里的部门 和用户都返回成string；
+        try {
+            resultList = leavePage.getRecords().stream().map((item) -> {
+                LeaveVo leavevo = BeanCopyUtils.copyBean(item, LeaveVo.class);
+
+                //人员
+                if(!ObjectUtil.isEmpty(item.getUserId())){
+                    leavevo.setUsername(deployeeService.getNameByUserId(item.getUserId()));
+                    leavevo.setDepartment(deployeeService.getDepartmentNameByUserId(item.getUserId()));
+                    leavevo.setDepartmentId(deployeeService.getDepartmentIdByUserId(item.getUserId()));
+                }else{
+                    leavevo.setUsername("");
+                    leavevo.setDepartment("");
+                }
+
+                //请假类型
+                if(!ObjectUtil.isEmpty(item.getCategoryId())){
+                    LeaveCategory one = leaveCategoryService.getById(item.getCategoryId());
+                    if(!ObjectUtil.isEmpty(one)){
+                        leavevo.setCategory(one.getCategoryName());
+                    }
+                }else{
+                    leavevo.setCategory("");
+                }
+
+                //部门
+//            leavevo.setDepartment(departmentService.getDepartmentNameByDepartmentId(item.getDepartmentId()));
+
+
+
+                long btime = 0;
+                double v = 0;
+                //请假总时长 TODO如果向上取整
+                if(ObjectUtil.isEmpty(item.getStartTime()) || ObjectUtil.isEmpty(item.getEndTime())){
+                    btime = 0;
+                }else{
+                    btime = item.getEndTime().getTime() - item.getStartTime().getTime();
+                    v = btime / 1000 / 60 / 60 /24.0;
+                }
+
+                double floor = Math.floor(v);
+                if(v - floor > 0.5 ){
+                    v = floor + 1.0;
+                } else if( v - floor == 0 ){
+                    v = floor;
+                }else {
+                    v = floor + 0.5;
+                }
+                leavevo.setLeaveDays(String.valueOf(v));
+
+                return leavevo;
+
+            }).collect(Collectors.toList());
+        }catch (Exception e){
+            throw new SystemException(AppHttpCodeEnum.MYSQL_FIELD_ERROR);
+        }
+        List<LeaveVo> leaveVos = addOrderId(resultList, pageNum, pageSize);
+        resultPage.setRecords(leaveVos);
+        resultPage.setTotal(leavePage.getTotal());
+        return resultPage;
+    }
+
+    @Override
+    public boolean updateLeave(Leave info) {
+        info.setLeaveStatus(0);
+        boolean update = updateById(info);
+        if(update){
+            Integer typeId = info.getTypeId();
+            Integer Id = info.getLeaveId();
+            LambdaQueryWrapper<Flow> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(Flow::getTypeId,typeId);
+            queryWrapper.eq(Flow::getRunId,Id);
+            Flow one = flowService.getOne(queryWrapper);
+            one.setFlowTitle(info.getLeaveTitle());
+            Flow flow = flowService.resetProperty(one);
+            return flowService.updateById(flow);
+        }else{
+            return false;
+        }
     }
 
     private double countLeaveDaysByIdAndInterval(Integer userId,  String time) {

@@ -19,6 +19,9 @@ public class IsSignVo {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date signInTime;
 
+    private String signAddr;
+
+    private String endAddr;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date signOutTime;
     @JsonFormat(pattern = "HH:mm",timezone = "GMT+8")

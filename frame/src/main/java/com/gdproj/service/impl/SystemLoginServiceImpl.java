@@ -5,8 +5,10 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.gdproj.entity.Account;
+import com.gdproj.entity.Deployee;
 import com.gdproj.entity.User;
 import com.gdproj.enums.AppHttpCodeEnum;
+import com.gdproj.exception.SystemException;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.service.AccountService;
 import com.gdproj.service.SystemLoginService;
@@ -32,6 +34,9 @@ public class SystemLoginServiceImpl implements SystemLoginService {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    DeployeeServiceImpl deployeeService;
 
     @Autowired
     AccountService accountService;
@@ -94,8 +99,14 @@ public class SystemLoginServiceImpl implements SystemLoginService {
         LambdaQueryWrapper<Account> lambdaQueryWrapper =new LambdaQueryWrapper<>();
 
         lambdaQueryWrapper.eq(Account::getUsername,vo.getUsername());
+//        lambdaQueryWrapper.eq(Account::getUserStatus,1);
 
         one = accountService.getOne(lambdaQueryWrapper);
+        Integer deployeeId = one.getDeployeeId();
+        Deployee deployee = deployeeService.getById(deployeeId);
+        if(ObjectUtil.isEmpty(deployee) || deployee.getDeployeeStatus() == 0){
+            throw new SystemException(AppHttpCodeEnum.NO_DEPLOYEE);
+        }
 
         one.setLoginTime(new Date());
 
@@ -104,7 +115,7 @@ public class SystemLoginServiceImpl implements SystemLoginService {
         updateWrapper.set(Account::getLoginTime , new Date());
 
         if(!ObjectUtil.isEmpty(vo.getOpenid())){
-            updateWrapper.eq(Account::getDeployeeId,one.getDeployeeId());
+            updateWrapper.eq(Account::getDeployeeId,deployeeId);
             updateWrapper.set(Account::getOpenId,vo.getOpenid());
         }
         accountService.update(updateWrapper);

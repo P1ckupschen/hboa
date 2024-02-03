@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("/adminPurchase")
 @Api(tags = "采购申请功能")
@@ -27,6 +29,15 @@ public class purchaseController {
     public ResponseResult getPurchaseList(@Validated PageQueryDto queryVo) {
 
         return purchaseService.getPurchaseList(queryVo);
+
+    }
+
+    @GetMapping("/getMyPurchaseList")
+    @autoLog
+    @ApiOperation(value = "获取采购申请列表")
+    public ResponseResult getMyPurchaseList(@Validated PageQueryDto queryVo, HttpServletRequest request) {
+
+        return purchaseService.getMyPurchaseList(queryVo,request);
 
     }
     @PostMapping("/insertPurchase")

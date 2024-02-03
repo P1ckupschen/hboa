@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
@@ -61,6 +62,31 @@ public class overtimeController {
 
     }
 
+    @GetMapping("/getMyOvertimeList")
+    @autoLog
+    @ApiOperation(value = "查询我的加班列表")
+    public ResponseResult getMyOvertimeList(@Validated PageQueryDto pageDto, HttpServletRequest request){
+
+        IPage<OvertimeVo> overtimeList = new Page<OvertimeVo>();
+
+        try {
+            overtimeList = overtimeService.getMyOverTimeList(pageDto,request);
+
+            PageVo<List<OvertimeVo>> pageList = new PageVo<>();
+            pageList.setData(overtimeList.getRecords());
+            pageList.setTotal((int) overtimeList.getTotal());
+            return ResponseResult.okResult(pageList);
+
+        }catch (SystemException e) {
+            return ResponseResult.okResult(e.getCode(), e.getMsg());
+        }catch (Exception e){
+            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+        }
+
+
+    }
+
+
     @PutMapping("updateOvertime")
     @autoLog
     @ApiOperation(value = "更新加班")
@@ -69,13 +95,12 @@ public class overtimeController {
 
         Overtime updateOvertime = BeanCopyUtils.copyBean(overtimeVo, Overtime.class);
 //        vo中的 发布人  类型 部门
-        System.out.println(updateOvertime);
 
         boolean b = false;
 
         try {
 
-            b = overtimeService.updateById(updateOvertime);
+            b = overtimeService.updateOvertime(updateOvertime);
 
             if(b){
                 return ResponseResult.okResult(b);

@@ -1,6 +1,7 @@
 package com.gdproj.utils;
 
 import java.util.Date;
+import java.util.List;
 
 public class commonUtils {
 
@@ -38,4 +39,7 @@ public class commonUtils {
     }
 
 
+    public static boolean checkRole(List<String> role) {
+        return role.contains("admin") || role.contains("general-manager") || role.contains("deputy-manager");
+    }
 }

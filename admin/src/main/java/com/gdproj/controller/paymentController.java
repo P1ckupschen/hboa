@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("/adminPayment")
 @Api(tags = "付款申请功能")
@@ -27,6 +29,13 @@ public class paymentController {
     @ApiOperation(value = "查询支付申请列表")
     public ResponseResult getPaymentList( @Validated PageQueryDto queryDto){
         return paymentService.getPaymentList(queryDto);
+    }
+
+    @GetMapping("/getMyPaymentList")
+    @autoLog
+    @ApiOperation(value = "查询我的支付申请列表")
+    public ResponseResult getMyPaymentList(@Validated PageQueryDto queryDto, HttpServletRequest request){
+        return paymentService.getMyPaymentList(queryDto,request);
     }
     @PostMapping("/insertPayment")
     @autoLog

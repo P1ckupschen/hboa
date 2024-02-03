@@ -7,6 +7,7 @@ import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Leave;
 import com.gdproj.vo.LeaveVo;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -21,4 +22,8 @@ public interface LeaveService extends IService<Leave> {
     boolean insertLeave(Leave insertLeave);
 
     void exportLeaveExcel(PageQueryDto queryDto , HttpServletResponse response);
+
+    IPage<LeaveVo> getMyLeaveList(PageQueryDto pageDto, HttpServletRequest request);
+
+    boolean updateLeave(Leave updateLeave);
 }

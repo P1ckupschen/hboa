@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -68,6 +69,41 @@ public class warehouseController {
 
     }
 
+    @GetMapping("/getMyWarehouseList")
+    @autoLog
+    @ApiOperation(value = "查询出入库审批列表")
+    //TODO  content 部分需要 修改 Warehouse
+//    public ResponseResult getWarehouseList(@RequestParam Integer pageNum,
+//                                        @RequestParam Integer pageSize,
+//                                        @RequestParam(required = false,defaultValue = "+id")String sort,
+//                                        @RequestParam(required = false,defaultValue = "") String title ,
+//                                        @RequestParam(required = false) Integer departmentId,
+//                                        @RequestParam(required = false) Integer type,
+//                                        @RequestParam(required = false) String time){
+//        PageQueryDto pageDto = new PageQueryDto(pageNum,pageSize,departmentId,type,title,time,sort);
+    public ResponseResult getMyWarehouseList(@Validated PageQueryDto pageDto, HttpServletRequest request) {
+
+        IPage<WarehouseVo> warehouseList = new Page<>();
+
+        try {
+
+            warehouseList = warehouseService.getMyWarehouseList(pageDto,request);
+
+            PageVo<List<WarehouseVo>> pageList = new PageVo<>();
+
+            pageList.setData(warehouseList.getRecords());
+
+            pageList.setTotal((int) warehouseList.getTotal());
+
+            return ResponseResult.okResult(pageList);
+
+        } catch (Exception e) {
+
+            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+        }
+
+    }
+
     @PostMapping("/insertWarehouse")
     @autoLog
     @ApiOperation(value = "新增出入库审批")
@@ -88,13 +124,28 @@ public class warehouseController {
     public ResponseResult updateWarehouse(@RequestBody WarehouseVo vo){
 
         Warehouse warehouse = BeanCopyUtils.copyBean(vo, Warehouse.class);
-        boolean b = warehouseService.updateById(warehouse);
-        // TODO 是否需要同时修改对应的record记录；
+//        boolean b = warehouseService.updateById(warehouse);
+//        // TODO 是否需要同时修改对应的record记录；
+//        if(b){
+//            return ResponseResult.okResult(b);
+//        }else{
+//            throw  new SystemException(AppHttpCodeEnum.UPDATE_ERROR);
+//        }
 
-        if(b){
-            return ResponseResult.okResult(b);
+        if(warehouse.getCategoryId() == 1){
+            boolean b = warehouseService.updateById(warehouse);
+            if(b){
+                return ResponseResult.okResult(b);
+            }else{
+                throw  new SystemException(AppHttpCodeEnum.UPDATE_ERROR);
+            }
         }else{
-            throw  new SystemException(AppHttpCodeEnum.UPDATE_ERROR);
+            boolean b = warehouseService.updateWarehouse(warehouse);
+            if(b){
+                return ResponseResult.okResult(b);
+            }else{
+                throw  new SystemException(AppHttpCodeEnum.UPDATE_ERROR);
+            }
         }
 
     }

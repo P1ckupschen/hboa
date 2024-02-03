@@ -6,6 +6,7 @@ import com.gdproj.dto.PageQueryDto;
 import com.gdproj.entity.Overtime;
 import com.gdproj.vo.OvertimeVo;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -20,4 +21,8 @@ public interface OvertimeService extends IService<Overtime> {
     boolean insertOvertime(Overtime insertOvertime);
 
     void exportOvertimeExcel(PageQueryDto queryDto, HttpServletResponse response);
+
+    IPage<OvertimeVo> getMyOverTimeList(PageQueryDto pageDto, HttpServletRequest request);
+
+    boolean updateOvertime(Overtime updateOvertime);
 }

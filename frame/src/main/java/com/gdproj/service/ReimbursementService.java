@@ -6,6 +6,8 @@ import com.gdproj.entity.Reimbursement;
 import com.gdproj.result.ResponseResult;
 import com.gdproj.vo.ReimbursementVo;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
 * @author Administrator
 * @description 针对表【sys_reimbursement】的数据库操作Service
@@ -20,4 +22,6 @@ public interface ReimbursementService extends IService<Reimbursement> {
     ResponseResult deleteReimbursement(Integer id);
 
     ResponseResult getReimbursementList(PageQueryDto queryVo);
+
+    ResponseResult getMyReimbursementList(PageQueryDto queryVo, HttpServletRequest request);
 }

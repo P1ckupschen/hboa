@@ -245,7 +245,9 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
         Integer departmentId = pageDto.getDepartmentId();
         //时间
         String time = pageDto.getTime();
-        //排序
+        //排序c-3] INFO  c.g.a.logAspect - ===============返回===============
+        //执行了拦截器的postHandle方法
+        //16:34:36,600 |-INFO in c.q.l.core.rolling.helper.TimeBasedArchiveRemo
         String sort = pageDto.getSort();
         //搜索框如果是产品搜索产品名称或者选择产品id
         //如果是人 搜素人名或者人id
@@ -688,14 +690,12 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
             queryWrapper.eq(Flow::getTypeId, type);
         }
 
-        // TODO 根据当前操作用户是谁 只能查询属于关于自己的内容吗？
         String authorization = request.getHeader("Authorization");
         if(!ObjectUtil.isEmpty(authorization)){
             System.out.println(authorization);
             String token = authorization.split(" ")[1];
             String id = JwtUtils.getMemberIdByJwtToken(token);
-            queryWrapper.eq(Flow::getCurrentUserId,id).or().eq(Flow::getCreatedUserId,id);
-
+            queryWrapper.eq(Flow::getCurrentUserId,id);
         }else{
             throw new SystemException(AppHttpCodeEnum.TOKEN_PARSE_ERRPE);
         }
@@ -729,51 +729,56 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
             LambdaQueryWrapper<Overtime> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(Overtime::getOvertimeId, runId);
             Overtime one = overtimeService.getOne(queryWrapper);
-            OvertimeVo vo = BeanCopyUtils.copyBean(one, OvertimeVo.class);
+                OvertimeVo vo = BeanCopyUtils.copyBean(one, OvertimeVo.class);
+                return ResponseResult.okResult(vo);
 //            OvertimeVo vo = overtimeService.setProperyToVo(one);
-            return ResponseResult.okResult(vo);
+
         } else if (typeId == 2) {
             //请假申请
             LambdaQueryWrapper<Leave> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(Leave::getLeaveId, runId);
             Leave one = leaveService.getOne(queryWrapper);
-            LeaveVo vo = BeanCopyUtils.copyBean(one, LeaveVo.class);
-            return ResponseResult.okResult(vo);
+                LeaveVo vo = BeanCopyUtils.copyBean(one, LeaveVo.class);
+                return ResponseResult.okResult(vo);
         } else if (typeId == 3) {
             //出库申请
             LambdaQueryWrapper<Warehouse> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(Warehouse::getWarehouseId, runId);
             Warehouse one = warehouseService.getOne(queryWrapper);
-            WarehouseVo vo = BeanCopyUtils.copyBean(one, WarehouseVo.class);
-            return ResponseResult.okResult(vo);
+                WarehouseVo vo = BeanCopyUtils.copyBean(one, WarehouseVo.class);
+                return ResponseResult.okResult(vo);
         } else if (typeId == 4) {
             //日常领用申请
             LambdaQueryWrapper<DailyUse> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(DailyUse::getDailyuseId, runId);
             DailyUse one = dailyUseService.getOne(queryWrapper);
-            DailyUseVo vo = BeanCopyUtils.copyBean(one, DailyUseVo.class);
-            return ResponseResult.okResult(vo);
-        } else if (typeId == 5) {
+                DailyUseVo vo = BeanCopyUtils.copyBean(one, DailyUseVo.class);
+                return ResponseResult.okResult(vo);
+
+        } else if (typeId == 5 || typeId == 8 || typeId == 9) {
             //付款申请
             LambdaQueryWrapper<Payment> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(Payment::getPaymentId, runId);
             Payment one = paymentService.getOne(queryWrapper);
-            PaymentVo vo = BeanCopyUtils.copyBean(one, PaymentVo.class);
-            return ResponseResult.okResult(vo);
+                PaymentVo vo = BeanCopyUtils.copyBean(one, PaymentVo.class);
+                return ResponseResult.okResult(vo);
+
         } else if (typeId == 6) {
             //报销申请
             LambdaQueryWrapper<Reimbursement> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(Reimbursement::getReimbursementId, runId);
             Reimbursement one = reimbursementService.getOne(queryWrapper);
-            ReimbursementVo vo = BeanCopyUtils.copyBean(one, ReimbursementVo.class);
-            return ResponseResult.okResult(vo);
+                ReimbursementVo vo = BeanCopyUtils.copyBean(one, ReimbursementVo.class);
+                return ResponseResult.okResult(vo);
+
         } else if (typeId == 7) {
             //采购申请
             LambdaQueryWrapper<Purchase> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(Purchase::getPurchaseId, runId);
             Purchase one = purchaseService.getOne(queryWrapper);
-            PurchaseVo vo = BeanCopyUtils.copyBean(one, PurchaseVo.class);
-            return ResponseResult.okResult(vo);
+                PurchaseVo vo = BeanCopyUtils.copyBean(one, PurchaseVo.class);
+                return ResponseResult.okResult(vo);
+
         } else {
             throw new SystemException(AppHttpCodeEnum.FLOW_TYPE_ERROR);
         }
@@ -788,6 +793,18 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow>
         }else{
             return ResponseResult.errorResult(AppHttpCodeEnum.DELETE_ERROR);
         }
+    }
+
+    @Override
+    public Flow resetProperty(Flow one) {
+        FlowConfig config = configService.getById(one.getTypeId());
+        List<Integer> approvalFlow = config.getApprovalFlow();
+        one.setFlowStatus(0);
+        one.setFlowFeedback("");
+        one.setCurrentUserId(approvalFlow.get(0));
+        one.setCurrentStepId(1);
+        one.setTotalLevel(approvalFlow.size());
+        return one;
     }
 
     private List<FlowVo> addOrderId(List<FlowVo> list, Integer pageNum, Integer pageSize){

@@ -13,4 +13,6 @@ import java.util.List;
 public interface UserRoleService extends IService<UserRole> {
 
     List<Integer> getRoleIdsById(Integer deployeeId);
+
+    List<String> getRoleKeysByUserId(String id);
 }

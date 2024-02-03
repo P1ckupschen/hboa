@@ -39,4 +39,6 @@ public interface FlowService extends IService<Flow> {
     ResponseResult getFlowDetail(Integer typeId, Integer runId);
 
     ResponseResult deleteFlow(Integer id);
+
+    Flow resetProperty(Flow one);
 }
